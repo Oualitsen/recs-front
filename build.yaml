@@ -1,0 +1,23 @@
+targets:
+  $default:
+    builders:
+
+      retrofit_graphql:aggregatingBuilder:
+        enabled: true
+        generate_for:
+          include:
+            - lib/src/graphql/*.graphql
+        options:
+          Long: int
+          ID: int
+          generateAllFieldsFragments: true
+      json_serializable:json_serializable:
+        enabled: true
+        generate_for:
+          include:
+            - lib/generated/*.dart
+            - lib/src/services/graphql_service.dart
+global_options:
+  retrofit_graphql|aggregatingBuilder:
+    runs_before:
+      - json_serializable:json_serializable

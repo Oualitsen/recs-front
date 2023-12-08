@@ -1,0 +1,78 @@
+#*************************** SCALAR ***************************
+scalar Long
+#*************************** INTERFACE ***************************
+
+interface BasicEntity {
+  id: ID!
+  creationDate: Long!
+  lastUpdate: Long!
+}
+interface BasicUser implements BasicEntity {
+  id: ID!
+  creationDate: Long!
+  lastUpdate: Long!
+  email: String!
+  preferences: Preferences!
+  roles: [Role!]!
+}
+
+#*************************** MUTATION***********************
+type Mutation {
+  adminLogin(loginObject: LoginObject!): AdminAuthResult!
+  updateAdminPassword(password: PasswordChange!): Admin!
+}
+
+#***************************QUERRY **************************
+type Query {
+  getCurrentAdmin: Admin!
+}
+
+#*************************** TYPE ***************************
+
+type Admin implements BasicUser & BasicEntity {
+  id: ID!
+  creationDate: Long!
+  lastUpdate: Long!
+  name: String!
+  email: String!
+  preferences: Preferences
+  roles: [Role!]!
+}
+
+type Preferences {
+  lang: String
+}
+
+type AdminAuthResult {
+  user: Admin!
+  token: String!
+}
+
+type UserAuthResult {
+  user: TenantUser!
+  token: String!
+}
+
+#*************************** INPUT ***************************
+input LoginObject {
+  email: String!
+  password: String!
+}
+
+input PasswordChange {
+  old: String!
+  current: String!
+}
+#*************************** ENUM ***************************
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Role {
+  SUPER_ADMIN
+  TENANT_ADMIN
+  MODERATOR
+  VIEWER
+}

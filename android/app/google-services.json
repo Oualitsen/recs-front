@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "889478630642",
+    "project_id": "kscontract-825ca",
+    "storage_bucket": "kscontract-825ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889478630642:android:5ab8f9b5da3e5f18dcd46b",
+        "android_client_info": {
+          "package_name": "com.pinitservices.ksc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9gpcnlBjepKjxwvDjhWDnbCcV53RpxGU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

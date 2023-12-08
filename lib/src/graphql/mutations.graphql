@@ -1,0 +1,10 @@
+mutation adminLogin($loginObject: LoginObject!) {
+  adminLogin(loginObject: $loginObject) @gqTypeName(name: "AdminAuthResult") {
+    ..._all_fields_AdminAuthResult
+  }
+}
+mutation updateAdminPassword($password: PasswordChange!) {
+  updateAdminPassword(password: $password) {
+    ..._all_fields_Admin
+  }
+}

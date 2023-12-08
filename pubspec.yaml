@@ -1,0 +1,64 @@
+name: recs_ymal
+# Prevent accidental publishing to pub.dev.
+publish_to: "none"
+
+version: 1.0.0+7
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  split_view: ^3.2.1
+  get_it: ^7.2.0
+  lazy_paginated_data_table: ^0.0.7
+  path_provider: ^2.0.14
+  omni_datetime_picker: ^1.0.9
+  device_preview: ^1.1.0
+  dio_cookie_manager: ^2.0.0
+  cookie_jar: ^3.0.0
+  html_editor_enhanced: ^2.5.1
+  infinite_scroll_list_view_2: ^1.0.1
+  http_error_handler: ^0.0.1
+  devicelocale: ^0.7.0
+  shared_preferences: ^2.0.6
+  image_picker: ^1.0.4
+  universal_html: ^2.0.8
+  flutter_responsive_tools: ^0.0.1
+  font_awesome_flutter: ^10.5.0
+  retrofit_graphql: ^1.1.0
+  json_serializable: ^6.7.1
+  retrofit: ^3.3.1
+  json_annotation: ^4.8.1
+  gap: ^3.0.1
+  flutter_svg: ^2.0.7
+  dotted_border: ^2.0.0+3
+  intl_phone_number_input: ^0.7.3+1
+  url_strategy: ^0.2.0
+  google_fonts: ^6.1.0
+  fluro: ^2.0.5
+  dropdown_search: ^5.0.6
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_launcher_icons: ^0.13.1
+  build_runner: ^2.4.6
+  retrofit_generator: ^4.2.0
+  byte_util: ^3.0.0
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo.png"
+
+flutter:
+  uses-material-design: true
+  # Enable generation of localized Strings from arb files.
+  generate: true
+  assets:
+    # Add assets from the images directory to the application.
+    - assets/images/logo.png

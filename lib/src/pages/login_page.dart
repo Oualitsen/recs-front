@@ -128,16 +128,7 @@ class _LoginPageState extends BasicState<LoginPage> with WidgetUtilsMixin {
                                 progressStream: progressSubject,
                                 child: FilledButton(
                                   onPressed: () async {
-                                    Admin admin = Admin(
-                                        creationDate: 0,
-                                        email: 'email',
-                                        id: 1,
-                                        lastUpdate: 0,
-                                        name: "Admin",
-                                        preferences: null,
-                                        roles: [Role.SUPER_ADMIN]);
-                                    await _authMan.save(admin);
-                                    //_login(context);
+                                    _login(context);
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(16.0),
@@ -182,18 +173,17 @@ class _LoginPageState extends BasicState<LoginPage> with WidgetUtilsMixin {
     if (state != null) {
       errorStream.add("");
       if (state.validate()) {
-        LoginObject object = LoginObject(email: emailNameCtrl.text, password: passwordCtrl.text);
         progressSubject.add(true);
         try {
           var result = await graphQlClient.mutations
-              .adminLogin(loginObject: object)
+              .adminLogin(username: emailNameCtrl.text, password: passwordCtrl.text)
               .asStream()
-              .map((event) => event.adminLogin)
+              .map((event) => event.login)
               .first;
 
-          await _tokenDbService.save(result.token);
+          await _tokenDbService.save(result.token.accessToken);
 
-          await _authMan.save(result.user);
+          await _authMan.save(result);
           _authMan.add(AuthStatus.logged_in);
         } catch (error, stacktrace) {
           // showServerError(context, error: error);

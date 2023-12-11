@@ -6,8 +6,7 @@ import 'package:recs_ymal/src/utils/lang.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-abstract class BasicState<T extends StatefulWidget> extends State<T>
-    with LangMixin {
+abstract class BasicState<T extends StatefulWidget> extends State<T> with LangMixin {
   @override
   void dispose() {
     for (var element in subjects) {
@@ -35,8 +34,7 @@ extension AppLocalizationsExt on AppLocalizations {
   static final DateFormat _fullDateFormat =
       DateFormat('EEEE, MMMM d, y', settingsController.locale.languageCode);
 
-  static final DateFormat _dateFormat2 =
-      DateFormat("MMMM dd, yyyy", settingsController.locale.languageCode);
+  static final DateFormat _dateFormat2 = DateFormat("MMMM dd, yyyy", settingsController.locale.languageCode);
   String formatFullDate(DateTime dateTime) {
     return _fullDateFormat.format(dateTime);
   }
@@ -62,8 +60,7 @@ extension AppLocalizationsExt on AppLocalizations {
   }
 
   String formatTimeOfDay(TimeOfDay timeOfDay) {
-    return formatTime(DateTime(0, 1, 1, timeOfDay.hour, timeOfDay.minute)
-        .millisecondsSinceEpoch);
+    return formatTime(DateTime(0, 1, 1, timeOfDay.hour, timeOfDay.minute).millisecondsSinceEpoch);
   }
 
   String formatDateTime(int date) {
@@ -71,8 +68,7 @@ extension AppLocalizationsExt on AppLocalizations {
   }
 
   int timeOfDayToInt(TimeOfDay timeOfDay) {
-    return DateTime(0, 1, 1, timeOfDay.hour, timeOfDay.minute)
-        .millisecondsSinceEpoch;
+    return DateTime(0, 1, 1, timeOfDay.hour, timeOfDay.minute).millisecondsSinceEpoch;
   }
 
   String formatDay(int date) {
@@ -92,8 +88,7 @@ extension AppLocalizationsExt on AppLocalizations {
   }
 
   DateTime findLastDateOfTheWeek(DateTime dateTime) {
-    return dateTime
-        .add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
+    return dateTime.add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
   }
 
   String addZero(int value) {
@@ -102,21 +97,6 @@ extension AppLocalizationsExt on AppLocalizations {
 
   String monthName(int date) {
     return DateFormat('MMMM').format(DateTime.fromMillisecondsSinceEpoch(date));
-  }
-
-  String getRoleName(Role? role) {
-    switch (role) {
-      case Role.SUPER_ADMIN:
-        return superAdmin;
-      case Role.MODERATOR:
-        return moderator;
-      case Role.TENANT_ADMIN:
-        return tenantAdmin;
-      case Role.VIEWER:
-        return viewer;
-      case null:
-        return all;
-    }
   }
 
   String getName(String firstName, String lastName) {

@@ -162,7 +162,7 @@ class MyAppState extends State<MyApp> with RouteAware {
                                   child: ImageWithOnlineCircleWidget(
                                     child: Center(
                                       child: Text(
-                                        "${admin.name[0].toUpperCase()}",
+                                        "${admin.user.preferredUsername[0].toUpperCase()}",
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                                       ),
                                     ),

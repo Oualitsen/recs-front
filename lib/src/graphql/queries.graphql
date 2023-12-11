@@ -1,5 +1,1 @@
-query getCurrentAdmin {
-  getCurrentAdmin @gqTypeName(name: "Admin") {
-    ..._all_fields_Admin
-  }
-}
+

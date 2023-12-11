@@ -57,9 +57,7 @@ void initServices() {
       parser: (json) => Admin.fromJson(json),
       serializer: (client) => client.toJson(),
       getUserFromServer: (Admin? current) async {
-        final gqClientService = GetIt.instance.get<GQClient>();
-        var admin = await gqClientService.queries.getCurrentAdmin();
-        return admin.getCurrentAdmin;
+        return null;
       },
     ),
   );

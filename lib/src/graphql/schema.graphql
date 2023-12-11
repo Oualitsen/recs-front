@@ -1,78 +1,67 @@
 #*************************** SCALAR ***************************
 scalar Long
-#*************************** INTERFACE ***************************
 
-interface BasicEntity {
-  id: ID!
-  creationDate: Long!
-  lastUpdate: Long!
-}
-interface BasicUser implements BasicEntity {
-  id: ID!
-  creationDate: Long!
-  lastUpdate: Long!
-  email: String!
-  preferences: Preferences!
-  roles: [Role!]!
-}
-
-#*************************** MUTATION***********************
-type Mutation {
-  adminLogin(loginObject: LoginObject!): AdminAuthResult!
-  updateAdminPassword(password: PasswordChange!): Admin!
-}
-
-#***************************QUERRY **************************
 type Query {
-  getCurrentAdmin: Admin!
+  sayHello: String!
 }
 
-#*************************** TYPE ***************************
-
-type Admin implements BasicUser & BasicEntity {
-  id: ID!
-  creationDate: Long!
-  lastUpdate: Long!
-  name: String!
-  email: String!
-  preferences: Preferences
-  roles: [Role!]!
+type Mutation {
+  login(username: String!, password: String!): TokenUser!
+  refreshToken(token: String!): TokenUser!
 }
 
-type Preferences {
-  lang: String
+type ResponseToken {
+  accessToken: String!
+  expiresIn: Int!
+  refreshExpiresIn: Int!
+  refreshToken: String!
+  tokenType: String!
+  notBeforePolicy: Int!
+  sessionState: String!
+  scope: String!
 }
 
-type AdminAuthResult {
-  user: Admin!
-  token: String!
+type TokenUser {
+  token: ResponseToken!
+  user: RecsUser!
 }
 
-type UserAuthResult {
-  user: TenantUser!
-  token: String!
+type RecsUser {
+  exp: Long!
+  iat: Long!
+  jti: String!
+  iss: String!
+  aud: String!
+  sub: String!
+  typ: String!
+  azp: String!
+  sessionState: String!
+  acr: String!
+  allowedOrigins: [String!]!
+  realmAccess: RealmAccess!
+  resourceAccess: ResourceAccess!
+  scope: String!
+  sid: String!
+  emailVerified: Boolean!
+  name: String
+  preferredUsername: String!
+  givenName: String
+  familyName: String
+  email: String
 }
 
-#*************************** INPUT ***************************
-input LoginObject {
-  email: String!
-  password: String!
+type RealmAccess {
+  roles: [String!]!
 }
 
-input PasswordChange {
-  old: String!
-  current: String!
-}
-#*************************** ENUM ***************************
-
-enum Gender {
-  MALE
-  FEMALE
+type ResourceAccess {
+  account: Account!
 }
 
-enum Role {
-  SUPER_ADMIN
-  TENANT_ADMIN
-  MODERATOR
-  VIEWER
+type Account {
+  roles: [String!]!
+}
+input pageInfo {
+  page: Int!
+  size: int!
 }

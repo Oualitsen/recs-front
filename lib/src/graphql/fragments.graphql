@@ -1,0 +1,25 @@
+fragment productFrag on Product {
+  id
+  creationDate
+  lastUpdate
+  name
+  brand
+  price
+  oldPrice
+  imageUrl
+  category @gqTypeName(name: "Category") {
+    ...categoryFrag
+  }
+}
+
+fragment categoryFrag on Category {
+  id
+  name
+  creationDate
+  lastUpdate
+  parent {
+    name
+    id
+    creationDate
+  }
+}

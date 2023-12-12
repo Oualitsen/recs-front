@@ -1,7 +1,6 @@
 targets:
   $default:
     builders:
-
       retrofit_graphql:aggregatingBuilder:
         enabled: true
         generate_for:
@@ -9,7 +8,7 @@ targets:
             - lib/src/graphql/*.graphql
         options:
           Long: int
-          ID: int
+          ID: String
           generateAllFieldsFragments: true
       json_serializable:json_serializable:
         enabled: true

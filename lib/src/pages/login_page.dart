@@ -1,7 +1,4 @@
 import 'package:recs_ymal/generated/client.gq.dart';
-import 'package:recs_ymal/generated/enums.gq.dart';
-import 'package:recs_ymal/generated/inputs.gq.dart';
-import 'package:recs_ymal/generated/types.gq.dart';
 import 'package:recs_ymal/src/managers/auth_status.dart';
 import 'package:recs_ymal/src/utils/ui_utils.dart';
 import 'package:recs_ymal/src/widgets/progress_wrapper.dart';
@@ -116,7 +113,8 @@ class _LoginPageState extends BasicState<LoginPage> with WidgetUtilsMixin {
                             padding: const EdgeInsets.only(left: 8, right: 8),
                             child: Text(
                               lang.forgotPassword,
-                              style: TextStyle(color: Theme.of(context).primaryColor),
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor),
                             ),
                           ),
                         ),
@@ -176,14 +174,16 @@ class _LoginPageState extends BasicState<LoginPage> with WidgetUtilsMixin {
         progressSubject.add(true);
         try {
           var result = await graphQlClient.mutations
-              .adminLogin(username: emailNameCtrl.text, password: passwordCtrl.text)
+              .adminLogin(
+                  username: emailNameCtrl.text, password: passwordCtrl.text)
               .asStream()
               .map((event) => event.login)
               .first;
+          await _tokenDbService.saveTokens(
+              accessToken: result.token.accessToken,
+              refreshToken: result.token.refreshToken);
 
-          await _tokenDbService.save(result.token.accessToken);
-
-          await _authMan.save(result);
+          await _authMan.save(result.user);
           _authMan.add(AuthStatus.logged_in);
         } catch (error, stacktrace) {
           // showServerError(context, error: error);

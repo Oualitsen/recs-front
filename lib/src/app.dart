@@ -104,14 +104,14 @@ class MyAppState extends State<MyApp> with RouteAware {
       builder: (context, child) => Scaffold(
         body: Row(
           children: [
-            StreamBuilder<Admin?>(
+            StreamBuilder<RecsUser?>(
                 stream: authMan.userSubject,
                 initialData: authMan.currentUser,
                 builder: (context, snapshot) {
                   if (snapshot.data == null) {
                     return SizedBox.shrink();
                   }
-                  Admin admin = snapshot.data!;
+                  RecsUser recsUser = snapshot.data!;
                   return Container(
                       color: Colors.blueGrey,
                       width: 100,
@@ -125,8 +125,10 @@ class MyAppState extends State<MyApp> with RouteAware {
                                     child: Column(
                                       children: [
                                         Gap(50),
-                                        ImageUtils.fromAssetRounded("assets/images/logo.png",
-                                            height: 40, fit: BoxFit.contain),
+                                        ImageUtils.fromAssetRounded(
+                                            "assets/images/logo.png",
+                                            height: 40,
+                                            fit: BoxFit.contain),
                                         Gap(50),
                                         ...menuButtonList.map(
                                           (e) {
@@ -136,7 +138,8 @@ class MyAppState extends State<MyApp> with RouteAware {
                                             if (url == "/") {
                                               isActive = e.routeName == "/";
                                             } else {
-                                              isActive = url.startsWith("/${e.routeName}");
+                                              isActive = url.startsWith(
+                                                  "/${e.routeName}");
                                             }
                                             return SideMenuButton(
                                               iconData: e.name,
@@ -146,7 +149,9 @@ class MyAppState extends State<MyApp> with RouteAware {
                                                 if (!url.startsWith("/")) {
                                                   url = "/${url}";
                                                 }
-                                                router.navigateTo(navKey.currentContext!, url);
+                                                router.navigateTo(
+                                                    navKey.currentContext!,
+                                                    url);
                                               },
                                             );
                                           },
@@ -157,13 +162,16 @@ class MyAppState extends State<MyApp> with RouteAware {
                                 ),
                                 InkWell(
                                   onTap: () {
-                                    router.navigateTo(navKey.currentContext!, "/settings");
+                                    router.navigateTo(
+                                        navKey.currentContext!, "/settings");
                                   },
                                   child: ImageWithOnlineCircleWidget(
                                     child: Center(
                                       child: Text(
-                                        "${admin.user.preferredUsername[0].toUpperCase()}",
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                        "${recsUser.preferredUsername[0].toUpperCase()}",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ),

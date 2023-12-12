@@ -21,9 +21,11 @@ RegExp emailRegExp = RegExp(
   r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$",
 );
 
-const String URL_BASE = String.fromEnvironment("URL_BASE", defaultValue: "http://localhost:8080");
+const String URL_BASE =
+    String.fromEnvironment("URL_BASE", defaultValue: "http://localhost:8080");
 
-const String WS_URL_BASE = String.fromEnvironment("WS_URL_BASE", defaultValue: "ws://localhost:8080");
+const String WS_URL_BASE =
+    String.fromEnvironment("WS_URL_BASE", defaultValue: "ws://localhost:8080");
 
 Future<void> initDio() async {
   GetIt.instance.registerSingleton(TokenDbService());
@@ -41,10 +43,14 @@ Future<void> initDio() async {
     dio.interceptors.add(CookieManager(jar));
   }
   instance.registerSingleton(jar);
-  dio.interceptors.add(HttpInterceptor());
   dio.options.baseUrl = URL_BASE;
   instance.registerSingleton(dio);
-  instance.registerSingleton(GQClient(GraphqlService(dio).post, WebSocketChannelAdapter(WS_URL_BASE)));
+  var client =
+      GQClient(GraphqlService(dio).post, WebSocketChannelAdapter(WS_URL_BASE));
+  instance.registerSingleton(client);
+
+  dio.interceptors.add(HttpInterceptor(
+      client: client, service: GetIt.instance.get<TokenDbService>(), dio: dio));
 }
 
 void initServices() {
@@ -53,10 +59,10 @@ void initServices() {
   GetIt.instance.registerSingleton(UploadService(dio));
 
   GetIt.instance.registerSingleton(
-    AuthManager<Admin>(
-      parser: (json) => Admin.fromJson(json),
+    AuthManager<RecsUser>(
+      parser: (json) => RecsUser.fromJson(json),
       serializer: (client) => client.toJson(),
-      getUserFromServer: (Admin? current) async {
+      getUserFromServer: (RecsUser? current) async {
         return null;
       },
     ),

@@ -3,7 +3,6 @@ import 'package:gap/gap.dart';
 import 'package:recs_ymal/generated/types.gq.dart';
 import 'package:recs_ymal/src/pages/login_page.dart';
 import 'package:recs_ymal/src/pages/profile_page.dart';
-import 'package:recs_ymal/src/widgets/basic_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_responsive_tools/device_screen_type.dart';
 import 'package:get_it/get_it.dart';
@@ -14,8 +13,10 @@ import 'package:recs_ymal/src/utils/lang.dart';
 import 'package:recs_ymal/src/widgets/route_guard_widget.dart';
 
 class WidgetUtils {
-  static Widget wrapRoute(Widget Function(BuildContext context, DeviceScreenType type) route,
-      {guard = true, useTemplate = true}) {
+  static Widget wrapRoute(
+      Widget Function(BuildContext context, DeviceScreenType type) route,
+      {guard = true,
+      useTemplate = true}) {
     final _authManager = Injector.provideAuthManager();
     if (guard) {
       return RouteGuardWidget(
@@ -82,7 +83,7 @@ Widget createDrawer(BuildContext context) {
     ],
     header: DrawerHeader(
       decoration: const BoxDecoration(),
-      child: StreamBuilder<Admin?>(
+      child: StreamBuilder<RecsUser?>(
           stream: authManager.userSubject,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -95,7 +96,7 @@ Widget createDrawer(BuildContext context) {
               children: <Widget>[
                 Gap(30),
                 Text(
-                  "${user.user.preferredUsername}".toUpperCase(),
+                  "${user.preferredUsername}".toUpperCase(),
                 ),
                 Gap(15),
                 const Gap(5),
@@ -127,7 +128,8 @@ AppBar defaultAppBar(BuildContext context, {List<Widget>? actions}) {
 
 Widget wrap(Widget child, {double radius = 16}) => Container(
     decoration: BoxDecoration(
-        color: const Color(0xFFf2f2f2), borderRadius: BorderRadius.all(Radius.circular(radius))),
+        color: const Color(0xFFf2f2f2),
+        borderRadius: BorderRadius.all(Radius.circular(radius))),
     child: child);
 
 Widget logoutButton(BuildContext context) {

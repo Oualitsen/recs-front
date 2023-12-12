@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:recs_ymal/src/pages/category/category_table.dart';
+import 'package:recs_ymal/src/pages/product/product_table.dart';
 import 'package:recs_ymal/src/utils/widget_utils.dart';
 import 'package:recs_ymal/src/widgets/basic_state.dart';
 import 'package:recs_ymal/src/widgets/widget_utils_mixin.dart';
@@ -22,15 +24,41 @@ class HomePageState extends BasicState<HomePage> with TickerProviderStateMixin, 
   @override
   Widget build(BuildContext context) {
     return WidgetUtils.wrapRoute((context, type) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            lang.homePage,
-            style: Theme.of(context).textTheme.titleLarge,
+      return DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              lang.dashboard,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
-        ),
-        body: ListView(
-          children: [],
+          body: Column(
+            children: [
+              TabBar(
+                isScrollable: true,
+                indicator: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Theme.of(context).primaryColor,
+                      width: 2.0,
+                    ),
+                  ),
+                  color: Color.fromARGB(20, 255, 250, 255),
+                ),
+                tabs: [
+                  Tab(text: lang.products),
+                  Tab(text: lang.categories),
+                ],
+              ),
+              Expanded(
+                child: TabBarView(children: [
+                  ProductTable(),
+                  CategoryTable(),
+                ]),
+              )
+            ],
+          ),
         ),
       );
     }, guard: true);

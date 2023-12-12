@@ -234,5 +234,13 @@
   "totalBlockedFileCount":"Total blocked file count",
   "totalErrorsFound":"Total errors found",
   "processedFileCount":"Processed files",
-  "homePage":"Home page"
+  "homePage":"Home page",
+  "brand":"Brand",
+  "price":"Price",
+  "oldPrice":"Old price",
+  "category":"Category",
+  "products":"Products",
+  "id":"ID",
+  "parentCategory":"Parent category",
+  "categories":"Catergories"
 }

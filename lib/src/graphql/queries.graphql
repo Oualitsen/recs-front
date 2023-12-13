@@ -10,3 +10,10 @@ query getCategories($pageInfo: PageInfo!) {
   }
   total: countCategories
 }
+
+query searchProducts($pageInfo: PageInfo!, $params: ProductParamSearch!) {
+  searchProducts(pageInfo: $pageInfo, params: $params) {
+    ...productFrag
+  }
+  count: countSearchProduct(params: $params)
+}

@@ -16,6 +16,8 @@ type Query {
   getCategories(pageInfo: PageInfo!): [Category!]!
   countProducts: Long!
   countCategories: Long!
+  searchProducts(pageInfo: PageInfo!, params: ProductParamSearch!): [Product!]!
+  countSearchProduct(params: ProductParamSearch!): Long!
 }
 ################################# MUTATIONS #############################
 
@@ -130,5 +132,12 @@ input PageInfo {
 input CategoryInput {
   name: String!
   parentId: String
+}
+
+input ProductParamSearch {
+  productId: String
+  name: String
+  brand: String
+  categoryIds: [String!]
 }
 ################################# ENUMS #############################

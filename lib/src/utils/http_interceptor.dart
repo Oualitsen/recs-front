@@ -12,8 +12,7 @@ class HttpInterceptor extends Interceptor {
 
   bool refreshingToken = false;
 
-  HttpInterceptor(
-      {required this.service, required this.client, required this.dio});
+  HttpInterceptor({required this.service, required this.client, required this.dio});
 
   @override
   Future onRequest(RequestOptions options, handler) async {
@@ -39,8 +38,7 @@ class HttpInterceptor extends Interceptor {
       if (refreshToken != null) {
         try {
           refreshingToken = true;
-          var refreshTokenResponse =
-              await client.mutations.refreshToken(token: refreshToken);
+          var refreshTokenResponse = await client.mutations.refreshToken(token: refreshToken);
           service.saveTokens(
               accessToken: refreshTokenResponse.data.token.accessToken,
               refreshToken: refreshTokenResponse.data.token.refreshToken);

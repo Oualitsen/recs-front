@@ -4,7 +4,9 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:recs_ymal/src/pages/home/home_page.dart';
+import 'package:recs_ymal/src/pages/product/product_details_page.dart';
 import 'package:recs_ymal/src/pages/profile_page.dart';
+import 'package:recs_ymal/src/utils/widget_utils.dart';
 import 'package:recs_ymal/src/widgets/image_with_online_circle_widget.dart';
 import 'package:recs_ymal/src/widgets/side_menu_button.dart';
 
@@ -20,6 +22,19 @@ import 'package:gap/gap.dart';
 
 final router = FluroRouter();
 void initRouter() {
+  router.define(
+    '/products/:id',
+    handler: Handler(
+      handlerFunc: (context, parameters) {
+        String id = parameters['id']!.first;
+        return WidgetUtils.wrapRoute(
+          (context, type) => ProductDetailsPage(
+            productId: id,
+          ),
+        );
+      },
+    ),
+  );
   for (var element in menuButtonList) {
     router.define(
       element.routeName,
@@ -125,10 +140,8 @@ class MyAppState extends State<MyApp> with RouteAware {
                                     child: Column(
                                       children: [
                                         Gap(50),
-                                        ImageUtils.fromAssetRounded(
-                                            "assets/images/logo.png",
-                                            height: 40,
-                                            fit: BoxFit.contain),
+                                        ImageUtils.fromAssetRounded("assets/images/logo.png",
+                                            height: 40, fit: BoxFit.contain),
                                         Gap(50),
                                         ...menuButtonList.map(
                                           (e) {
@@ -138,8 +151,7 @@ class MyAppState extends State<MyApp> with RouteAware {
                                             if (url == "/") {
                                               isActive = e.routeName == "/";
                                             } else {
-                                              isActive = url.startsWith(
-                                                  "/${e.routeName}");
+                                              isActive = url.startsWith("/${e.routeName}");
                                             }
                                             return SideMenuButton(
                                               iconData: e.name,
@@ -149,9 +161,7 @@ class MyAppState extends State<MyApp> with RouteAware {
                                                 if (!url.startsWith("/")) {
                                                   url = "/${url}";
                                                 }
-                                                router.navigateTo(
-                                                    navKey.currentContext!,
-                                                    url);
+                                                router.navigateTo(navKey.currentContext!, url);
                                               },
                                             );
                                           },
@@ -162,16 +172,13 @@ class MyAppState extends State<MyApp> with RouteAware {
                                 ),
                                 InkWell(
                                   onTap: () {
-                                    router.navigateTo(
-                                        navKey.currentContext!, "/settings");
+                                    router.navigateTo(navKey.currentContext!, "/settings");
                                   },
                                   child: ImageWithOnlineCircleWidget(
                                     child: Center(
                                       child: Text(
                                         "${recsUser.preferredUsername[0].toUpperCase()}",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold),
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ),

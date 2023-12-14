@@ -23,3 +23,43 @@ fragment categoryFrag on Category {
     creationDate
   }
 }
+
+fragment productInfoFrag on ProductInfo {
+  id
+  creationDate
+  lastUpdate
+  name
+  brand
+  price
+  oldPrice
+  imageUrl
+  category @gqTypeName(name: "Category") {
+    ...categoryFrag
+  }
+}
+
+fragment productDetailsFrag on Product {
+  id
+  creationDate
+  lastUpdate
+  name
+  brand
+  price
+  oldPrice
+  imageUrl
+  category @gqTypeName(name: "Category") {
+    ...categoryFrag
+  }
+  similarities @gqTypeName(name: "IndexedProduct") {
+    index
+    product {
+      ...productInfoFrag
+    }
+  }
+  complementaries {
+    index
+    product {
+      ...productInfoFrag
+    }
+  }
+}

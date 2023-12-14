@@ -242,5 +242,9 @@
   "products":"Products",
   "id":"ID",
   "parentCategory":"Parent category",
-  "categories":"Catergories"
+  "categories":"Catergories",
+  "index":"Index",
+  "similarities":"Similarities",
+  "complementaries":"Complementaries",
+  "reset":"Reset"
 }

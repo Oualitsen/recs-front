@@ -4,6 +4,8 @@ import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart' as tab
 import 'package:recs_ymal/generated/client.gq.dart';
 import 'package:recs_ymal/generated/inputs.gq.dart';
 import 'package:recs_ymal/generated/types.gq.dart';
+import 'package:recs_ymal/src/app.dart';
+import 'package:recs_ymal/src/pages/product/product_details_page.dart';
 import 'package:recs_ymal/src/utils/extensions.dart';
 import 'package:recs_ymal/src/widgets/basic_state.dart';
 import 'package:recs_ymal/src/widgets/custom_text_input_widget.dart';
@@ -25,7 +27,7 @@ class _ProductTableState extends BasicState<ProductTable> with WidgetUtilsMixin 
   final tableKey = GlobalKey<table.LazyPaginatedDataTableState>();
   final multiSelectionKey = GlobalKey<MultiSelectWidgetState>();
   final selectedCategoriesStream = BehaviorSubject.seeded(<Category>{});
-  final allCategoriesStream = BehaviorSubject.seeded(<Category>[]);
+  final allCategoriesStream = BehaviorSubject.seeded(<Category>{});
   final searchStream = BehaviorSubject.seeded(ProductSearchParams(
     search: false,
     info: ProductParamSearch(
@@ -54,7 +56,12 @@ class _ProductTableState extends BasicState<ProductTable> with WidgetUtilsMixin 
               return DataRow(cells: [
                 DataCell(CircleAvatar(child: Text(data.name[0]))),
                 DataCell(SelectableText(data.id)),
-                DataCell(SelectableText(data.name)),
+                DataCell(
+                  TextButton(
+                    onPressed: () => router.navigateTo(navKey.currentContext!, "/products/${data.id}"),
+                    child: Text(data.name),
+                  ),
+                ),
                 DataCell(SelectableText(data.brand)),
                 DataCell(SelectableText(data.price.toString())),
                 DataCell(SelectableText(data.oldPrice.toString())),
@@ -78,7 +85,7 @@ class _ProductTableState extends BasicState<ProductTable> with WidgetUtilsMixin 
         totalCount.add(event.count);
         if (!params.search) {
           var categories = event.searchProducts.map((e) => e.category).toList();
-          allCategoriesStream.add(categories);
+          allCategoriesStream.add(categories.toSet());
         }
         return event.searchProducts;
       }).first;
@@ -238,7 +245,7 @@ class _ProductTableState extends BasicState<ProductTable> with WidgetUtilsMixin 
                 ));
                 Navigator.of(context).pop();
               },
-              items: allCategoriesStream.value,
+              items: allCategoriesStream.value.toList(),
             ),
           ),
         );

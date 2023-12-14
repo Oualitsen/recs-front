@@ -29,6 +29,15 @@ type Mutation {
   addProduct(input: ProductInput!): Product!
   deleteCategoryById(categoryId: String!): ID
   addCategory(input: CategoryInput!): Category!
+  updateProductSimilarities(
+    productId: String!
+    similarities: [QueueItem!]!
+  ): Product!
+
+  updateProductComplementaries(
+    productId: String!
+    complementaries: [QueueItem!]!
+  ): Product!
 }
 ################################# TYPES #############################
 
@@ -101,7 +110,27 @@ type Product implements BasicEntity {
   oldPrice: Float!
   imageUrl: String
   category: Category!
+  similarities: [IndexedProduct!]!
+  complementaries: [IndexedProduct!]!
 }
+
+type IndexedProduct {
+  index: Int!
+  product: ProductInfo!
+}
+
+type ProductInfo {
+  id: ID!
+  creationDate: Long!
+  lastUpdate: Long!
+  name: String!
+  brand: String!
+  price: Float!
+  oldPrice: Float!
+  imageUrl: String
+  category: Category!
+}
+
 type Category implements BasicEntity {
   id: ID!
   creationDate: Long!
@@ -139,5 +168,10 @@ input ProductParamSearch {
   name: String
   brand: String
   categoryIds: [String!]
+}
+
+input QueueItem {
+  productId: String!
+  index: Int!
 }
 ################################# ENUMS #############################

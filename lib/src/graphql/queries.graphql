@@ -17,3 +17,9 @@ query searchProducts($pageInfo: PageInfo!, $params: ProductParamSearch!) {
   }
   count: countSearchProduct(params: $params)
 }
+
+query getProductDetails($productId: String!) {
+  getProductById(productId: $productId) @gqTypeName(name: "ProductDetails") {
+    ...productDetailsFrag
+  }
+}

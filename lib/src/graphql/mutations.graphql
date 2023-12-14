@@ -1,21 +1,46 @@
 mutation adminLogin($username: String!, $password: String!) {
-  login(username: $username, password: $password) @gqTypeName(name: "LoginResponse") {
-    token @gqTypeName(name: "ResponseToken") {
-      ..._all_fields_ResponseToken
-    }
-    user @gqTypeName(name: "RecsUser")  {
-      ..._all_fields_RecsUser
-    }
-  }
-}
-
-mutation refreshToken($token: String!) {
- data: refreshToken(token: $token) @gqTypeName(name: "LoginResponse") {
+  login(username: $username, password: $password)
+    @gqTypeName(name: "LoginResponse") {
     token @gqTypeName(name: "ResponseToken") {
       ..._all_fields_ResponseToken
     }
     user @gqTypeName(name: "RecsUser") {
       ..._all_fields_RecsUser
     }
+  }
+}
+
+mutation refreshToken($token: String!) {
+  data: refreshToken(token: $token) @gqTypeName(name: "LoginResponse") {
+    token @gqTypeName(name: "ResponseToken") {
+      ..._all_fields_ResponseToken
+    }
+    user @gqTypeName(name: "RecsUser") {
+      ..._all_fields_RecsUser
+    }
+  }
+}
+
+mutation updateProductSimilarities(
+  $productId: String!
+  $similarities: [QueueItem!]!
+) {
+  updateProductSimilarities(
+    productId: $productId
+    similarities: $similarities
+  ) {
+    ...productDetailsFrag
+  }
+}
+
+mutation updateProductComplementaries(
+  $productId: String!
+  $complementaries: [QueueItem!]!
+) {
+  updateProductComplementaries(
+    productId: $productId
+    complementaries: $complementaries
+  ) {
+    ...productDetailsFrag
   }
 }

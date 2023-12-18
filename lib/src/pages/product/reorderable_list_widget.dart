@@ -3,10 +3,10 @@ import 'package:html_editor_enhanced/utils/shims/dart_ui_real.dart';
 import 'package:recs_ymal/generated/types.gq.dart';
 import 'package:recs_ymal/src/utils/lang.dart';
 
-class ReorderableQueueList extends StatelessWidget {
+class ReorderableListWidget extends StatelessWidget {
   final List<IndexedProduct> queueItems;
   final Function(int oldIndex, int newIndex) onReorder;
-  const ReorderableQueueList({super.key, required this.queueItems, required this.onReorder});
+  const ReorderableListWidget({super.key, required this.queueItems, required this.onReorder});
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +23,12 @@ class ReorderableQueueList extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 30),
                 height: 80,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SelectableText(e.product.name),
-                        SelectableText("${lang.id} : ${e.product.id}"),
-                      ],
-                    ),
+                    SelectableText(e.product.name),
+                    SelectableText("${lang.id} : ${e.product.id}"),
                   ],
                 ),
               ),

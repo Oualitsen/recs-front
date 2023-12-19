@@ -23,3 +23,8 @@ query getProductDetails($productId: String!) {
     ...productDetailsFrag
   }
 }
+query getProductName($productId: String!) {
+  getProductById(productId: $productId) @gqTypeName(name: "ProductName") {
+    ...productNameFrag
+  }
+}

@@ -3,7 +3,7 @@ import 'package:recs_ymal/generated/client.gq.dart';
 import 'package:flutter/material.dart';
 import 'package:recs_ymal/generated/inputs.gq.dart';
 import 'package:recs_ymal/generated/types.gq.dart';
-import 'package:recs_ymal/src/pages/product/reorderable_indexed_product_list.dart';
+import 'package:recs_ymal/src/pages/product/indexed_product_list.dart';
 import 'package:recs_ymal/src/widgets/basic_state.dart';
 import 'package:recs_ymal/src/widgets/widget_utils_mixin.dart';
 import 'package:rxdart/rxdart.dart';
@@ -19,8 +19,8 @@ class ProductDetailsPage extends StatefulWidget {
 class _ProductDetailsPageState extends BasicState<ProductDetailsPage> with WidgetUtilsMixin {
   final service = GetIt.instance.get<GQClient>();
   final productDetailStream = BehaviorSubject<ProductDetails>();
-  final complementariesQueueKey = GlobalKey<ReorderableIndexedProductsState>();
-  final similaritiesQueueListKey = GlobalKey<ReorderableIndexedProductsState>();
+  final complementariesQueueKey = GlobalKey<IndexedProductsState>();
+  final similaritiesQueueListKey = GlobalKey<IndexedProductsState>();
   @override
   void initState() {
     getProduct();
@@ -74,8 +74,9 @@ class _ProductDetailsPageState extends BasicState<ProductDetailsPage> with Widge
                 Expanded(
                   child: TabBarView(
                     children: [
-                      ReorderableIndexedProducts(
+                      IndexedProducts(
                         key: similaritiesQueueListKey,
+                        product: ProductName.fromJson(data.toJson()),
                         onSave: saveSimilarities,
                         indexedProducts: [...data.similarities],
                         onRefresh: () async {
@@ -84,8 +85,9 @@ class _ProductDetailsPageState extends BasicState<ProductDetailsPage> with Widge
                               ?.updateItems(productDetails?.similarities ?? []);
                         },
                       ),
-                      ReorderableIndexedProducts(
+                      IndexedProducts(
                         key: complementariesQueueKey,
+                        product: ProductName.fromJson(data.toJson()),
                         onSave: saveComplementaries,
                         indexedProducts: [...data.complementaries],
                         onRefresh: () async {

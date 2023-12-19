@@ -10,15 +10,18 @@ import 'package:undo/undo.dart';
 
 class EditingButtons<T> extends StatefulWidget {
   final VoidCallback onSave;
+  final VoidCallback onAdd;
   final VoidCallback onRefresh;
   final T initValue;
   final Function(T) onUpdate;
-  const EditingButtons(
-      {super.key,
-      required this.onSave,
-      required this.onUpdate,
-      required this.initValue,
-      required this.onRefresh});
+  const EditingButtons({
+    super.key,
+    required this.onSave,
+    required this.onUpdate,
+    required this.initValue,
+    required this.onRefresh,
+    required this.onAdd,
+  });
 
   @override
   State<EditingButtons<T>> createState() => EditingButtonsState<T>();
@@ -52,10 +55,14 @@ class EditingButtonsState<T> extends BasicState<EditingButtons<T>> with WidgetUt
           }
           var data = snapshot.data!;
           return Row(
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              getButtons(skipCancel: true, saveLabel: lang.add, onSave: widget.onAdd),
+              Spacer(),
               ElevatedButton(
-                onPressed: refresh,
+                onPressed: () {
+                  widget.onRefresh();
+                  refresh();
+                },
                 child: Icon(
                   FontAwesomeIcons.arrowsRotate,
                   size: 18,
@@ -78,7 +85,13 @@ class EditingButtonsState<T> extends BasicState<EditingButtons<T>> with WidgetUt
                 ),
               ),
               Gap(16),
-              getButtons(skipCancel: true, saveLabel: lang.save, onSave: widget.onSave),
+              getButtons(
+                  skipCancel: true,
+                  saveLabel: lang.save,
+                  onSave: () {
+                    widget.onSave();
+                    refresh();
+                  }),
               Gap(16),
             ],
           );
@@ -115,7 +128,6 @@ class EditingButtonsState<T> extends BasicState<EditingButtons<T>> with WidgetUt
     if (mounted) {
       _controller.clearHistory();
       updateSubject();
-      widget.onRefresh();
     }
   }
 

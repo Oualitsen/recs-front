@@ -40,7 +40,7 @@ class ReorderableListWidget extends StatelessWidget {
                         width: width,
                         height: 200,
                         child: Image.network(
-                          originalProduct.imageUrl!.replaceFirst(RegExp(r'localhost'), "10.0.2.2"),
+                          originalProduct.imageUrl!,
                           width: width,
                           height: 200,
                           fit: BoxFit.cover,
@@ -79,7 +79,7 @@ class ReorderableListWidget extends StatelessWidget {
                           SelectableText(e.product.name),
                           e.product.imageUrl != null
                               ? Image.network(
-                                  e.product.imageUrl!.replaceFirst(RegExp(r'localhost'), "10.0.2.2"),
+                                  e.product.imageUrl!,
                                   width: width,
                                   height: 200,
                                   fit: BoxFit.contain,

@@ -79,7 +79,7 @@ class ProductCardsState extends BasicState<ProductCards> with WidgetUtilsMixin {
                         ),
                         product.imageUrl != null
                             ? Image.network(
-                                product.imageUrl!.replaceFirst(RegExp(r'localhost'), "10.0.2.2"),
+                                product.imageUrl!,
                                 height: 250,
                                 width: 175,
                                 fit: BoxFit.fill,

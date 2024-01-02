@@ -246,5 +246,7 @@
   "index":"Index",
   "similarities":"Similarities",
   "complementaries":"Complementaries",
-  "reset":"Reset"
+  "reset":"Reset",
+  "add":"Add",
+  "selectProducts":"Select products"
 }

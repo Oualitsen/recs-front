@@ -4,37 +4,100 @@ import 'package:recs_ymal/generated/types.gq.dart';
 import 'package:recs_ymal/src/utils/lang.dart';
 
 class ReorderableListWidget extends StatelessWidget {
+  final double width;
+  final double height;
+  final ProductName originalProduct;
   final List<IndexedProduct> queueItems;
   final Function(int oldIndex, int newIndex) onReorder;
-  const ReorderableListWidget({super.key, required this.queueItems, required this.onReorder});
+  const ReorderableListWidget({
+    super.key,
+    required this.originalProduct,
+    required this.queueItems,
+    required this.onReorder,
+    this.width = 200,
+    this.height = 300,
+  });
 
   @override
   Widget build(BuildContext context) {
     var lang = getLang(context);
-    return ReorderableListView(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
-      proxyDecorator: proxyDecorator,
-      onReorder: onReorder,
-      children: queueItems
-          .map(
-            (e) => Card(
-              key: Key(e.index.toString()),
-              color: Colors.blueGrey[50],
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 30),
-                height: 80,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SelectableText(e.product.name),
-                    SelectableText("${lang.id} : ${e.product.id}"),
-                  ],
-                ),
-              ),
+    return Row(
+      children: [
+        Card(
+          color: Colors.blueGrey[50],
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            width: width,
+            height: height,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SelectableText(originalProduct.name),
+                originalProduct.imageUrl != null
+                    ? SizedBox(
+                        width: width,
+                        height: 200,
+                        child: Image.network(
+                          originalProduct.imageUrl!,
+                          width: width,
+                          height: 200,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Text("${lang.errors} : ${originalProduct.imageUrl}");
+                          },
+                        ),
+                      )
+                    : Text("${lang.errors} : ${originalProduct.imageUrl}"),
+                SelectableText("${lang.id} : ${originalProduct.id}"),
+              ],
             ),
-          )
-          .toList(),
+          ),
+        ),
+        VerticalDivider(color: Colors.grey, thickness: 1),
+        Expanded(
+          child: ReorderableListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            proxyDecorator: proxyDecorator,
+            onReorder: onReorder,
+            children: queueItems
+                .map(
+                  (e) => Card(
+                    key: Key(e.index.toString()),
+                    color: Colors.blueGrey[50],
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      width: width,
+                      height: height,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SelectableText(e.product.name),
+                          e.product.imageUrl != null
+                              ? Image.network(
+                                  e.product.imageUrl!,
+                                  width: width,
+                                  height: 200,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Text("${lang.errors} : ${e.product.imageUrl}");
+                                  },
+                                )
+                              : Text("${lang.errors} : ${e.product.imageUrl}"),
+                          SelectableText("${lang.id} : ${e.product.id}"),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ],
     );
   }
 

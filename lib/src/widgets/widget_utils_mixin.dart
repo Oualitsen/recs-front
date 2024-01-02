@@ -20,24 +20,39 @@ mixin WidgetUtilsMixin<T extends StatefulWidget> on BasicState<T> {
     String? cancelLabel,
     Stream<bool>? progressStream,
     bool skipCancel = false,
+    bool elevatedCancelButton = false,
   }) =>
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (!skipCancel) ...[
-            OutlinedButton(
-              onPressed: onCancel ?? Navigator.of(context).pop,
-              child: Row(
-                children: [
-                  if (cancelIcon != null)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: cancelIcon,
+            elevatedCancelButton
+                ? ElevatedButton(
+                    onPressed: onCancel ?? Navigator.of(context).pop,
+                    child: Row(
+                      children: [
+                        if (cancelIcon != null)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16),
+                            child: cancelIcon,
+                          ),
+                        Text(cancelLabel ?? lang.cancel.toUpperCase()),
+                      ],
                     ),
-                  Text(cancelLabel ?? lang.cancel.toUpperCase()),
-                ],
-              ),
-            ),
+                  )
+                : OutlinedButton(
+                    onPressed: onCancel ?? Navigator.of(context).pop,
+                    child: Row(
+                      children: [
+                        if (cancelIcon != null)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16),
+                            child: cancelIcon,
+                          ),
+                        Text(cancelLabel ?? lang.cancel.toUpperCase()),
+                      ],
+                    ),
+                  ),
             const Gap(16),
           ],
           ProgressWrapper(

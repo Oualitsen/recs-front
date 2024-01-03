@@ -68,3 +68,10 @@ fragment productDetailsFrag on Product {
     }
   }
 }
+
+fragment productIndexFrag on Product {
+  id
+  name
+  score
+  imageUrl
+}

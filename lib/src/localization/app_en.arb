@@ -248,5 +248,8 @@
   "complementaries":"Complementaries",
   "reset":"Reset",
   "add":"Add",
-  "selectProducts":"Select products"
+  "selectProducts":"Select products",
+  "productId":"Product ID",
+  "textSearch":"Text Search",
+  "score":"Score"
 }

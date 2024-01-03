@@ -4,6 +4,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:recs_ymal/src/pages/home/home_page.dart';
+import 'package:recs_ymal/src/pages/images/image_search_page.dart';
 import 'package:recs_ymal/src/pages/product/product_details_page.dart';
 import 'package:recs_ymal/src/pages/profile_page.dart';
 import 'package:recs_ymal/src/utils/widget_utils.dart';
@@ -53,6 +54,11 @@ final menuButtonList = <MenuButtonInfo>[
     name: Icons.home,
     routeName: "/",
     destinationRoute: HomePage(),
+  ),
+  MenuButtonInfo(
+    name: Icons.search,
+    routeName: "search",
+    destinationRoute: ImageSearchPage(),
   ),
   MenuButtonInfo(
     name: Icons.settings,

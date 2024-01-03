@@ -28,3 +28,14 @@ query getProductName($productId: String!) {
     ...productNameFrag
   }
 }
+
+query imageSearch($productId: String!) {
+  imageSearch(productId: $productId) @gqTypeName(name: "ProductIndex") {
+    ..._all_fields_ProductIndex
+  }
+}
+query imageSearchByText($data: String!) {
+  imageSearchByText(data: $data) @gqTypeName(name: "ProductIndex") {
+    ..._all_fields_ProductIndex
+  }
+}

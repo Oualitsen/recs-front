@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:recs_ymal/generated/enums.gq.dart';
 import 'package:recs_ymal/main.dart';
 import 'package:recs_ymal/src/utils/lang.dart';
 import 'package:rxdart/rxdart.dart';

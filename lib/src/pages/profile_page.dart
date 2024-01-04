@@ -6,7 +6,6 @@ import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:recs_ymal/generated/client.gq.dart';
-import 'package:recs_ymal/generated/inputs.gq.dart';
 import 'package:recs_ymal/generated/types.gq.dart';
 import 'package:recs_ymal/main.dart';
 import 'package:recs_ymal/src/db_services/token_db_service.dart';
@@ -28,8 +27,7 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends BasicState<ProfilePage>
-    with WidgetUtilsMixin, MediaMixin {
+class _ProfilePageState extends BasicState<ProfilePage> with WidgetUtilsMixin, MediaMixin {
   final authMan = Injector.provideAuthManager();
 
   final service = GetIt.instance.get<GQClient>();
@@ -75,8 +73,7 @@ class _ProfilePageState extends BasicState<ProfilePage>
                             children: [
                               Text(
                                 user.preferredUsername,
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
+                                style: Theme.of(context).textTheme.headlineSmall,
                               )
                             ],
                           ),
@@ -95,26 +92,21 @@ class _ProfilePageState extends BasicState<ProfilePage>
                                 const Gap(32),
                                 Row(
                                   textDirection: TextDirection.ltr,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children:
-                                      settingsController.supportedLocales.map(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: settingsController.supportedLocales.map(
                                     (e) {
                                       if (settingsController.locale == e) {
                                         return ElevatedButton(
                                             onPressed: () {
-                                              settingsController
-                                                  .updateLocale(e);
+                                              settingsController.updateLocale(e);
                                             },
-                                            child: Text(lang
-                                                .getLangName(e.languageCode)));
+                                            child: Text(lang.getLangName(e.languageCode)));
                                       }
                                       return OutlinedButton(
                                           onPressed: () {
                                             settingsController.updateLocale(e);
                                           },
-                                          child: Text(lang
-                                              .getLangName(e.languageCode)));
+                                          child: Text(lang.getLangName(e.languageCode)));
                                     },
                                   ).toList(),
                                 )
@@ -138,9 +130,7 @@ class _ProfilePageState extends BasicState<ProfilePage>
                                               controller: oldPasswordController,
                                               label: Text(lang.oldPassword),
                                               validator: (text) {
-                                                return ValidationUtils
-                                                    .requiredField(
-                                                        text, context);
+                                                return ValidationUtils.requiredField(text, context);
                                               },
                                             ),
                                             Gap(16),
@@ -148,18 +138,14 @@ class _ProfilePageState extends BasicState<ProfilePage>
                                               controller: newPasswordController,
                                               label: Text(lang.newPassword),
                                               validator: (text) {
-                                                return ValidationUtils
-                                                    .requiredField(
-                                                        text, context);
+                                                return ValidationUtils.requiredField(text, context);
                                               },
                                             ),
                                             const Gap(16),
                                           ],
                                         ),
                                         actions: <Widget>[
-                                          getButtons(
-                                              onSave: null,
-                                              saveLabel: lang.changePassword),
+                                          getButtons(onSave: null, saveLabel: lang.changePassword),
                                         ],
                                       ),
                                     );
@@ -187,26 +173,19 @@ class _ProfilePageState extends BasicState<ProfilePage>
                                   actions: <Widget>[
                                     TextButton(
                                       child: Text(lang.no.toUpperCase()),
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(false),
+                                      onPressed: () => Navigator.of(context).pop(false),
                                     ),
                                     TextButton(
                                       child: Text(lang.yes.toUpperCase()),
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(true),
+                                      onPressed: () => Navigator.of(context).pop(true),
                                     )
                                   ],
                                 ),
-                              )
-                                  .asStream()
-                                  .where((event) => event)
-                                  .asyncMap((event) {
-                                final userManager =
-                                    Injector.provideAuthManager();
+                              ).asStream().where((event) => event).asyncMap((event) {
+                                final userManager = Injector.provideAuthManager();
                                 return userManager.remove();
                               }).asyncMap((event) {
-                                var service =
-                                    GetIt.instance.get<TokenDbService>();
+                                var service = GetIt.instance.get<TokenDbService>();
                                 return service.remove();
                               }).listen((event) {
                                 //print("logged out");
@@ -232,10 +211,7 @@ class _ProfilePageState extends BasicState<ProfilePage>
                           child: Padding(
                             padding: const EdgeInsets.all(12.0),
                             child: Row(
-                              children: [
-                                const Icon(Icons.file_copy_rounded),
-                                Text(lang.termsAndConditions)
-                              ],
+                              children: [const Icon(Icons.file_copy_rounded), Text(lang.termsAndConditions)],
                             ),
                           ),
                         ),
@@ -249,8 +225,7 @@ class _ProfilePageState extends BasicState<ProfilePage>
     );
   }
 
-  Future<ImageSource?> imageSource2(BuildContext context) =>
-      showModalBottomSheet<ImageSource>(
+  Future<ImageSource?> imageSource2(BuildContext context) => showModalBottomSheet<ImageSource>(
         context: context,
         builder: (context) => ListView(
           children: [

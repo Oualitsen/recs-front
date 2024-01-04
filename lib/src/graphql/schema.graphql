@@ -121,7 +121,7 @@ type IndexedProduct {
   product: ProductInfo!
 }
 
-type ProductInfo {
+type ProductInfo implements BasicEntity {
   id: ID!
   creationDate: Long!
   lastUpdate: Long!
@@ -132,7 +132,6 @@ type ProductInfo {
   imageUrl: String
   category: Category!
 }
-
 type Category implements BasicEntity {
   id: ID!
   creationDate: Long!
@@ -174,6 +173,6 @@ input ProductParamSearch {
 
 input QueueItem {
   productId: String!
-  index: Int!
+  rank: Int!
 }
 ################################# ENUMS #############################

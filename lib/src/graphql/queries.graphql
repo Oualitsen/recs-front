@@ -31,11 +31,11 @@ query getProductName($productId: String!) {
 
 query imageSearch($productId: String!) {
   imageSearch(productId: $productId) @gqTypeName(name: "ProductIndex") {
-    ..._all_fields_ProductIndex
+    ...productIndexFrag
   }
 }
 query imageSearchByText($data: String!) {
   imageSearchByText(data: $data) @gqTypeName(name: "ProductIndex") {
-    ..._all_fields_ProductIndex
+    ...productIndexFrag
   }
 }

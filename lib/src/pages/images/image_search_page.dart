@@ -204,6 +204,7 @@ class _ImageSearchPageState extends BasicState<ImageSearchPage> with WidgetUtils
     var res = null;
 
     if (isProductId) {
+      print("#########");
       res = await service.queries
           .imageSearch(productId: data)
           .asStream()

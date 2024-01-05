@@ -18,8 +18,8 @@ type Query {
   countCategories: Long!
   searchProducts(pageInfo: PageInfo!, params: ProductParamSearch!): [Product!]!
   countSearchProduct(params: ProductParamSearch!): Long!
-  imageSearch(productId: String!): [ProductIndex!]!
-  imageSearchByText(data: String!): [ProductIndex!]!
+  imageSearch(productId: String!): [Product!]!
+  imageSearchByText(data: String!): [Product!]!
 }
 ################################# MUTATIONS #############################
 
@@ -28,7 +28,6 @@ type Mutation {
   refreshToken(token: String!): TokenUser!
   addUser(name: String!): User!
   deleteProductById(productId: String!): ID
-  addProduct(input: ProductInput!): Product!
   deleteCategoryById(categoryId: String!): ID
   addCategory(input: CategoryInput!): Category!
   updateProductSimilarities(
@@ -101,17 +100,7 @@ type ResourceAccess {
 type Account {
   roles: [String!]!
 }
-type ProductIndex implements BasicEntity {
-  id: ID!
-  creationDate: Long!
-  lastUpdate: Long!
-  name: String!
-  brand: String!
-  price: Float!
-  oldPrice: Float!
-  imageUrl: String
-  score: Float!
-}
+
 type Product implements BasicEntity {
   id: ID!
   creationDate: Long!
@@ -124,6 +113,7 @@ type Product implements BasicEntity {
   category: Category!
   similarities: [IndexedProduct!]!
   complementaries: [IndexedProduct!]!
+  score: Float!
 }
 
 type IndexedProduct {
@@ -131,7 +121,7 @@ type IndexedProduct {
   product: ProductInfo!
 }
 
-type ProductInfo {
+type ProductInfo implements BasicEntity {
   id: ID!
   creationDate: Long!
   lastUpdate: Long!
@@ -142,7 +132,6 @@ type ProductInfo {
   imageUrl: String
   category: Category!
 }
-
 type Category implements BasicEntity {
   id: ID!
   creationDate: Long!
@@ -184,6 +173,6 @@ input ProductParamSearch {
 
 input QueueItem {
   productId: String!
-  index: Int!
+  rank: Int!
 }
 ################################# ENUMS #############################

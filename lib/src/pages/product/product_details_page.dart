@@ -111,7 +111,7 @@ class _ProductDetailsPageState extends BasicState<ProductDetailsPage> with Widge
     int index = 0;
     var res = similaritiesQueueListKey.currentState?.getItems();
     if (res != null) {
-      var queueItems = res.map((sim) => QueueItem(productId: sim.product.id, index: index++)).toList();
+      var queueItems = res.map((sim) => QueueItem(productId: sim.product.id, rank: index++)).toList();
       try {
         var res = await service.mutations
             .updateProductSimilarities(productId: widget.productId, similarities: queueItems)
@@ -132,7 +132,7 @@ class _ProductDetailsPageState extends BasicState<ProductDetailsPage> with Widge
     int index = 0;
     var res = complementariesQueueKey.currentState?.getItems();
     if (res != null) {
-      var queueItems = res.map((sim) => QueueItem(productId: sim.product.id, index: index++)).toList();
+      var queueItems = res.map((sim) => QueueItem(productId: sim.product.id, rank: index++)).toList();
       try {
         var res = await service.mutations
             .updateProductComplementaries(productId: widget.productId, complementaries: queueItems)

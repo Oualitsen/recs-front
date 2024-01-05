@@ -5,7 +5,6 @@ import 'package:recs_ymal/generated/client.gq.dart';
 import 'package:recs_ymal/generated/inputs.gq.dart';
 import 'package:recs_ymal/generated/types.gq.dart';
 import 'package:recs_ymal/src/app.dart';
-import 'package:recs_ymal/src/pages/product/product_details_page.dart';
 import 'package:recs_ymal/src/utils/extensions.dart';
 import 'package:recs_ymal/src/widgets/basic_state.dart';
 import 'package:recs_ymal/src/widgets/custom_text_input_widget.dart';

@@ -1,7 +1,7 @@
 pipeline {
     agent any 
     environment {
-        PATH = "$PATH:/opt/flutter/bin"
+        PATH = "$PATH:/root/fvm/versions/3.16.3/bin"
     }
     stages {
         stage('cloning recs fron') { 

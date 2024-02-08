@@ -22,10 +22,10 @@ RegExp emailRegExp = RegExp(
 );
 
 const String URL_BASE =
-    String.fromEnvironment("URL_BASE", defaultValue: "http://localhost:8080");
+    String.fromEnvironment("URL_BASE", defaultValue: "http://localhost:8080/");
 
 const String WS_URL_BASE =
-    String.fromEnvironment("WS_URL_BASE", defaultValue: "ws://localhost:8080");
+    String.fromEnvironment("WS_URL_BASE", defaultValue: "ws://localhost:8080/");
 
 Future<void> initDio() async {
   GetIt.instance.registerSingleton(TokenDbService());
@@ -70,5 +70,5 @@ void initServices() {
 }
 
 String getFlagUrl(String name) {
-  return "${URL_BASE}/flags/${name.toLowerCase()}.png";
+  return "${URL_BASE}flags/${name.toLowerCase()}.png";
 }

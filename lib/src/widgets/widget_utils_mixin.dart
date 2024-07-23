@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:http_error_handler/error_handler.dart';
-import 'package:retrofit_graphql/retrofit_graphql.dart';
+import 'package:recs_ymal/generated/client.gq.dart';
 import 'package:recs_ymal/src/widgets/basic_state.dart';
 import 'package:recs_ymal/src/widgets/progress_wrapper.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';

@@ -107,13 +107,25 @@ class IndexedProductsState extends BasicState<IndexedProducts>
   }
 
   void onYamlSave() {
-    var selected = selectProductsKey.currentState?.getYmalProducts();
+    List<Product>? selected = selectProductsKey.currentState?.getYmalProducts();
     if (selected != null) {
-      var data = indexedProductStream.value;
-      List<String> productIds = selected.map((e) => e.id).toList();
-      List<Product> toAdd =
+      List<IndexedProduct> data = indexedProductStream.value;
+      Set<String> productIds = selected.map((e) => e.id).toSet();
+      List<ProductInfo> toAdd =
           data.map((e) => e.product).where((element) => !productIds.contains(element.id)).toList();
-      List<Product> update = [...selected, ...toAdd];
+      List<ProductInfo> update = [
+        ...selected.map((e) => ProductInfo(
+            brand: e.brand,
+            category: e.category,
+            creationDate: e.creationDate,
+            id: e.id,
+            imageUrl: e.imageUrl,
+            lastUpdate: e.lastUpdate,
+            name: e.name,
+            oldPrice: e.oldPrice,
+            price: e.price)),
+        ...toAdd
+      ];
       int index = 0;
       var indexedItems = update.map((product) => IndexedProduct(product: product, index: index++)).toList();
       data.clear();

@@ -12,36 +12,14 @@ fragment productFrag on Product {
   price
   oldPrice
   imageUrl
-  category @gqTypeName(name: "Category") {
-    ...categoryFrag
+  category  {
+    ..._all_fields
   }
 }
 
-fragment categoryFrag on Category {
-  id
-  name
-  creationDate
-  lastUpdate
-  parent {
-    name
-    id
-    creationDate
-  }
-}
 
-fragment productInfoFrag on ProductInfo {
-  id
-  creationDate
-  lastUpdate
-  name
-  brand
-  price
-  oldPrice
-  imageUrl
-  category @gqTypeName(name: "Category") {
-    ...categoryFrag
-  }
-}
+
+
 
 fragment productDetailsFrag on Product {
   id
@@ -53,18 +31,18 @@ fragment productDetailsFrag on Product {
   oldPrice
   imageUrl
   category @gqTypeName(name: "Category") {
-    ...categoryFrag
+    ..._all_fields
   }
   similarities @gqTypeName(name: "IndexedProduct") {
     index
     product {
-      ...productInfoFrag
+      ..._all_fields
     }
   }
   complementaries {
     index
     product {
-      ...productInfoFrag
+      ..._all_fields
     }
   }
 }

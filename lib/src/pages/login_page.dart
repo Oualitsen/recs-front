@@ -113,8 +113,7 @@ class _LoginPageState extends BasicState<LoginPage> with WidgetUtilsMixin {
                             padding: const EdgeInsets.only(left: 8, right: 8),
                             child: Text(
                               lang.forgotPassword,
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor),
+                              style: TextStyle(color: Theme.of(context).primaryColor),
                             ),
                           ),
                         ),
@@ -173,15 +172,13 @@ class _LoginPageState extends BasicState<LoginPage> with WidgetUtilsMixin {
       if (state.validate()) {
         progressSubject.add(true);
         try {
+          print("login ....");
           var result = await graphQlClient.mutations
-              .adminLogin(
-                  username: emailNameCtrl.text, password: passwordCtrl.text)
+              .adminLogin(username: emailNameCtrl.text, password: passwordCtrl.text)
               .asStream()
               .map((event) => event.login)
               .first;
-          await _tokenDbService.saveTokens(
-              accessToken: result.token.accessToken,
-              refreshToken: result.token.refreshToken);
+          await _tokenDbService.save(result.token.accessToken, result.token.refreshToken);
 
           await _authMan.save(result.user);
           _authMan.add(AuthStatus.logged_in);

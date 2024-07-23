@@ -15,6 +15,7 @@ import 'package:recs_ymal/src/utils/http_interceptor.dart';
 import 'package:recs_ymal/src/managers/auth_manager.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 RegExp emailRegExp = RegExp(
   r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$",
@@ -25,7 +26,7 @@ const String URL_BASE = String.fromEnvironment("URL_BASE", defaultValue: "http:/
 const String WS_URL_BASE = String.fromEnvironment("WS_URL_BASE", defaultValue: "ws://localhost:8080/");
 
 Future<void> initDio() async {
-  GetIt.instance.registerSingleton(TokenDbService());
+  GetIt.instance.registerSingleton(TokenDbService(await SharedPreferences.getInstance()));
   GetIt instance = GetIt.instance;
   Dio dio = Dio(BaseOptions(baseUrl: URL_BASE));
   CookieJar jar;
@@ -45,8 +46,7 @@ Future<void> initDio() async {
   var client = GQClient(GraphqlService(dio).post);
   instance.registerSingleton(client);
 
-  dio.interceptors
-      .add(HttpInterceptor(client: client, service: GetIt.instance.get<TokenDbService>(), dio: dio));
+  dio.interceptors.add(HttpInterceptor(dio));
 }
 
 void initServices() {
@@ -55,16 +55,9 @@ void initServices() {
   GetIt.instance.registerSingleton(UploadService(dio));
 
   GetIt.instance.registerSingleton(
-    AuthManager<RecsUser>(
-      parser: (json) => RecsUser.fromJson(json),
-      serializer: (client) => client.toJson(),
-      getUserFromServer: (RecsUser? current) async {
-        return null;
-      },
+    AuthManager(
+      parser: (json) => FeUser.fromJson(json),
+      serializer: (user) => user.toJson(),
     ),
   );
-}
-
-String getFlagUrl(String name) {
-  return "${URL_BASE}flags/${name.toLowerCase()}.png";
 }

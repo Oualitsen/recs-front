@@ -39,7 +39,7 @@ class _ProfilePageState extends BasicState<ProfilePage> with WidgetUtilsMixin, M
   @override
   Widget build(BuildContext context) {
     return WidgetUtils.wrapRoute(
-      (context, type) => StreamBuilder<RecsUser?>(
+      (context, type) => StreamBuilder<FeUser?>(
           stream: authMan.userSubject,
           initialData: authMan.userSubject.valueOrNull,
           builder: (context, snapshot) {
@@ -72,7 +72,7 @@ class _ProfilePageState extends BasicState<ProfilePage> with WidgetUtilsMixin, M
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                user.preferredUsername,
+                                user.name,
                                 style: Theme.of(context).textTheme.headlineSmall,
                               )
                             ],

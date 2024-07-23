@@ -62,7 +62,13 @@ type ResponseToken {
 
 type TokenUser {
   token: ResponseToken!
-  user: RecsUser!
+  user: FeUser!
+}
+
+type FeUser {
+  name: String!
+  email: String
+  roles: [String!]!
 }
 
 type RecsUser {
@@ -121,7 +127,7 @@ type IndexedProduct {
   product: ProductInfo!
 }
 
-type ProductInfo implements BasicEntity {
+type ProductInfo {
   id: ID!
   creationDate: Long!
   lastUpdate: Long!
@@ -132,6 +138,7 @@ type ProductInfo implements BasicEntity {
   imageUrl: String
   category: Category!
 }
+
 type Category implements BasicEntity {
   id: ID!
   creationDate: Long!

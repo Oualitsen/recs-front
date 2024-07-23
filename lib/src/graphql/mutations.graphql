@@ -2,21 +2,21 @@ mutation adminLogin($username: String!, $password: String!) {
   login(username: $username, password: $password)
     @gqTypeName(name: "LoginResponse") {
     token @gqTypeName(name: "ResponseToken") {
-      ..._all_fields_ResponseToken
+      ..._all_fields
     }
     user @gqTypeName(name: "RecsUser") {
-      ..._all_fields_RecsUser
+      ..._all_fields
     }
   }
 }
 
 mutation refreshToken($token: String!) {
-  data: refreshToken(token: $token) @gqTypeName(name: "LoginResponse") {
-    token @gqTypeName(name: "ResponseToken") {
-      ..._all_fields_ResponseToken
+  data: refreshToken(token: $token) {
+    token{
+      ..._all_fields
     }
-    user @gqTypeName(name: "RecsUser") {
-      ..._all_fields_RecsUser
+    user  {
+      ..._all_fields
     }
   }
 }

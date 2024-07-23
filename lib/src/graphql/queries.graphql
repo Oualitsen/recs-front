@@ -1,19 +1,19 @@
 query getProducts($pageInfo: PageInfo!) {
-  getProducts(pageInfo: $pageInfo) @gqTypeName(name: "Product") {
-    ...productFrag
+  getProducts(pageInfo: $pageInfo) {
+    ..._all_fields
   }
   total: countProducts
 }
 query getCategories($pageInfo: PageInfo!) {
-  getCategories(pageInfo: $pageInfo) @gqTypeName(name: "Category") {
-    ...categoryFrag
+  getCategories(pageInfo: $pageInfo) {
+    ..._all_fields
   }
   total: countCategories
 }
 
 query searchProducts($pageInfo: PageInfo!, $params: ProductParamSearch!) {
   searchProducts(pageInfo: $pageInfo, params: $params) {
-    ...productFrag
+    ..._all_fields
   }
   count: countSearchProduct(params: $params)
 }

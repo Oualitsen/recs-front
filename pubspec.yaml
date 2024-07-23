@@ -29,7 +29,6 @@ dependencies:
   universal_html: ^2.0.8
   flutter_responsive_tools: ^0.0.1
   font_awesome_flutter: ^10.5.0
-  retrofit_graphql: ^1.1.0
   json_serializable: ^6.7.1
   retrofit: ^3.3.1
   json_annotation: ^4.8.1
@@ -47,6 +46,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_launcher_icons: ^0.13.1
+  retrofit_graphql: 2.0.3
   build_runner: ^2.4.6
   retrofit_generator: ^4.2.0
   byte_util: ^3.0.0

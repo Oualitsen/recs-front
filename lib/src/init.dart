@@ -15,17 +15,14 @@ import 'package:recs_ymal/src/utils/http_interceptor.dart';
 import 'package:recs_ymal/src/managers/auth_manager.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:cookie_jar/cookie_jar.dart';
-import 'package:retrofit_graphql/src/functions/web_socket_channel_adapter.dart';
 
 RegExp emailRegExp = RegExp(
   r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$",
 );
 
-const String URL_BASE =
-    String.fromEnvironment("URL_BASE", defaultValue: "http://localhost:8080/");
+const String URL_BASE = String.fromEnvironment("URL_BASE", defaultValue: "http://localhost:8080/");
 
-const String WS_URL_BASE =
-    String.fromEnvironment("WS_URL_BASE", defaultValue: "ws://localhost:8080/");
+const String WS_URL_BASE = String.fromEnvironment("WS_URL_BASE", defaultValue: "ws://localhost:8080/");
 
 Future<void> initDio() async {
   GetIt.instance.registerSingleton(TokenDbService());
@@ -45,12 +42,11 @@ Future<void> initDio() async {
   instance.registerSingleton(jar);
   dio.options.baseUrl = URL_BASE;
   instance.registerSingleton(dio);
-  var client =
-      GQClient(GraphqlService(dio).post, WebSocketChannelAdapter(WS_URL_BASE));
+  var client = GQClient(GraphqlService(dio).post);
   instance.registerSingleton(client);
 
-  dio.interceptors.add(HttpInterceptor(
-      client: client, service: GetIt.instance.get<TokenDbService>(), dio: dio));
+  dio.interceptors
+      .add(HttpInterceptor(client: client, service: GetIt.instance.get<TokenDbService>(), dio: dio));
 }
 
 void initServices() {

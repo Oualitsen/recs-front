@@ -125,14 +125,14 @@ class MyAppState extends State<MyApp> with RouteAware {
       builder: (context, child) => Scaffold(
         body: Row(
           children: [
-            StreamBuilder<RecsUser?>(
+            StreamBuilder<FeUser?>(
                 stream: authMan.userSubject,
                 initialData: authMan.currentUser,
                 builder: (context, snapshot) {
                   if (snapshot.data == null) {
                     return SizedBox.shrink();
                   }
-                  RecsUser recsUser = snapshot.data!;
+                  FeUser recsUser = snapshot.data!;
                   return Container(
                       color: Colors.blueGrey,
                       width: 100,
@@ -183,7 +183,7 @@ class MyAppState extends State<MyApp> with RouteAware {
                                   child: ImageWithOnlineCircleWidget(
                                     child: Center(
                                       child: Text(
-                                        "${recsUser.preferredUsername[0].toUpperCase()}",
+                                        "${recsUser.name[0].toUpperCase()}",
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                                       ),
                                     ),

@@ -2,46 +2,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenDbService {
   static const String key = "token_key";
-  static const String refreshTokenKey = "refresh_token";
+  static const String refresh_key = "refresh_token";
 
-  Future<bool> save(String token) async {
-    return SharedPreferences.getInstance()
-        .asStream()
-        .asyncMap((prefs) => prefs.setString(key, token))
-        .first;
+  SharedPreferences sharedPreferences;
+
+  TokenDbService(this.sharedPreferences);
+
+  Future<bool> save(String token, String refreshToken) async {
+    var r1 = await sharedPreferences.setString(key, token);
+    var r2 = await sharedPreferences.setString(refresh_key, refreshToken);
+    return r1 && r2;
   }
 
-  Future<void> saveTokens(
-      {required String accessToken, required String refreshToken}) async {
-    await save(accessToken);
-    await saveRefreshToken(refreshToken);
-  }
+  String? getToken() => sharedPreferences.getString(key);
 
-  Future<bool> saveRefreshToken(String token) async {
-    return SharedPreferences.getInstance()
-        .asStream()
-        .asyncMap((prefs) => prefs.setString(refreshTokenKey, token))
-        .first;
-  }
-
-  Future<String?> getToken() {
-    return SharedPreferences.getInstance()
-        .asStream()
-        .map((prefs) => prefs.getString(key))
-        .first;
-  }
-
-  Future<String?> getRefreshToken() {
-    return SharedPreferences.getInstance()
-        .asStream()
-        .map((prefs) => prefs.getString(refreshTokenKey))
-        .first;
-  }
+  String? getRefreshToken() => sharedPreferences.getString(refresh_key);
 
   Future<bool> remove() async {
-    var prefs = await SharedPreferences.getInstance();
-    var keyRemoved = await prefs.remove(key);
-    var refreshKeyRemoved = await prefs.remove(refreshTokenKey);
-    return keyRemoved && refreshKeyRemoved;
+    sharedPreferences.remove(key);
+    return sharedPreferences.remove(refresh_key);
   }
 }

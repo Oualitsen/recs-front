@@ -1,27 +1,24 @@
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:dio/dio.dart';
+import 'package:recs_ymal/generated/types.gq.dart';
 import 'package:recs_ymal/src/managers/auth_status.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthManager<T> {
+class AuthManager {
   final String key = 'auth_manager_user_key';
-  final BehaviorSubject<AuthStatus> subject =
-      BehaviorSubject.seeded(AuthStatus.undefined);
+  final BehaviorSubject<AuthStatus> subject = BehaviorSubject.seeded(AuthStatus.undefined);
 
-  final BehaviorSubject<T?> userSubject = BehaviorSubject();
+  final BehaviorSubject<FeUser?> userSubject = BehaviorSubject();
 
-  final T Function(Map<String, dynamic>) parser;
-  final Map<String, dynamic> Function(T user) serializer;
-  final Future<T?> Function(T? current)? getUserFromServer;
+  final FeUser Function(Map<String, dynamic>) parser;
+  final Map<String, dynamic> Function(FeUser user) serializer;
   late StreamSubscription _subscription;
+  final rolesStream = BehaviorSubject.seeded(<String>{});
 
   AuthManager({
     required this.parser,
     required this.serializer,
-    this.getUserFromServer,
   }) {
     _init();
   }
@@ -33,34 +30,19 @@ class AuthManager<T> {
     String? value = prefs.getString(key);
     if (value != null) {
       try {
-        T user = parser(json.decode(value));
+        var user = parser(json.decode(value));
         userSubject.add(user);
         add(AuthStatus.logged_in);
+        rolesStream.add(user.roles.toSet());
       } catch (error) {
         /**
          * Could not parse data
          */
         remove();
-        if (getUserFromServer == null) {
-          add(AuthStatus.logged_out);
-        }
+        add(AuthStatus.logged_out);
       }
     }
-    if (getUserFromServer != null) {
-      try {
-        var _user = await getUserFromServer!(currentUser);
-        if (_user != null) {
-          save(_user);
-        }
-      } catch (error) {
-        if (error is DioError) {
-          if (error.response?.statusCode == 403) {
-            remove();
-            add(AuthStatus.logged_out);
-          }
-        }
-      }
-    }
+
     /**
      * If it is still in progress mode and could not read anything!
      */
@@ -88,15 +70,18 @@ class AuthManager<T> {
     }
   }
 
+  bool hasRole(String role) => rolesStream.value.contains(role);
+
   bool get isLoggedIn {
     return subject.value == AuthStatus.logged_in;
   }
 
-  Future<void> save(T? user) async {
+  Future<void> save(FeUser? user) async {
     if (user != null) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(key, json.encode(serializer(user)));
       userSubject.add(user);
+      rolesStream.add(user.roles.toSet());
     }
   }
 
@@ -106,7 +91,7 @@ class AuthManager<T> {
     userSubject.add(null);
   }
 
-  T? get currentUser => userSubject.valueOrNull;
+  FeUser? get currentUser => userSubject.valueOrNull;
 
   void close() {
     _subscription.cancel();

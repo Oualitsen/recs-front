@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:recs_ymal/src/utils/lang.dart';
+import 'package:recs_front/src/utils/lang.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
@@ -194,7 +194,6 @@ class FormUiUtils {
         contentPadding: EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 2),
         hintText: hint,
         filled: true,
-        fillColor: Colors.blue,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(raduis),
         ),

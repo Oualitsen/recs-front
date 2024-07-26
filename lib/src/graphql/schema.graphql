@@ -20,6 +20,7 @@ type Query {
   countSearchProduct(params: ProductParamSearch!): Long!
   imageSearch(productId: String!): [Product!]!
   imageSearchByText(data: String!): [Product!]!
+  collectionMappings: [CollectionMapping!]!
 }
 ################################# MUTATIONS #############################
 
@@ -39,6 +40,8 @@ type Mutation {
     productId: String!
     complementaries: [QueueItem!]!
   ): Product!
+
+  saveCollectionMapping(input: CollectionMappingInput!): CollectionMapping!
 }
 ################################# TYPES #############################
 
@@ -152,7 +155,50 @@ type CategoryInfo {
   lastUpdate: Long!
   name: String!
 }
+
+type CollectionMapping {
+  id: ID
+  creationDate: Long!
+  lastUpdate: Long!
+  headers: [String!]!
+  dateFormat: String
+  fileMask: String
+  delimiter: String
+  collectionName: String!
+  collectionLabel: String!
+  fields: [FieldMapping!]!
+}
+
+type FieldMapping {
+  label: String!
+  name: String!
+  type: DataType!
+  required: Boolean!
+  csvFieldValue: String
+  csvFieldDefaultValue: String
+}
 ################################# INPUTS #############################
+
+input CollectionMappingInput {
+  id: String
+  headers: [String]!
+  dateFormat: String!
+  fileMask: String!
+  delimiter: String!
+  collectionName: String!
+  collectionLabel: String!
+  fields: [FieldMappingInput!]!
+}
+
+input FieldMappingInput {
+  label: String!
+  name: String!
+  type: DataType!
+  csvFieldValue: String
+  required: Boolean
+  csvFieldDefaultValue: String
+}
+
 input ProductInput {
   name: String!
   brand: String!
@@ -183,3 +229,11 @@ input QueueItem {
   rank: Int!
 }
 ################################# ENUMS #############################
+enum DataType {
+  STRING
+  DOUBLE
+  INT
+  BOOLEAN
+  DATE
+  DATETIME
+}

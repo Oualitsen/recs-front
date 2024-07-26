@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:recs_ymal/src/utils/lang.dart';
+import 'package:recs_front/src/utils/lang.dart';
 
 class NotFoundPage extends StatelessWidget with StatelessLangMixin {
   const NotFoundPage({Key? key}) : super(key: key);

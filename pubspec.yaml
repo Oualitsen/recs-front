@@ -1,4 +1,4 @@
-name: recs_ymal
+name: recs_front
 # Prevent accidental publishing to pub.dev.
 publish_to: "none"
 
@@ -42,6 +42,7 @@ dependencies:
   dropdown_search: ^5.0.6
   undo: ^1.5.0
   dart_jsonwebtoken: ^2.13.0
+  csv: ^5.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

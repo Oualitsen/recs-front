@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recs_ymal/src/widgets/basic_state.dart';
+import 'package:recs_front/src/widgets/basic_state.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PasswordInput extends StatefulWidget {

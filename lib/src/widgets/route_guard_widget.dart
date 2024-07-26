@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recs_ymal/src/managers/auth_status.dart';
+import 'package:recs_front/src/managers/auth_status.dart';
 
 class RouteGuardWidget extends StatelessWidget {
   final Widget Function(BuildContext) childBuilder;

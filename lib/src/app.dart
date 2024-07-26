@@ -3,22 +3,23 @@ import 'dart:ui';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:recs_ymal/src/pages/home/home_page.dart';
-import 'package:recs_ymal/src/pages/images/image_search_page.dart';
-import 'package:recs_ymal/src/pages/product/product_details_page.dart';
-import 'package:recs_ymal/src/pages/profile_page.dart';
-import 'package:recs_ymal/src/utils/widget_utils.dart';
-import 'package:recs_ymal/src/widgets/image_with_online_circle_widget.dart';
-import 'package:recs_ymal/src/widgets/side_menu_button.dart';
+import 'package:recs_front/src/data_mapping/data_mapping_widget.dart';
+import 'package:recs_front/src/pages/home/home_page.dart';
+import 'package:recs_front/src/pages/images/image_search_page.dart';
+import 'package:recs_front/src/pages/product/product_details_page.dart';
+import 'package:recs_front/src/pages/profile_page.dart';
+import 'package:recs_front/src/utils/widget_utils.dart';
+import 'package:recs_front/src/widgets/image_with_online_circle_widget.dart';
+import 'package:recs_front/src/widgets/side_menu_button.dart';
 
 import 'package:rxdart/rxdart.dart';
-import 'package:recs_ymal/generated/types.gq.dart';
+import 'package:recs_front/generated/types.gq.dart';
 
-import 'package:recs_ymal/src/settings/settings_controller.dart';
+import 'package:recs_front/src/settings/settings_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:recs_ymal/src/utils/image_utils.dart';
-import 'package:recs_ymal/src/utils/injector.dart';
-import 'package:recs_ymal/src/utils/ui_utils.dart';
+import 'package:recs_front/src/utils/image_utils.dart';
+import 'package:recs_front/src/utils/injector.dart';
+import 'package:recs_front/src/utils/ui_utils.dart';
 import 'package:gap/gap.dart';
 
 final router = FluroRouter();
@@ -59,6 +60,11 @@ final menuButtonList = <MenuButtonInfo>[
     name: Icons.search,
     routeName: "search",
     destinationRoute: ImageSearchPage(),
+  ),
+  MenuButtonInfo(
+    name: Icons.settings,
+    routeName: "mappings",
+    destinationRoute: DataMappingWidget(),
   ),
   MenuButtonInfo(
     name: Icons.settings,

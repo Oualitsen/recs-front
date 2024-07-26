@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
-import 'package:recs_ymal/generated/client.gq.dart';
-import 'package:recs_ymal/generated/types.gq.dart';
-import 'package:recs_ymal/src/pages/product/reorderable_list_widget.dart';
-import 'package:recs_ymal/src/pages/product/select_products.dart';
-import 'package:recs_ymal/src/widgets/basic_state.dart';
-import 'package:recs_ymal/src/widgets/editing_buttons.dart';
-import 'package:recs_ymal/src/widgets/widget_utils_mixin.dart';
+import 'package:recs_front/generated/client.gq.dart';
+import 'package:recs_front/generated/types.gq.dart';
+import 'package:recs_front/src/pages/product/reorderable_list_widget.dart';
+import 'package:recs_front/src/pages/product/select_products.dart';
+import 'package:recs_front/src/widgets/basic_state.dart';
+import 'package:recs_front/src/widgets/editing_buttons.dart';
+import 'package:recs_front/src/widgets/widget_utils_mixin.dart';
 import 'package:rxdart/rxdart.dart';
 
 class IndexedProducts extends StatefulWidget {

@@ -1,16 +1,16 @@
-import 'package:recs_ymal/generated/client.gq.dart';
-import 'package:recs_ymal/src/managers/auth_status.dart';
-import 'package:recs_ymal/src/utils/ui_utils.dart';
-import 'package:recs_ymal/src/widgets/progress_wrapper.dart';
+import 'package:recs_front/generated/client.gq.dart';
+import 'package:recs_front/src/managers/auth_status.dart';
+import 'package:recs_front/src/utils/ui_utils.dart';
+import 'package:recs_front/src/widgets/progress_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:recs_ymal/src/utils/validation_utils.dart';
-import 'package:recs_ymal/src/widgets/basic_state.dart';
-import 'package:recs_ymal/src/widgets/password_input.dart';
+import 'package:recs_front/src/utils/validation_utils.dart';
+import 'package:recs_front/src/widgets/basic_state.dart';
+import 'package:recs_front/src/widgets/password_input.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:recs_ymal/src/db_services/token_db_service.dart';
-import 'package:recs_ymal/src/utils/injector.dart';
-import 'package:recs_ymal/src/widgets/widget_utils_mixin.dart';
+import 'package:recs_front/src/db_services/token_db_service.dart';
+import 'package:recs_front/src/utils/injector.dart';
+import 'package:recs_front/src/widgets/widget_utils_mixin.dart';
 
 class LoginPage extends StatefulWidget {
   static const login = "/login";

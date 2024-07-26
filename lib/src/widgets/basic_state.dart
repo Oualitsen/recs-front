@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:recs_ymal/main.dart';
-import 'package:recs_ymal/src/utils/lang.dart';
+import 'package:recs_front/main.dart';
+import 'package:recs_front/src/utils/lang.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

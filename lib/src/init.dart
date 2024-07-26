@@ -1,18 +1,18 @@
 import 'dart:io';
 
-import 'package:recs_ymal/generated/client.gq.dart';
+import 'package:recs_front/generated/client.gq.dart';
 
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:get_it/get_it.dart';
-import 'package:recs_ymal/generated/types.gq.dart';
+import 'package:recs_front/generated/types.gq.dart';
 
-import 'package:recs_ymal/src/services/graphql_service.dart';
+import 'package:recs_front/src/services/graphql_service.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:recs_ymal/src/db_services/token_db_service.dart';
-import 'package:recs_ymal/src/services/upload_service.dart';
-import 'package:recs_ymal/src/utils/http_interceptor.dart';
-import 'package:recs_ymal/src/managers/auth_manager.dart';
+import 'package:recs_front/src/db_services/token_db_service.dart';
+import 'package:recs_front/src/services/upload_service.dart';
+import 'package:recs_front/src/utils/http_interceptor.dart';
+import 'package:recs_front/src/managers/auth_manager.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:shared_preferences/shared_preferences.dart';

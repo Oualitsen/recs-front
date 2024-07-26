@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recs_ymal/src/utils/lang.dart';
+import 'package:recs_front/src/utils/lang.dart';
 
 class ValidationUtils {
   static final RegExp _emailRegExp = RegExp(
@@ -22,12 +22,9 @@ class ValidationUtils {
     return required ? requiredField(text, context) : null;
   }
 
-  static String? username(String? text, BuildContext context,
-      [required = false]) {
+  static String? username(String? text, BuildContext context, [required = false]) {
     if (text != null) {
-      return _usernameRegExp.hasMatch(text)
-          ? null
-          : getLang(context).invalidUsername;
+      return _usernameRegExp.hasMatch(text) ? null : getLang(context).invalidUsername;
     }
     return required ? requiredField(text, context) : null;
   }
@@ -80,9 +77,7 @@ class ValidationUtils {
     return required ? requiredField(text, context) : null;
   }
 
-  static String? phoneValidator(
-      String? text, int regionCode, BuildContext context,
-      [required = false]) {
+  static String? phoneValidator(String? text, int regionCode, BuildContext context, [required = false]) {
     return required ? requiredField(text, context) : null;
   }
 }

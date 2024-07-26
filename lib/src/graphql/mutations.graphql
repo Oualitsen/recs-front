@@ -33,3 +33,9 @@ mutation updateProductComplementaries(
     ...productDetailsFrag
   }
 }
+
+mutation saveCollectionMapping($input: CollectionMappingInput!) {
+   saveCollectionMapping(input: $input) {
+        ..._all_fields
+  }
+}

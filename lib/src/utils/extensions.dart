@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:recs_ymal/generated/inputs.gq.dart';
+import 'package:recs_front/generated/inputs.gq.dart';
 
 extension OnString on String? {
   bool isBlank() {

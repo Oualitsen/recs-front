@@ -251,5 +251,6 @@
   "selectProducts":"Select products",
   "productId":"Product ID",
   "textSearch":"Text Search",
-  "score":"Score"
+  "score":"Score",
+  "loading": "Loading ..."
 }

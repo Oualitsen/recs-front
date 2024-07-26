@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:html_editor_enhanced/utils/shims/dart_ui_real.dart';
-import 'package:recs_ymal/generated/types.gq.dart';
-import 'package:recs_ymal/src/utils/lang.dart';
+import 'package:recs_front/generated/types.gq.dart';
+import 'package:recs_front/src/utils/lang.dart';
 
 class ReorderableListWidget extends StatelessWidget {
   final double width;

@@ -1,10 +1,10 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:get_it/get_it.dart';
-import 'package:recs_ymal/generated/client.gq.dart';
-import 'package:recs_ymal/generated/types.gq.dart';
-import 'package:recs_ymal/src/db_services/token_db_service.dart';
-import 'package:recs_ymal/src/managers/auth_status.dart';
-import 'package:recs_ymal/src/utils/injector.dart';
+import 'package:recs_front/generated/client.gq.dart';
+import 'package:recs_front/generated/types.gq.dart';
+import 'package:recs_front/src/db_services/token_db_service.dart';
+import 'package:recs_front/src/managers/auth_status.dart';
+import 'package:recs_front/src/utils/injector.dart';
 
 class LoginService {
   static Future<bool> refreshTokenLogin() async {

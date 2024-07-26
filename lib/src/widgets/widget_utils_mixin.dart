@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:http_error_handler/error_handler.dart';
-import 'package:recs_ymal/generated/client.gq.dart';
-import 'package:recs_ymal/src/widgets/basic_state.dart';
-import 'package:recs_ymal/src/widgets/progress_wrapper.dart';
+import 'package:recs_front/generated/client.gq.dart';
+import 'package:recs_front/src/widgets/basic_state.dart';
+import 'package:recs_front/src/widgets/progress_wrapper.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
-import 'package:recs_ymal/src/utils/utils.dart';
+import 'package:recs_front/src/utils/utils.dart';
 import 'package:rxdart/rxdart.dart';
 
 mixin WidgetUtilsMixin<T extends StatefulWidget> on BasicState<T> {

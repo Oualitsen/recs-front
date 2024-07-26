@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recs_ymal/src/utils/image_utils.dart';
+import 'package:recs_front/src/utils/image_utils.dart';
 
 class ImageWithOnlineCircleWidget extends StatelessWidget {
   final Widget child;

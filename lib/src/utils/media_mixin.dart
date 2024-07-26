@@ -5,8 +5,8 @@ import 'package:get_it/get_it.dart';
 import 'package:http_error_handler/error_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:recs_ymal/src/services/upload_service.dart';
-import 'package:recs_ymal/src/utils/lang.dart';
+import 'package:recs_front/src/services/upload_service.dart';
+import 'package:recs_front/src/utils/lang.dart';
 
 mixin MediaMixin<T extends StatefulWidget> on State<T> {
   final uploadProgress = BehaviorSubject<double?>();
@@ -35,11 +35,10 @@ mixin MediaMixin<T extends StatefulWidget> on State<T> {
   }
 
   Stream<String> readImagePath(BuildContext context) {
-    return _imageSource(context).flatMap((value) =>
-        _readImagePath(context: context, source: value)
-            .asStream()
-            .where((event) => event != null)
-            .map((event) => event!));
+    return _imageSource(context).flatMap((value) => _readImagePath(context: context, source: value)
+        .asStream()
+        .where((event) => event != null)
+        .map((event) => event!));
   }
 
   Stream<String> readVideoPath(BuildContext context) {
@@ -51,18 +50,15 @@ mixin MediaMixin<T extends StatefulWidget> on State<T> {
   }
 
   Stream<String> uploadFile(String uri, String path, BuildContext context) {
-    return uploadFileDynamic(uri, path, context)
-        .map((event) => event as String);
+    return uploadFileDynamic(uri, path, context).map((event) => event as String);
   }
 
-  Stream<dynamic> uploadFileDynamic(
-      String uri, String path, BuildContext context,
+  Stream<dynamic> uploadFileDynamic(String uri, String path, BuildContext context,
       {Map<String, String> otherFields = const {}}) {
     _currentUri = uri;
     _currentPath = path;
     return uploadService
-        .uploadFileDynamic(uri, path,
-            otherFields: otherFields, callBack: uploadProgress.add)
+        .uploadFileDynamic(uri, path, otherFields: otherFields, callBack: uploadProgress.add)
         .asStream()
         .doOnListen(() => uploadProgress.add(0))
         .doOnDone(() => uploadProgress.add(null))
@@ -77,13 +73,11 @@ mixin MediaMixin<T extends StatefulWidget> on State<T> {
   }
 
   Stream<dynamic> uploadDynamic(String uri, BuildContext context) {
-    return readImagePath(context)
-        .flatMap((path) => uploadFileDynamic(uri, path, context));
+    return readImagePath(context).flatMap((path) => uploadFileDynamic(uri, path, context));
   }
 
   Stream<dynamic> uploadVideoDynamic(String uri, BuildContext context) {
-    return readVideoPath(context)
-        .flatMap((path) => uploadFileDynamic(uri, path, context));
+    return readVideoPath(context).flatMap((path) => uploadFileDynamic(uri, path, context));
   }
 
   Stream<String> uploadVideo(String uri, BuildContext context) {

@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import 'package:recs_ymal/src/db_services/token_db_service.dart';
+import 'package:recs_front/src/db_services/token_db_service.dart';
 import 'package:universal_html/html.dart' as html;
 
 class UploadService {

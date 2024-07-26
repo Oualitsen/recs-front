@@ -39,3 +39,10 @@ query imageSearchByText($data: String!) {
     ...productIndexFrag
   }
 }
+
+
+query collectionMappins() {
+  collectionMappings {
+    ..._all_fields
+  }
+}

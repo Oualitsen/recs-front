@@ -5,18 +5,18 @@ import 'package:get_it/get_it.dart';
 
 import 'package:rxdart/rxdart.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:recs_ymal/generated/client.gq.dart';
-import 'package:recs_ymal/generated/types.gq.dart';
-import 'package:recs_ymal/main.dart';
-import 'package:recs_ymal/src/db_services/token_db_service.dart';
-import 'package:recs_ymal/src/utils/injector.dart';
-import 'package:recs_ymal/src/utils/lang.dart';
-import 'package:recs_ymal/src/utils/media_mixin.dart';
-import 'package:recs_ymal/src/utils/validation_utils.dart';
-import 'package:recs_ymal/src/utils/widget_utils.dart';
-import 'package:recs_ymal/src/widgets/basic_state.dart';
-import 'package:recs_ymal/src/widgets/password_input.dart';
-import 'package:recs_ymal/src/widgets/widget_utils_mixin.dart';
+import 'package:recs_front/generated/client.gq.dart';
+import 'package:recs_front/generated/types.gq.dart';
+import 'package:recs_front/main.dart';
+import 'package:recs_front/src/db_services/token_db_service.dart';
+import 'package:recs_front/src/utils/injector.dart';
+import 'package:recs_front/src/utils/lang.dart';
+import 'package:recs_front/src/utils/media_mixin.dart';
+import 'package:recs_front/src/utils/validation_utils.dart';
+import 'package:recs_front/src/utils/widget_utils.dart';
+import 'package:recs_front/src/widgets/basic_state.dart';
+import 'package:recs_front/src/widgets/password_input.dart';
+import 'package:recs_front/src/widgets/widget_utils_mixin.dart';
 
 class ProfilePage extends StatefulWidget {
   static const routeName = "profile";

@@ -1,16 +1,16 @@
 import 'package:flutter_responsive_tools/responsive_builder.dart';
 import 'package:gap/gap.dart';
-import 'package:recs_ymal/generated/types.gq.dart';
-import 'package:recs_ymal/src/pages/login_page.dart';
-import 'package:recs_ymal/src/pages/profile_page.dart';
+import 'package:recs_front/generated/types.gq.dart';
+import 'package:recs_front/src/pages/login_page.dart';
+import 'package:recs_front/src/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_responsive_tools/device_screen_type.dart';
 import 'package:get_it/get_it.dart';
-import 'package:recs_ymal/src/db_services/token_db_service.dart';
-import 'package:recs_ymal/src/utils/injector.dart';
-import 'package:recs_ymal/src/widgets/menu_drawer.dart';
-import 'package:recs_ymal/src/utils/lang.dart';
-import 'package:recs_ymal/src/widgets/route_guard_widget.dart';
+import 'package:recs_front/src/db_services/token_db_service.dart';
+import 'package:recs_front/src/utils/injector.dart';
+import 'package:recs_front/src/widgets/menu_drawer.dart';
+import 'package:recs_front/src/utils/lang.dart';
+import 'package:recs_front/src/widgets/route_guard_widget.dart';
 
 class WidgetUtils {
   static Widget wrapRoute(Widget Function(BuildContext context, DeviceScreenType type) route,

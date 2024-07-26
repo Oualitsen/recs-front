@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:recs_ymal/generated/types.gq.dart';
-import 'package:recs_ymal/src/managers/auth_status.dart';
+import 'package:recs_front/generated/types.gq.dart';
+import 'package:recs_front/src/managers/auth_status.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

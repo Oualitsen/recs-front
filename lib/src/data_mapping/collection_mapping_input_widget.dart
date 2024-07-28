@@ -237,9 +237,10 @@ class _CollectionMappingInputWidgetState extends BasicState<CollectionMappingInp
                   label: col.label,
                   name: col.name,
                   type: col.type,
-                  csvFieldValue: map[col.name],
+                  csvFieldValue: (map[col.name]?.isEmpty ?? false) ? null : map[col.name],
                   required: col.required,
-                  csvFieldDefaultValue: controllerMap[col.name]!.text,
+                  csvFieldDefaultValue:
+                      controllerMap[col.name]!.text.isEmpty ? null : controllerMap[col.name]!.text,
                 ))
             .toList(),
       );
@@ -466,24 +467,18 @@ item_id|ean13|reference_id|reference|c_color|d_color|c_size|d_size|first_col|cur
           lang.defaultValue,
           enabled: col.name != "id",
           validator: (value) {
-            if (col.name == "id") {
-              return null;
-            }
             switch (col.type) {
               case DataType.INT:
-                return ValidationUtils.intValidator(value, context, required: col.required, minValue: 0);
+                return ValidationUtils.intValidator(value, context, required: false, minValue: 0);
               case DataType.DOUBLE:
-                return ValidationUtils.doubleValidator(value, context, required: col.required);
+                return ValidationUtils.doubleValidator(value, context, required: false);
 
               case DataType.STRING:
-                if (col.required)
-                  return ValidationUtils.requiredField(value, context);
-                else
-                  return null;
+                return null;
 
               case DataType.BOOLEAN:
                 if (value == null || value.isEmpty) {
-                  return col.required ? lang.requiredField : null;
+                  return null;
                 }
                 if (value.toLowerCase() == "true" || value.toLowerCase() == "false") {
                   return null;
@@ -493,7 +488,7 @@ item_id|ean13|reference_id|reference|c_color|d_color|c_size|d_size|first_col|cur
               case DataType.DATE:
               case DataType.DATETIME:
                 if (value == null || value.isEmpty) {
-                  return col.required ? lang.requiredField : null;
+                  return null;
                 }
                 try {
                   DateFormat dateFormat = DateFormat(fileInfo.dateFormat);

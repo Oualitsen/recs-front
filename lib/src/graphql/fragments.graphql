@@ -1,55 +1,63 @@
-fragment productNameFrag on Product {
-  id
-  name
-  imageUrl
-}
+
 fragment productFrag on Product {
   id
   creationDate
   lastUpdate
+  score
   name
   brand
+  designer
+  category
+  shortDescription
+  longDescription
   price
   oldPrice
-  imageUrl
-  category  {
-    ..._all_fields
-  }
+  forKids
+  gender
 }
-
-
-
 
 
 fragment productDetailsFrag on Product {
   id
   creationDate
   lastUpdate
+  score
   name
   brand
+  designer
+  category
+  shortDescription
+  longDescription
   price
   oldPrice
-  imageUrl
-  category @gqTypeName(name: "Category") {
-    ..._all_fields
-  }
-  similarities @gqTypeName(name: "IndexedProduct") {
-    index
-    product {
-      ..._all_fields
-    }
-  }
-  complementaries {
-    index
-    product {
-      ..._all_fields
-    }
+  forKids
+  gender
+  skuCount
+}
+
+fragment allFieldsProduct on Product {
+  id
+  creationDate
+  lastUpdate
+  score
+  name
+  brand
+  designer
+  category
+  shortDescription
+  longDescription
+  price
+  oldPrice
+  forKids
+  gender
+  skuList {
+    ... _all_fields
   }
 }
+
 
 fragment productIndexFrag on Product {
   id
   name
   score
-  imageUrl
 }

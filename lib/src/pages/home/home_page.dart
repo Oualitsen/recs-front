@@ -53,7 +53,7 @@ class HomePageState extends BasicState<HomePage> with TickerProviderStateMixin, 
               ),
               Expanded(
                 child: TabBarView(children: [
-                  ProductTable(),
+                  ProductTableWidget(),
                   CategoryTable(),
                 ]),
               )

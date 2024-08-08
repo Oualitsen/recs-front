@@ -1,7 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:recs_front/generated/client.gq.dart';
 import 'package:flutter/material.dart';
-import 'package:recs_front/generated/inputs.gq.dart';
 import 'package:recs_front/generated/types.gq.dart';
 import 'package:recs_front/src/pages/product/indexed_product_list.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
@@ -9,8 +8,8 @@ import 'package:recs_front/src/widgets/widget_utils_mixin.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProductDetailsPage extends StatefulWidget {
-  final String productId;
-  const ProductDetailsPage({super.key, required this.productId});
+  final String skuId;
+  const ProductDetailsPage({super.key, required this.skuId});
 
   @override
   State<ProductDetailsPage> createState() => _ProductDetailsPageState();
@@ -18,9 +17,9 @@ class ProductDetailsPage extends StatefulWidget {
 
 class _ProductDetailsPageState extends BasicState<ProductDetailsPage> with WidgetUtilsMixin {
   final service = GetIt.instance.get<GQClient>();
-  final productDetailStream = BehaviorSubject<ProductDetails>();
-  final complementariesQueueKey = GlobalKey<IndexedProductsState>();
-  final similaritiesQueueListKey = GlobalKey<IndexedProductsState>();
+  final skuDetailStream = BehaviorSubject<Sku>();
+  final complementariesQueueKey = GlobalKey<IndexedProductsWidgetState>();
+  final similaritiesQueueListKey = GlobalKey<IndexedProductsWidgetState>();
   @override
   void initState() {
     getProduct();
@@ -31,17 +30,17 @@ class _ProductDetailsPageState extends BasicState<ProductDetailsPage> with Widge
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      child: StreamBuilder<ProductDetails>(
-        stream: productDetailStream,
+      child: StreamBuilder<Sku>(
+        stream: skuDetailStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           }
-          ProductDetails data = snapshot.data!;
+          Sku data = snapshot.data!;
           return Scaffold(
             appBar: AppBar(
               title: SelectableText(
-                data.name,
+                data.product.name,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
@@ -74,26 +73,24 @@ class _ProductDetailsPageState extends BasicState<ProductDetailsPage> with Widge
                 Expanded(
                   child: TabBarView(
                     children: [
-                      IndexedProducts(
+                      IndexedProductsWidget(
                         key: similaritiesQueueListKey,
-                        product: ProductName.fromJson(data.toJson()),
+                        sku: data,
                         onSave: saveSimilarities,
-                        indexedProducts: [...data.similarities],
+                        indexedSkuList: [],
                         onRefresh: () async {
                           var productDetails = await getProduct();
-                          similaritiesQueueListKey.currentState
-                              ?.updateItems(productDetails?.similarities ?? []);
+                          similaritiesQueueListKey.currentState?.updateItems([]);
                         },
                       ),
-                      IndexedProducts(
+                      IndexedProductsWidget(
                         key: complementariesQueueKey,
-                        product: ProductName.fromJson(data.toJson()),
+                        sku: data,
                         onSave: saveComplementaries,
-                        indexedProducts: [...data.complementaries],
+                        indexedSkuList: [],
                         onRefresh: () async {
                           var productDetails = await getProduct();
-                          complementariesQueueKey.currentState
-                              ?.updateItems(productDetails?.complementaries ?? []);
+                          complementariesQueueKey.currentState?.updateItems([]);
                         },
                       ),
                     ],
@@ -108,45 +105,11 @@ class _ProductDetailsPageState extends BasicState<ProductDetailsPage> with Widge
   }
 
   void saveSimilarities() async {
-    int index = 0;
-    var res = similaritiesQueueListKey.currentState?.getItems();
-    if (res != null) {
-      var queueItems = res.map((sim) => QueueItem(productId: sim.product.id, rank: index++)).toList();
-      try {
-        var res = await service.mutations
-            .updateProductSimilarities(productId: widget.productId, similarities: queueItems)
-            .asStream()
-            .map((event) => event.updateProductSimilarities)
-            .first;
-        res.similarities.sort((a, b) => a.index.compareTo(b.index));
-        similaritiesQueueListKey.currentState?.updateItems(res.similarities);
-        productDetailStream.add(res);
-      } catch (error, stacktrace) {
-        print(stacktrace);
-        showServerError2(context, error: error);
-      }
-    }
+    // @TODO
   }
 
   void saveComplementaries() async {
-    int index = 0;
-    var res = complementariesQueueKey.currentState?.getItems();
-    if (res != null) {
-      var queueItems = res.map((sim) => QueueItem(productId: sim.product.id, rank: index++)).toList();
-      try {
-        var res = await service.mutations
-            .updateProductComplementaries(productId: widget.productId, complementaries: queueItems)
-            .asStream()
-            .map((event) => event.updateProductComplementaries)
-            .first;
-        res.complementaries.sort((a, b) => a.index.compareTo(b.index));
-        complementariesQueueKey.currentState?.updateItems(res.complementaries);
-        productDetailStream.add(res);
-      } catch (error, stacktrace) {
-        print(stacktrace);
-        showServerError2(context, error: error);
-      }
-    }
+    // @TODO
   }
 
   @override
@@ -155,21 +118,7 @@ class _ProductDetailsPageState extends BasicState<ProductDetailsPage> with Widge
   @override
   List<Subject> get subjects => [];
 
-  Future<ProductDetails?> getProduct() async {
-    try {
-      var productDetails = await service.queries
-          .getProductDetails(productId: widget.productId)
-          .asStream()
-          .map((event) => event.getProductById)
-          .first;
-      productDetails.similarities.sort((a, b) => a.index.compareTo(b.index));
-      productDetails.complementaries.sort((a, b) => a.index.compareTo(b.index));
-      productDetailStream.add(productDetails);
-      return productDetails;
-    } catch (error, stacktrace) {
-      print(stacktrace);
-      showServerError2(context, error: error);
-      return null;
-    }
+  Future<Sku?> getProduct() async {
+    // @TODO
   }
 }

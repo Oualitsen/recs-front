@@ -8,6 +8,7 @@ import 'package:recs_front/src/pages/home/home_page.dart';
 import 'package:recs_front/src/pages/images/image_search_page.dart';
 import 'package:recs_front/src/pages/product/product_details_page.dart';
 import 'package:recs_front/src/pages/profile_page.dart';
+import 'package:recs_front/src/pages/sku/sku_list_page.dart';
 import 'package:recs_front/src/utils/widget_utils.dart';
 import 'package:recs_front/src/widgets/image_with_online_circle_widget.dart';
 import 'package:recs_front/src/widgets/side_menu_button.dart';
@@ -25,13 +26,26 @@ import 'package:gap/gap.dart';
 final router = FluroRouter();
 void initRouter() {
   router.define(
+    '/skus/:productId',
+    handler: Handler(
+      handlerFunc: (context, parameters) {
+        String productId = parameters['productId']!.first;
+        return WidgetUtils.wrapRoute(
+          (context, type) => SkuListPage(
+            productId: productId,
+          ),
+        );
+      },
+    ),
+  );
+  router.define(
     '/products/:id',
     handler: Handler(
       handlerFunc: (context, parameters) {
         String id = parameters['id']!.first;
         return WidgetUtils.wrapRoute(
           (context, type) => ProductDetailsPage(
-            productId: id,
+            skuId: id,
           ),
         );
       },

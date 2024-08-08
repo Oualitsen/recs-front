@@ -12,21 +12,21 @@ import 'package:recs_front/src/widgets/multi_select_widget.dart';
 import 'package:recs_front/src/widgets/widget_utils_mixin.dart';
 import 'package:rxdart/rxdart.dart';
 
-class ProductTable extends StatefulWidget {
-  const ProductTable({super.key});
+class ProductTableWidget extends StatefulWidget {
+  const ProductTableWidget({super.key});
 
   @override
-  State<ProductTable> createState() => _ProductTableState();
+  State<ProductTableWidget> createState() => _ProductTableWidgetState();
 }
 
-class _ProductTableState extends BasicState<ProductTable> with WidgetUtilsMixin {
+class _ProductTableWidgetState extends BasicState<ProductTableWidget> with WidgetUtilsMixin {
   final service = GetIt.instance.get<GQClient>();
   final totalCount = BehaviorSubject.seeded(0);
-  final selectedProductsStream = BehaviorSubject.seeded(<Product>[]);
+  final selectedProductsStream = BehaviorSubject.seeded(<ProductDetails>[]);
   final tableKey = GlobalKey<table.LazyPaginatedDataTableState>();
   final multiSelectionKey = GlobalKey<MultiSelectWidgetState>();
   final selectedCategoriesStream = BehaviorSubject.seeded(<Category>{});
-  final allCategoriesStream = BehaviorSubject.seeded(<Category>{});
+  final allCategoriesStream = BehaviorSubject.seeded(<String>{});
   final searchStream = BehaviorSubject.seeded(ProductSearchParams(
     search: false,
     info: ProductParamSearch(
@@ -46,7 +46,7 @@ class _ProductTableState extends BasicState<ProductTable> with WidgetUtilsMixin 
             return CircularProgressIndicator();
           }
           var data = snapshot.data!;
-          return table.LazyPaginatedDataTable<Product>(
+          return table.LazyPaginatedDataTable<ProductDetails>(
             key: tableKey,
             getData: getData,
             getTotal: getTotal,
@@ -61,17 +61,23 @@ class _ProductTableState extends BasicState<ProductTable> with WidgetUtilsMixin 
                     child: Text(data.name),
                   ),
                 ),
-                DataCell(SelectableText(data.brand)),
+                DataCell(SelectableText(data.brand ?? lang.na)),
                 DataCell(SelectableText(data.price.toString())),
                 DataCell(SelectableText(data.oldPrice.toString())),
-                DataCell(SelectableText(data.category.name)),
+                DataCell(SelectableText(data.category)),
+                DataCell(
+                  TextButton(
+                    child: Text("${data.skuCount}"),
+                    onPressed: () => router.navigateTo(navKey.currentContext!, "/skus/${data.id}"),
+                  ),
+                ),
               ]);
             },
           );
         });
   }
 
-  Future<List<Product>> getData(table.PageInfo pageInfo) {
+  Future<List<ProductDetails>> getData(table.PageInfo pageInfo) {
     var params = searchStream.value;
     try {
       return service.queries
@@ -81,7 +87,7 @@ class _ProductTableState extends BasicState<ProductTable> with WidgetUtilsMixin 
           )
           .asStream()
           .map((event) {
-        totalCount.add(event.count);
+        updateCount(event.count);
         if (!params.search) {
           var categories = event.searchProducts.map((e) => e.category).toList();
           allCategoriesStream.add(categories.toSet());
@@ -91,7 +97,13 @@ class _ProductTableState extends BasicState<ProductTable> with WidgetUtilsMixin 
     } catch (error, stacktrace) {
       print(stacktrace);
       totalCount.add(0);
-      return Future.value(<Product>[]);
+      return Future.value(<ProductDetails>[]);
+    }
+  }
+
+  void updateCount(int count) {
+    if (count != totalCount.value) {
+      totalCount.add(count);
     }
   }
 
@@ -100,6 +112,7 @@ class _ProductTableState extends BasicState<ProductTable> with WidgetUtilsMixin 
   }
 
   void reload() {
+    print("Reloading data table");
     tableKey.currentState?.refreshPage();
   }
 
@@ -200,6 +213,7 @@ class _ProductTableState extends BasicState<ProductTable> with WidgetUtilsMixin 
             DataColumn(label: Text(lang.price)),
             DataColumn(label: Text(lang.oldPrice)),
             DataColumn(label: Text(lang.category)),
+            DataColumn(label: Text(lang.skuCount)),
           ];
   }
 
@@ -244,7 +258,9 @@ class _ProductTableState extends BasicState<ProductTable> with WidgetUtilsMixin 
                 ));
                 Navigator.of(context).pop();
               },
-              items: allCategoriesStream.value.toList(),
+              items: allCategoriesStream.value
+                  .map((e) => Category(creationDate: 0, id: e, lastUpdate: 0, name: e, score: 0))
+                  .toList(),
             ),
           ),
         );

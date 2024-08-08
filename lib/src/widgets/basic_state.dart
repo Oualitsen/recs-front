@@ -18,9 +18,9 @@ abstract class BasicState<T extends StatefulWidget> extends State<T> with LangMi
     super.dispose();
   }
 
-  List<Subject> get subjects;
+  List<Subject> get subjects => [];
 
-  List<ChangeNotifier> get notifiers;
+  List<ChangeNotifier> get notifiers => [];
 }
 
 extension AppLocalizationsExt on AppLocalizations {

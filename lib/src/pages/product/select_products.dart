@@ -8,7 +8,7 @@ import 'package:recs_front/src/widgets/widget_utils_mixin.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SelectProducts extends StatefulWidget {
-  final ProductName originalProduct;
+  final Sku originalProduct;
   const SelectProducts({super.key, required this.originalProduct});
 
   @override
@@ -47,7 +47,7 @@ class SelectProductsState extends BasicState<SelectProducts> with WidgetUtilsMix
           Expanded(
             child: TabBarView(children: [
               ProductCards(
-                originalProduct: widget.originalProduct,
+                sku: widget.originalProduct,
                 key: ymalProductsKey,
               ),
               Text("rule based"),
@@ -59,7 +59,7 @@ class SelectProductsState extends BasicState<SelectProducts> with WidgetUtilsMix
     );
   }
 
-  List<Product> getYmalProducts() {
+  List<Sku> getYmalProducts() {
     return ymalProductsKey.currentState?.selectedProducts() ?? [];
   }
 

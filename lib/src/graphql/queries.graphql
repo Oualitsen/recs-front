@@ -11,9 +11,9 @@ query getCategories($pageInfo: PageInfo!) {
   total: countCategories
 }
 
-query searchProducts($pageInfo: PageInfo!, $params: ProductParamSearch!) {
-  searchProducts(pageInfo: $pageInfo, params: $params) {
-    ..._all_fields
+query searchProducts($pageInfo: PageInfo!, $params: ProductParamSearch!){
+  searchProducts(pageInfo: $pageInfo, params: $params)  {
+    ...productDetailsFrag
   }
   count: countSearchProduct(params: $params)
 }
@@ -23,20 +23,21 @@ query getProductDetails($productId: String!) {
     ...productDetailsFrag
   }
 }
-query getProductName($productId: String!) {
-  getProductById(productId: $productId) @gqTypeName(name: "ProductName") {
-    ...productNameFrag
+
+query getProductById($productId: String!) {
+  getProductById(productId: $productId)@gqTypeName(name: "ProductWithSKU")  {
+    ...allFieldsProduct
   }
 }
 
 query imageSearch($productId: String!) {
-  imageSearch(productId: $productId) @gqTypeName(name: "ProductIndex") {
-    ...productIndexFrag
+  imageSearch(productId: $productId) {
+    ..._all_fields
   }
 }
 query imageSearchByText($data: String!) {
-  imageSearchByText(data: $data) @gqTypeName(name: "ProductIndex") {
-    ...productIndexFrag
+  imageSearchByText(data: $data)  {
+    ..._all_fields
   }
 }
 

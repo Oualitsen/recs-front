@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:infinite_scroll_list_view_2/infinite_scroll_list_view.dart';
 import 'package:recs_front/generated/client.gq.dart';
-import 'package:recs_front/generated/inputs.gq.dart';
 import 'package:recs_front/generated/types.gq.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
 import 'package:recs_front/src/widgets/widget_utils_mixin.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProductCards extends StatefulWidget {
-  final ProductName originalProduct;
+  final Sku sku;
   const ProductCards({
     super.key,
-    required this.originalProduct,
+    required this.sku,
   });
 
   @override
@@ -21,29 +20,29 @@ class ProductCards extends StatefulWidget {
 
 class ProductCardsState extends BasicState<ProductCards> with WidgetUtilsMixin {
   final service = GetIt.instance.get<GQClient>();
-  final selectedStream = BehaviorSubject.seeded(<Product>[]);
+  final selectedStream = BehaviorSubject.seeded(<Sku>[]);
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<Product>>(
+    return StreamBuilder<List<Sku>>(
       stream: selectedStream,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return CircularProgressIndicator();
         }
         var selectedProducts = snapshot.data!;
-        return InfiniteScrollListView<Product>(
+        return InfiniteScrollListView<Sku>(
           scrollDirection: Axis.horizontal,
-          elementBuilder: (context, product, index, animation) {
+          elementBuilder: (context, sku, index, animation) {
             return InkWell(
               onTap: () {
-                var checked = selectedProducts.where((element) => element.id == product.id).isEmpty;
-                updateCheckBox(checked, product);
+                var checked = selectedProducts.where((element) => element.id == sku.id).isEmpty;
+                updateCheckBox(checked, sku);
               },
               child: SizedBox(
                 height: 300,
                 width: 200,
                 child: Card(
-                  shape: selectedProducts.where((element) => element.id == product.id).isEmpty
+                  shape: selectedProducts.where((element) => element.id == sku.id).isEmpty
                       ? null
                       : RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -62,33 +61,31 @@ class ProductCardsState extends BasicState<ProductCards> with WidgetUtilsMixin {
                       children: [
                         Row(
                           children: [
-                            SelectableText(product.name),
+                            SelectableText(sku.product.name),
                             Spacer(),
                             Checkbox(
                               onChanged: (value) {
                                 if (value != null) {
-                                  updateCheckBox(value, product);
+                                  updateCheckBox(value, sku);
                                 }
                               },
                               value: selectedProducts
-                                  .where((element) => element.id == product.id)
+                                  .where((element) => element.id == sku.id)
                                   .toList()
                                   .isNotEmpty,
                             ),
                           ],
                         ),
-                        product.imageUrl != null
-                            ? Image.network(
-                                product.imageUrl!,
-                                height: 250,
-                                width: 175,
-                                fit: BoxFit.fill,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Text("${lang.errors} : ${product.imageUrl}");
-                                },
-                              )
-                            : Text("${lang.errors} : ${product.imageUrl}"),
-                        SelectableText("${lang.id} : ${product.id}"),
+                        Image.network(
+                          sku.imageUrl,
+                          height: 250,
+                          width: 175,
+                          fit: BoxFit.fill,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Text("${lang.errors} : ${sku.imageUrl}");
+                          },
+                        ),
+                        SelectableText("${lang.id} : ${sku.id}"),
                       ],
                     ),
                   ),
@@ -102,16 +99,11 @@ class ProductCardsState extends BasicState<ProductCards> with WidgetUtilsMixin {
     );
   }
 
-  Future<List<Product>> getData(index) {
-    return service.queries
-        .getProducts(pageInfo: PageInfo(page: index, size: 15))
-        .asStream()
-        .map((event) => event.getProducts)
-        .map((event) => event.where((element) => element.id != widget.originalProduct.id).toList())
-        .first;
+  Future<List<Sku>> getData(index) async {
+    return <Sku>[];
   }
 
-  List<Product> selectedProducts() {
+  List<Sku> selectedProducts() {
     return [...selectedStream.value];
   }
 
@@ -120,7 +112,7 @@ class ProductCardsState extends BasicState<ProductCards> with WidgetUtilsMixin {
 
   @override
   List<Subject> get subjects => [];
-  void updateCheckBox(bool selected, Product product) {
+  void updateCheckBox(bool selected, Sku product) {
     var selectedProducts = selectedStream.value;
     selected
         ? selectedProducts.add(product)

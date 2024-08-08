@@ -16,7 +16,7 @@ class ImageSearchPage extends StatefulWidget {
 
 class _ImageSearchPageState extends BasicState<ImageSearchPage> with WidgetUtilsMixin {
   final service = GetIt.instance.get<GQClient>();
-  final imagesStream = BehaviorSubject.seeded(<ProductIndex>[]);
+  final imagesStream = BehaviorSubject.seeded(<Sku>[]);
   final inputStream = BehaviorSubject.seeded("");
   final _selectedOption = BehaviorSubject.seeded(true);
   final _waitingOption = BehaviorSubject.seeded(false);
@@ -124,7 +124,7 @@ class _ImageSearchPageState extends BasicState<ImageSearchPage> with WidgetUtils
                               width: 50,
                             ),
                           )
-                        : StreamBuilder<List<ProductIndex>>(
+                        : StreamBuilder<List<Sku>>(
                             stream: imagesStream,
                             builder: (context, snapshot) {
                               if (snapshot.hasError) {
@@ -153,23 +153,20 @@ class _ImageSearchPageState extends BasicState<ImageSearchPage> with WidgetUtils
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Text("${lang.name} : ${e.name}"),
+                                                Text("${lang.name} : ${e.product.name}"),
                                                 Gap(5),
                                                 Text("${lang.score} : ${e.score}"),
                                                 Gap(5),
                                                 SizedBox(
-                                                  height: 250,
-                                                  width: 200,
-                                                  child: e.imageUrl != null
-                                                      ? ClipRRect(
-                                                          borderRadius: BorderRadius.circular(16),
-                                                          child: Image.network(
-                                                            e.imageUrl!,
-                                                            fit: BoxFit.fill,
-                                                          ),
-                                                        )
-                                                      : Placeholder(),
-                                                ),
+                                                    height: 250,
+                                                    width: 200,
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(16),
+                                                      child: Image.network(
+                                                        e.imageUrl,
+                                                        fit: BoxFit.fill,
+                                                      ),
+                                                    )),
                                                 Gap(16),
                                                 SizedBox(
                                                   child: SelectableText("${lang.productId} : ${e.id}"),

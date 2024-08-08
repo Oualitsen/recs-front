@@ -10,39 +10,39 @@ import 'package:recs_front/src/widgets/editing_buttons.dart';
 import 'package:recs_front/src/widgets/widget_utils_mixin.dart';
 import 'package:rxdart/rxdart.dart';
 
-class IndexedProducts extends StatefulWidget {
-  final ProductName product;
+class IndexedProductsWidget extends StatefulWidget {
+  final Sku sku;
   final VoidCallback onSave;
   final VoidCallback onRefresh;
-  final List<IndexedProduct> indexedProducts;
-  const IndexedProducts({
+  final List<Sku> indexedSkuList;
+  const IndexedProductsWidget({
     super.key,
-    required this.product,
+    required this.sku,
     required this.onSave,
-    required this.indexedProducts,
+    required this.indexedSkuList,
     required this.onRefresh,
   });
 
   @override
-  State<IndexedProducts> createState() => IndexedProductsState();
+  State<IndexedProductsWidget> createState() => IndexedProductsWidgetState();
 }
 
-class IndexedProductsState extends BasicState<IndexedProducts>
+class IndexedProductsWidgetState extends BasicState<IndexedProductsWidget>
     with WidgetUtilsMixin, AutomaticKeepAliveClientMixin {
   final service = GetIt.instance.get<GQClient>();
   final undoRedoKey = GlobalKey<EditingButtonsState>();
-  final indexedProductStream = BehaviorSubject.seeded(<IndexedProduct>[]);
+  final indexedProductStream = BehaviorSubject.seeded(<Sku>[]);
   final selectProductsKey = GlobalKey<SelectProductsState>();
   @override
   void initState() {
-    indexedProductStream.add(widget.indexedProducts);
+    indexedProductStream.add(widget.indexedSkuList);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return StreamBuilder<List<IndexedProduct>>(
+    return StreamBuilder<List<Sku>>(
         stream: indexedProductStream,
         initialData: indexedProductStream.value,
         builder: (context, snapshot) {
@@ -54,7 +54,7 @@ class IndexedProductsState extends BasicState<IndexedProducts>
             children: [
               Padding(
                 padding: const EdgeInsets.all(10),
-                child: EditingButtons<List<IndexedProduct>>(
+                child: EditingButtons<List<Sku>>(
                   key: undoRedoKey,
                   initValue: [...data],
                   onSave: widget.onSave,
@@ -69,7 +69,7 @@ class IndexedProductsState extends BasicState<IndexedProducts>
                           width: 900,
                           child: SelectProducts(
                             key: selectProductsKey,
-                            originalProduct: widget.product,
+                            originalProduct: widget.sku,
                           ),
                         ),
                         actions: [getButtons(onSave: onYamlSave, elevatedCancelButton: true)],
@@ -87,7 +87,7 @@ class IndexedProductsState extends BasicState<IndexedProducts>
               SizedBox(
                 height: 300,
                 child: ReorderableListWidget(
-                  originalProduct: widget.product,
+                  originalProduct: widget.sku,
                   queueItems: data,
                   onReorder: (int oldIndex, int newIndex) {
                     if (oldIndex < newIndex) {
@@ -107,41 +107,21 @@ class IndexedProductsState extends BasicState<IndexedProducts>
   }
 
   void onYamlSave() {
-    List<Product>? selected = selectProductsKey.currentState?.getYmalProducts();
+    List<Sku>? selected = selectProductsKey.currentState?.getYmalProducts();
     if (selected != null) {
-      List<IndexedProduct> data = indexedProductStream.value;
+      List<Sku> data = indexedProductStream.value;
       Set<String> productIds = selected.map((e) => e.id).toSet();
-      List<ProductInfo> toAdd =
-          data.map((e) => e.product).where((element) => !productIds.contains(element.id)).toList();
-      List<ProductInfo> update = [
-        ...selected.map((e) => ProductInfo(
-            brand: e.brand,
-            category: e.category,
-            creationDate: e.creationDate,
-            id: e.id,
-            imageUrl: e.imageUrl,
-            lastUpdate: e.lastUpdate,
-            name: e.name,
-            oldPrice: e.oldPrice,
-            price: e.price)),
-        ...toAdd
-      ];
-      int index = 0;
-      var indexedItems = update.map((product) => IndexedProduct(product: product, index: index++)).toList();
-      data.clear();
-      data.addAll(indexedItems);
-      indexedProductStream.add(data);
-      undoRedoKey.currentState?.updateStack([...data]);
+      List<Sku> toAdd = data.where((sku) => !productIds.contains(sku.id)).toList();
 
       Navigator.of(context).pop();
     }
   }
 
-  List<IndexedProduct> getItems() {
+  List<Sku> getItems() {
     return [...indexedProductStream.value];
   }
 
-  updateItems(List<IndexedProduct> items) {
+  updateItems(List<Sku> items) {
     var data = indexedProductStream.value;
     data.clear();
     data.addAll(items);

@@ -28,7 +28,7 @@ class _CategoryTableState extends BasicState<CategoryTable> with WidgetUtilsMixi
         return DataRow(cells: [
           DataCell(Text(data.id)),
           DataCell(Text(data.name)),
-          DataCell(Text(data.parent?.name ?? lang.na.toUpperCase())),
+          DataCell(Text(lang.na.toUpperCase())),
         ]);
       },
     );

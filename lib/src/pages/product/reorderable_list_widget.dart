@@ -6,8 +6,8 @@ import 'package:recs_front/src/utils/lang.dart';
 class ReorderableListWidget extends StatelessWidget {
   final double width;
   final double height;
-  final ProductName originalProduct;
-  final List<IndexedProduct> queueItems;
+  final Sku originalProduct;
+  final List<Sku> queueItems;
   final Function(int oldIndex, int newIndex) onReorder;
   const ReorderableListWidget({
     super.key,
@@ -34,22 +34,20 @@ class ReorderableListWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.min,
               children: [
-                SelectableText(originalProduct.name),
-                originalProduct.imageUrl != null
-                    ? SizedBox(
-                        width: width,
-                        height: 200,
-                        child: Image.network(
-                          originalProduct.imageUrl!,
-                          width: width,
-                          height: 200,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Text("${lang.errors} : ${originalProduct.imageUrl}");
-                          },
-                        ),
-                      )
-                    : Text("${lang.errors} : ${originalProduct.imageUrl}"),
+                SelectableText(originalProduct.product.name),
+                SizedBox(
+                  width: width,
+                  height: 200,
+                  child: Image.network(
+                    originalProduct.imageUrl!,
+                    width: width,
+                    height: 200,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Text("${lang.errors} : ${originalProduct.imageUrl}");
+                    },
+                  ),
+                ),
                 SelectableText("${lang.id} : ${originalProduct.id}"),
               ],
             ),
@@ -65,7 +63,7 @@ class ReorderableListWidget extends StatelessWidget {
             children: queueItems
                 .map(
                   (e) => Card(
-                    key: Key(e.index.toString()),
+                    key: Key(queueItems.indexOf(e).toString()),
                     color: Colors.blueGrey[50],
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 15),
@@ -77,17 +75,15 @@ class ReorderableListWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SelectableText(e.product.name),
-                          e.product.imageUrl != null
-                              ? Image.network(
-                                  e.product.imageUrl!,
-                                  width: width,
-                                  height: 200,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Text("${lang.errors} : ${e.product.imageUrl}");
-                                  },
-                                )
-                              : Text("${lang.errors} : ${e.product.imageUrl}"),
+                          Image.network(
+                            e.imageUrl,
+                            width: width,
+                            height: 200,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Text("${lang.errors} : ${e.imageUrl}");
+                            },
+                          ),
                           SelectableText("${lang.id} : ${e.product.id}"),
                         ],
                       ),

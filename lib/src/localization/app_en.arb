@@ -252,5 +252,11 @@
   "productId":"Product ID",
   "textSearch":"Text Search",
   "score":"Score",
-  "loading": "Loading ..."
+  "loading": "Loading ...",
+  "skuCount": "SKU count",
+  "sku": "SKU",
+  "productImage": "Image",
+  "color": "Color",
+  "inventory": "Inventory",
+  "seasons": "Seasons"
 }

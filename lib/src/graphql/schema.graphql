@@ -6,10 +6,18 @@ interface BasicEntity {
   creationDate: Long!
   lastUpdate: Long!
 }
+
+interface IndexedEntity implements BasicEntity {
+  id: ID!
+  score: Float!
+  creationDate: Long!
+  lastUpdate: Long!
+}
 ################################# QUERIES #############################
 
 type Query {
   sayHello: String!
+  importData: String
   getProductById(productId: String!): Product!
   getProducts(pageInfo: PageInfo!): [Product!]!
   getCategoryById(categoryId: String!): Category!
@@ -18,9 +26,13 @@ type Query {
   countCategories: Long!
   searchProducts(pageInfo: PageInfo!, params: ProductParamSearch!): [Product!]!
   countSearchProduct(params: ProductParamSearch!): Long!
-  imageSearch(productId: String!): [Product!]!
-  imageSearchByText(data: String!): [Product!]!
+  imageSearch(productId: String!): [Sku!]!
+  imageSearchByText(data: String!): [Sku!]!
   collectionMappings: [CollectionMapping!]!
+  getSkuById(id: String!): Sku
+  getSkus(pageInfo: PageInfo!): [Sku!]!
+  getSkusByProductId(productId: String!): [Sku!]!
+  countSkus: Long!
 }
 ################################# MUTATIONS #############################
 
@@ -110,51 +122,71 @@ type Account {
   roles: [String!]!
 }
 
-type Product implements BasicEntity {
+type Product implements IndexedEntity & BasicEntity {
   id: ID!
   creationDate: Long!
   lastUpdate: Long!
+  score: Float!
+  brand: String
   name: String!
-  brand: String!
+  designer: String
+  category: String!
+  shortDescription: String
+  longDescription: String
   price: Float!
   oldPrice: Float!
-  imageUrl: String
-  category: Category!
-  similarities: [IndexedProduct!]!
-  complementaries: [IndexedProduct!]!
-  score: Float!
+  forKids: Boolean!
+  gender: String
+  skuCount: Long!
+  skuList: [Sku!]!
 }
 
-type IndexedProduct {
-  index: Int!
+
+
+type Sku implements IndexedEntity & BasicEntity {
+  id: ID!
+  creationDate: Long!
+  lastUpdate: Long!
+  score: Float!
   product: ProductInfo!
+  description: String
+  gtin: String!
+  colorLabel: String!
+  imageUrl: String!
+  inventories: [Inventory!]!
+  totalInventory: Long!
 }
 
 type ProductInfo {
   id: ID!
-  creationDate: Long!
-  lastUpdate: Long!
+  brand: String
   name: String!
-  brand: String!
+  designer: String
+  category: String!
+  shortDescription: String
+  longDescription: String
   price: Float!
   oldPrice: Float!
-  imageUrl: String
-  category: Category!
+  forKids: Boolean!
+  gender: String
 }
 
-type Category implements BasicEntity {
+type Inventory {
+  sizeLabel: String!
+  inventory: Long!
+  seasons: [String!]!
+}
+
+
+type Category implements IndexedEntity & BasicEntity {
   id: ID!
   creationDate: Long!
   lastUpdate: Long!
   name: String!
-  parent: CategoryInfo
+  score: Float!
 }
-type CategoryInfo {
-  id: ID!
-  creationDate: Long!
-  lastUpdate: Long!
-  name: String!
-}
+
+
 
 type CollectionMapping {
   id: ID

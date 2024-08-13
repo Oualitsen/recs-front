@@ -37,7 +37,7 @@ dependencies:
   dotted_border: ^2.0.0+3
   intl_phone_number_input: ^0.7.3+1
   url_strategy: ^0.2.0
-  google_fonts: ^6.1.0
+  google_fonts: 6.1.0
   fluro: ^2.0.5
   dropdown_search: ^5.0.6
   undo: ^1.5.0

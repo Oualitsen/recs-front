@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart';
 import 'package:recs_front/generated/types.gq.dart';
+import 'package:recs_front/src/pages/sku/sku_visually_similar.dart';
 import 'package:recs_front/src/utils/image_utils.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
 
@@ -31,11 +32,22 @@ class _SkuListWidgetState extends BasicState<SkuListWidget> {
         dataToRow: (sku, index) {
           return DataRow(cells: [
             DataCell(ImageUtils.fromNetworkRounded(sku.imageUrl)),
-            DataCell(Text(sku.gtin)),
+            DataCell(
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => VisuallySimillarSkus(sku: sku),
+                      ),
+                    );
+                  },
+                  child: Text(sku.gtin)),
+            ),
             DataCell(Text(sku.product.name)),
             DataCell(Text(sku.colorLabel)),
             DataCell(Text("${sku.totalInventory}")),
-            DataCell(Text("${sku.inventories.expand((e) => e.seasons).toSet().join(", ")}")),
+            DataCell(Text(
+                "${sku.inventories.expand((e) => e.seasons).toSet().join(", ")}")),
           ]);
         });
   }
@@ -48,7 +60,7 @@ class _SkuListWidgetState extends BasicState<SkuListWidget> {
     print("info.size = ${info.pageSize} info.index = ${info.pageIndex}");
     print(
         "list.size = ${widget.skus.length}, from = ${info.pageIndex * info.pageSize} to ${(info.pageIndex + 1) * info.pageSize}");
-    return widget.skus.sublist(
-        info.pageIndex * info.pageSize, min((info.pageIndex + 1) * info.pageSize, widget.skus.length));
+    return widget.skus.sublist(info.pageIndex * info.pageSize,
+        min((info.pageIndex + 1) * info.pageSize, widget.skus.length));
   }
 }

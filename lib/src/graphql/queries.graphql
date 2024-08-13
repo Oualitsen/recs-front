@@ -30,8 +30,8 @@ query getProductById($productId: String!) {
   }
 }
 
-query imageSearch($productId: String!) {
-  imageSearch(productId: $productId) {
+query imageSearch($skuId: String!) {
+  imageSearch(skuId: $skuId) {
     ..._all_fields
   }
 }

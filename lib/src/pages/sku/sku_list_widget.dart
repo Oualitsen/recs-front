@@ -32,15 +32,17 @@ class _SkuListWidgetState extends BasicState<SkuListWidget> {
         dataToRow: (sku, index) {
           return DataRow(cells: [
             DataCell(ImageUtils.fromNetworkRounded(sku.imageUrl)),
-            DataCell(TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => VisuallySimillarSkus(sku: sku),
-                    ),
-                  );
-                },
-                child: Text(sku.gtin))),
+            DataCell(
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => VisuallySimillarSkus(sku: sku),
+                      ),
+                    );
+                  },
+                  child: Text(sku.gtin)),
+            ),
             DataCell(Text(sku.product.name)),
             DataCell(Text(sku.colorLabel)),
             DataCell(Text("${sku.totalInventory}")),

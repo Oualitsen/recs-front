@@ -6,6 +6,7 @@ import 'package:recs_front/generated/client.gq.dart';
 import 'package:recs_front/generated/inputs.gq.dart';
 import 'package:recs_front/generated/types.gq.dart';
 import 'package:recs_front/src/app.dart';
+import 'package:recs_front/src/pages/category/select_category_widget.dart';
 import 'package:recs_front/src/router_config.dart';
 import 'package:recs_front/src/utils/extensions.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
@@ -28,20 +29,31 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
   final selectedProductsStream = BehaviorSubject.seeded(<ProductDetails>[]);
   final tableKey = GlobalKey<table.LazyPaginatedDataTableState>();
   final multiSelectionKey = GlobalKey<MultiSelectWidgetState>();
-  final selectedCategoriesStream = BehaviorSubject.seeded(<Category>{});
-  final allCategoriesStream = BehaviorSubject.seeded(<Category>{});
-  final searchStream = BehaviorSubject.seeded(ProductSearchParams(
-    search: false,
-    info: ProductParamSearch(
-      productId: null,
-      name: null,
-      brand: null,
-      categoryIds: null,
-    ),
+  final selectedCategoryStream = BehaviorSubject<Category?>();
+  final searchStream = BehaviorSubject.seeded(ProductParamSearch(
+    productId: null,
+    name: null,
+    brand: null,
+    categoryIds: null,
   ));
   @override
+  void initState() {
+    selectedCategoryStream.listen((value) {
+      var searchParams = searchStream.value;
+      addToSearchParams(
+        ProductParamSearch(
+            productId: searchParams.productId,
+            name: searchParams.name,
+            brand: searchParams.brand,
+            categoryIds: value != null ? [value.id] : null),
+      );
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ProductSearchParams>(
+    return StreamBuilder<ProductParamSearch>(
         stream: searchStream,
         initialData: searchStream.value,
         builder: (context, snapshot) {
@@ -56,7 +68,6 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
             columns: getColumns(data),
             dataToRow: (data, indexInCurrentPage) {
               return DataRow(cells: [
-                DataCell(CircleAvatar(child: Text(data.name[0]))),
                 DataCell(SelectableText(data.id)),
                 DataCell(
                   TextButton(
@@ -89,15 +100,12 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
           .searchProducts(
             pageInfo:
                 PageInfo(page: pageInfo.pageIndex, size: pageInfo.pageSize),
-            params: params.info,
+            params: params,
           )
           .asStream()
           .map((event) {
         updateCount(event.count);
-        if (!params.search) {
-          var categories = event.searchProducts.map((e) => e.category).toList();
-          allCategoriesStream.add(categories.toSet());
-        }
+
         return event.searchProducts;
       }).first;
     } catch (error, stacktrace) {
@@ -122,117 +130,57 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
     tableKey.currentState?.refreshPage();
   }
 
-  List<DataColumn> getColumns(ProductSearchParams params) {
-    return params.search
-        ? [
-            DataColumn(
-              label: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  var paramsCopy = new ProductSearchParams(
-                      search: params.search, info: params.info);
-                  var val = params;
-                  val.search = false;
-                  val.info = ProductParamSearch(
-                    name: null,
-                    brand: null,
-                    categoryIds: null,
-                    productId: null,
-                  );
-                  selectedCategoriesStream.value.clear();
-                  if (!paramsCopy.info.isNull()) {
-                    reload();
-                  }
-                  searchStream.add(val);
-                },
+  List<DataColumn> getColumns(ProductParamSearch params) {
+    return [
+      DataColumn(label: Text(lang.id)),
+      DataColumn(
+        label: CustomTextInputWidget(
+          onChange: (value) {
+            addToSearchParams(
+              ProductParamSearch(
+                brand: params.brand,
+                name: value,
+                categoryIds: params.categoryIds,
+                productId: params.productId,
               ),
-            ),
-            DataColumn(
-              label: CustomTextInputWidget(
-                width: 200,
-                onChange: (value) {
-                  addToSearchParams(ProductSearchParams(
-                    search: params.search,
-                    info: ProductParamSearch(
-                      productId: value,
-                      brand: params.info.brand,
-                      categoryIds: params.info.categoryIds,
-                      name: params.info.name,
-                    ),
-                  ));
-                },
-                hint: lang.id,
-              ),
-            ),
-            DataColumn(
-              label: CustomTextInputWidget(
-                onChange: (value) {
-                  addToSearchParams(ProductSearchParams(
-                    search: params.search,
-                    info: ProductParamSearch(
-                      name: value,
-                      brand: params.info.brand,
-                      categoryIds: params.info.categoryIds,
-                      productId: params.info.productId,
-                    ),
-                  ));
-                },
-                hint: lang.name,
-              ),
-            ),
-            DataColumn(
-              label: CustomTextInputWidget(
-                onChange: (value) {
-                  addToSearchParams(ProductSearchParams(
-                    search: params.search,
-                    info: ProductParamSearch(
-                      brand: value,
-                      name: params.info.name,
-                      categoryIds: params.info.categoryIds,
-                      productId: params.info.productId,
-                    ),
-                  ));
-                },
-                hint: lang.brand,
-              ),
-            ),
-            DataColumn(label: Text(lang.price)),
-            DataColumn(label: Text(lang.oldPrice)),
-            DataColumn(
-                label: ElevatedButton(
-              child: Text(lang.category),
-              onPressed: selectCategories,
-            )),
-          ]
-        : [
-            DataColumn(
-                label: IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                var val = params;
-                val.search = true;
-                searchStream.add(val);
-              },
-            )),
-            DataColumn(label: Text(lang.id)),
-            DataColumn(label: Text(lang.name)),
-            DataColumn(label: Text(lang.brand)),
-            DataColumn(label: Text(lang.price)),
-            DataColumn(label: Text(lang.oldPrice)),
-            DataColumn(label: Text(lang.category)),
-            DataColumn(label: Text(lang.skuCount)),
-          ];
+            );
+          },
+          hint: lang.name,
+        ),
+      ),
+      DataColumn(label: Text(lang.brand)),
+      DataColumn(label: Text(lang.price)),
+      DataColumn(label: Text(lang.oldPrice)),
+      DataColumn(
+        label: InkWell(
+          child: Row(
+            children: [
+              Text(lang.category),
+              SizedBox(width: 3),
+              Icon(Icons.search),
+            ],
+          ),
+          onTap: selectCategories,
+        ),
+      ),
+      DataColumn(label: Text(lang.skuCount)),
+    ];
   }
 
-  addToSearchParams(ProductSearchParams value) {
+  addToSearchParams(ProductParamSearch value) {
     var current = searchStream.value;
-    if (!current.info.isEqualTo(value.info)) {
+    if (!current.isEqualTo(value)) {
       searchStream.add(value);
       reload();
     }
   }
 
   selectCategories() async {
+    List<Category> initialElements = [];
+    if (selectedCategoryStream.valueOrNull != null) {
+      initialElements = [selectedCategoryStream.value!];
+    }
+
     await showDialog(
       context: context,
       builder: (context) {
@@ -247,29 +195,19 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
           content: SizedBox(
             height: 400,
             width: 500,
-            child: MultiSelectWidget<Category>(
-              key: multiSelectionKey,
-              initialData: selectedCategoriesStream.value.toList(),
-              comparator: (a, b) => a.id == b.id,
-              mapper: (category) => (category.name),
-              onSelectionChanged: (selected) {
-                selectedCategoriesStream.value.clear();
-                selectedCategoriesStream.add(selected.toSet());
-                var params = searchStream.value;
-
-                addToSearchParams(ProductSearchParams(
-                  search: params.search,
-                  info: ProductParamSearch(
-                    name: params.info.name,
-                    brand: params.info.brand,
-                    categoryIds: selected.map((e) => e.id).toList(),
-                    productId: params.info.productId,
-                  ),
-                ));
-                Navigator.of(context).pop();
-              },
-              items: allCategoriesStream.value.toList(),
-            ),
+            child: SelectCategoryWidget(
+                selectedCategory: (category) {
+                  if (category.isNotEmpty &&
+                      selectedCategoryStream.valueOrNull != category.first) {
+                    selectedCategoryStream.add(category.first);
+                  } else {
+                    if (selectedCategoryStream.valueOrNull != null) {
+                      selectedCategoryStream.add(null);
+                    }
+                  }
+                  Navigator.of(context).pop();
+                },
+                initialElements: initialElements),
           ),
         );
       },
@@ -281,13 +219,4 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
 
   @override
   List<Subject> get subjects => [];
-}
-
-class ProductSearchParams {
-  bool search;
-  ProductParamSearch info;
-  ProductSearchParams({
-    required this.search,
-    required this.info,
-  });
 }

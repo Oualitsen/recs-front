@@ -13,8 +13,10 @@ import 'package:recs_front/src/utils/lang.dart';
 import 'package:recs_front/src/widgets/route_guard_widget.dart';
 
 class WidgetUtils {
-  static Widget wrapRoute(Widget Function(BuildContext context, DeviceScreenType type) route,
-      {guard = true, useTemplate = true}) {
+  static Widget wrapRoute(
+      Widget Function(BuildContext context, DeviceScreenType type) route,
+      {guard = true,
+      useTemplate = true}) {
     final _authManager = Injector.provideAuthManager();
     if (guard) {
       return RouteGuardWidget(
@@ -24,7 +26,7 @@ class WidgetUtils {
           var user = _authManager.currentUser;
           if (user != null) {
             return ResponsiveBuilder((context, info) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 100),
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
                   child: route(context, info.type),
                 ));
           } else {
@@ -126,7 +128,8 @@ AppBar defaultAppBar(BuildContext context, {List<Widget>? actions}) {
 
 Widget wrap(Widget child, {double radius = 16}) => Container(
     decoration: BoxDecoration(
-        color: const Color(0xFFf2f2f2), borderRadius: BorderRadius.all(Radius.circular(radius))),
+        color: const Color(0xFFf2f2f2),
+        borderRadius: BorderRadius.all(Radius.circular(radius))),
     child: child);
 
 Widget logoutButton(BuildContext context) {

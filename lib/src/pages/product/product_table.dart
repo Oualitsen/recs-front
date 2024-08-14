@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart' as table;
+import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart'
+    as table;
 import 'package:recs_front/generated/client.gq.dart';
 import 'package:recs_front/generated/inputs.gq.dart';
 import 'package:recs_front/generated/types.gq.dart';
 import 'package:recs_front/src/app.dart';
+import 'package:recs_front/src/router_config.dart';
 import 'package:recs_front/src/utils/extensions.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
 import 'package:recs_front/src/widgets/custom_text_input_widget.dart';
@@ -19,7 +21,8 @@ class ProductTableWidget extends StatefulWidget {
   State<ProductTableWidget> createState() => _ProductTableWidgetState();
 }
 
-class _ProductTableWidgetState extends BasicState<ProductTableWidget> with WidgetUtilsMixin {
+class _ProductTableWidgetState extends BasicState<ProductTableWidget>
+    with WidgetUtilsMixin {
   final service = GetIt.instance.get<GQClient>();
   final totalCount = BehaviorSubject.seeded(0);
   final selectedProductsStream = BehaviorSubject.seeded(<ProductDetails>[]);
@@ -57,7 +60,8 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget> with Widge
                 DataCell(SelectableText(data.id)),
                 DataCell(
                   TextButton(
-                    onPressed: () => router.navigateTo(navKey.currentContext!, "/products/${data.id}"),
+                    onPressed: () => router.navigateTo(
+                        navKey.currentContext!, "/products/${data.id}"),
                     child: Text(data.name),
                   ),
                 ),
@@ -68,7 +72,8 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget> with Widge
                 DataCell(
                   TextButton(
                     child: Text("${data.skuCount}"),
-                    onPressed: () => router.navigateTo(navKey.currentContext!, "/skus/${data.id}"),
+                    onPressed: () => router.navigateTo(
+                        navKey.currentContext!, "/skus/${data.id}"),
                   ),
                 ),
               ]);
@@ -82,7 +87,8 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget> with Widge
     try {
       return service.queries
           .searchProducts(
-            pageInfo: PageInfo(page: pageInfo.pageIndex, size: pageInfo.pageSize),
+            pageInfo:
+                PageInfo(page: pageInfo.pageIndex, size: pageInfo.pageSize),
             params: params.info,
           )
           .asStream()
@@ -123,7 +129,8 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget> with Widge
               label: IconButton(
                 icon: Icon(Icons.close),
                 onPressed: () {
-                  var paramsCopy = new ProductSearchParams(search: params.search, info: params.info);
+                  var paramsCopy = new ProductSearchParams(
+                      search: params.search, info: params.info);
                   var val = params;
                   val.search = false;
                   val.info = ProductParamSearch(
@@ -232,7 +239,10 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget> with Widge
         return AlertDialog(
           title: Text(
             lang.categories,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black87),
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(color: Colors.black87),
           ),
           content: SizedBox(
             height: 400,

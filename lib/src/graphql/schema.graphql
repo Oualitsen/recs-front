@@ -26,13 +26,19 @@ type Query {
   countCategories: Long!
   searchProducts(pageInfo: PageInfo!, params: ProductParamSearch!): [Product!]!
   countSearchProduct(params: ProductParamSearch!): Long!
-  imageSearch(productId: String!): [Sku!]!
+  imageSearch(skuId: String!): [Sku!]!
   imageSearchByText(data: String!): [Sku!]!
   collectionMappings: [CollectionMapping!]!
   getSkuById(id: String!): Sku
   getSkus(pageInfo: PageInfo!): [Sku!]!
   getSkusByProductId(productId: String!): [Sku!]!
   countSkus: Long!
+  aggregate: [SkuKey!]!
+}
+type SkuKey {
+  imageUrl: String!
+  colorLabel: String!
+  docCount: Int!
 }
 ################################# MUTATIONS #############################
 
@@ -130,7 +136,7 @@ type Product implements IndexedEntity & BasicEntity {
   brand: String
   name: String!
   designer: String
-  category: String!
+  category: Category!
   shortDescription: String
   longDescription: String
   price: Float!
@@ -162,7 +168,7 @@ type ProductInfo {
   brand: String
   name: String!
   designer: String
-  category: String!
+  category: Category!
   shortDescription: String
   longDescription: String
   price: Float!
@@ -182,8 +188,14 @@ type Category implements IndexedEntity & BasicEntity {
   id: ID!
   creationDate: Long!
   lastUpdate: Long!
-  name: String!
   score: Float!
+  name: String!
+  parent: CategoryInfo
+}
+
+type CategoryInfo {
+  id: ID!
+  name: String!
 }
 
 

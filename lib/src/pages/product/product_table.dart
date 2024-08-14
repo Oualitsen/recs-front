@@ -26,7 +26,7 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget> with Widge
   final tableKey = GlobalKey<table.LazyPaginatedDataTableState>();
   final multiSelectionKey = GlobalKey<MultiSelectWidgetState>();
   final selectedCategoriesStream = BehaviorSubject.seeded(<Category>{});
-  final allCategoriesStream = BehaviorSubject.seeded(<String>{});
+  final allCategoriesStream = BehaviorSubject.seeded(<Category>{});
   final searchStream = BehaviorSubject.seeded(ProductSearchParams(
     search: false,
     info: ProductParamSearch(
@@ -64,7 +64,7 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget> with Widge
                 DataCell(SelectableText(data.brand ?? lang.na)),
                 DataCell(SelectableText(data.price.toString())),
                 DataCell(SelectableText(data.oldPrice.toString())),
-                DataCell(SelectableText(data.category)),
+                DataCell(SelectableText(data.category.name)),
                 DataCell(
                   TextButton(
                     child: Text("${data.skuCount}"),
@@ -258,9 +258,7 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget> with Widge
                 ));
                 Navigator.of(context).pop();
               },
-              items: allCategoriesStream.value
-                  .map((e) => Category(creationDate: 0, id: e, lastUpdate: 0, name: e, score: 0))
-                  .toList(),
+              items: allCategoriesStream.value.toList(),
             ),
           ),
         );

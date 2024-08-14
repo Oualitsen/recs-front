@@ -7,7 +7,9 @@ fragment productFrag on Product {
   name
   brand
   designer
-  category
+  category {
+    ..._all_fields
+  }
   shortDescription
   longDescription
   price
@@ -25,7 +27,9 @@ fragment productDetailsFrag on Product {
   name
   brand
   designer
-  category
+  category {
+    ..._all_fields
+  }
   shortDescription
   longDescription
   price
@@ -43,7 +47,9 @@ fragment allFieldsProduct on Product {
   name
   brand
   designer
-  category
+  category {
+    ..._all_fields
+  }
   shortDescription
   longDescription
   price

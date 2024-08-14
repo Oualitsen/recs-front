@@ -24,6 +24,7 @@ pipeline {
             steps {
                 sh 'flutter pub get'
                 sh 'flutter pub run build_runner build -d'
+                sh 'flutter pub run build_runner build -d'
                 echo 'flutter build web'
                 sh "flutter build web --dart-define=URL_BASE=$URL_BASE --dart-define=WS_URL_BASE=$WS_URL_BASE"
             }

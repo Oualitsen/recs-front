@@ -260,5 +260,7 @@
   "inventory": "Inventory",
   "seasons": "Seasons",
   "search": "Search",
-  "mappings": "Mappings"
+  "mappings": "Mappings",
+  "colorAdjacency": "Color adjacency",
+  "distance": "Distance"
 }

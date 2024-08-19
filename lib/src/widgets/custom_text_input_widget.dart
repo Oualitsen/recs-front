@@ -11,6 +11,7 @@ class CustomTextInputWidget extends StatefulWidget {
   final bool showPrefixIcon;
   final TextStyle? hintStyle;
   final Function(String value)? onChange;
+  final String? Function(String? value)? validator;
   const CustomTextInputWidget({
     super.key,
     this.width,
@@ -23,6 +24,7 @@ class CustomTextInputWidget extends StatefulWidget {
     this.showPrefixIcon = true,
     this.hintStyle,
     this.textColor,
+    this.validator,
   });
 
   @override
@@ -31,6 +33,7 @@ class CustomTextInputWidget extends StatefulWidget {
 
 class CustomTextInputWidgetState extends State<CustomTextInputWidget> {
   final textInputCtrl = TextEditingController();
+  final key = GlobalKey<FormState>();
   @override
   void initState() {
     if (widget.initValue != null) {
@@ -44,62 +47,76 @@ class CustomTextInputWidgetState extends State<CustomTextInputWidget> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(width: 1, color: Colors.transparent),
-        borderRadius: widget.borderRadius != null ? BorderRadius.circular(widget.borderRadius!) : null,
+        borderRadius: widget.borderRadius != null
+            ? BorderRadius.circular(widget.borderRadius!)
+            : null,
       ),
       width: widget.width ?? 150,
       height: widget.height ?? 32,
-      child: TextFormField(
-        onChanged: (value) {
-          widget.onChange?.call(value);
-        },
-        style: TextStyle(color: widget.textColor ?? Colors.black),
-        controller: textInputCtrl,
-        decoration: InputDecoration(
-          hintStyle: widget.hintStyle,
-          filled: widget.color != null,
-          fillColor: widget.color,
-          prefixIconConstraints: BoxConstraints(
-            maxWidth: widget.height ?? 32,
-            minWidth: widget.height ?? 32,
-            maxHeight: widget.height ?? 32,
-            minHeight: widget.height ?? 32,
-          ),
-          prefixIcon: widget.showPrefixIcon
-              ? Icon(
-                  Icons.search,
-                  size: 16,
-                  color: Colors.black38,
-                )
-              : null,
-          hintText: widget.hint,
-          contentPadding: const EdgeInsets.symmetric(vertical: 1, horizontal: 5.0),
-          border: OutlineInputBorder(
-            gapPadding: 0,
-            borderSide: BorderSide(width: 1, color: Colors.black45),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          enabledBorder: OutlineInputBorder(
-            gapPadding: 0,
-            borderSide: BorderSide(width: 1, color: Colors.black45),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            gapPadding: 0,
-            borderSide: BorderSide(width: 1, color: Colors.black45),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          focusedBorder: OutlineInputBorder(
-            gapPadding: 0,
-            borderSide: BorderSide(width: 1, color: Colors.black45),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          errorBorder: OutlineInputBorder(
-            gapPadding: 0,
-            borderSide: BorderSide(width: 1, color: Colors.red),
-            borderRadius: BorderRadius.circular(16),
+      child: Form(
+        key: key,
+        child: TextFormField(
+          onChanged: (value) {
+            widget.onChange?.call(value);
+          },
+          validator: widget.validator,
+          style: TextStyle(color: widget.textColor ?? Colors.black),
+          controller: textInputCtrl,
+          decoration: InputDecoration(
+            hintStyle: widget.hintStyle,
+            filled: widget.color != null,
+            fillColor: widget.color,
+            prefixIconConstraints: BoxConstraints(
+              maxWidth: widget.height ?? 32,
+              minWidth: widget.height ?? 32,
+              maxHeight: widget.height ?? 32,
+              minHeight: widget.height ?? 32,
+            ),
+            prefixIcon: widget.showPrefixIcon
+                ? Icon(
+                    Icons.search,
+                    size: 16,
+                    color: Colors.black38,
+                  )
+                : null,
+            hintText: widget.hint,
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 1, horizontal: 5.0),
+            border: OutlineInputBorder(
+              gapPadding: 0,
+              borderSide: BorderSide(width: 1, color: Colors.black45),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            enabledBorder: OutlineInputBorder(
+              gapPadding: 0,
+              borderSide: BorderSide(width: 1, color: Colors.black45),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              gapPadding: 0,
+              borderSide: BorderSide(width: 1, color: Colors.black45),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            focusedBorder: OutlineInputBorder(
+              gapPadding: 0,
+              borderSide: BorderSide(width: 1, color: Colors.black45),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            errorBorder: OutlineInputBorder(
+              gapPadding: 0,
+              borderSide: BorderSide(width: 1, color: Colors.red),
+              borderRadius: BorderRadius.circular(16),
+            ),
           ),
         ),
       ),
     );
+  }
+
+  String? getValue() {
+    if (key.currentState?.validate() ?? false) {
+      return textInputCtrl.text;
+    }
+    return null;
   }
 }

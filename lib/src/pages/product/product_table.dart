@@ -11,6 +11,7 @@ import 'package:recs_front/src/app.dart';
 import 'package:recs_front/src/pages/category/select_category_widget.dart';
 import 'package:recs_front/src/router_config.dart';
 import 'package:recs_front/src/utils/extensions.dart';
+import 'package:recs_front/src/utils/image_utils.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
 import 'package:recs_front/src/widgets/custom_text_input_widget.dart';
 import 'package:recs_front/src/widgets/multi_select_widget.dart';
@@ -70,6 +71,9 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
             columns: getColumns(data),
             dataToRow: (data, indexInCurrentPage) {
               return DataRow(cells: [
+                DataCell(InkWell(
+                    onTap: () => showImage(data),
+                    child: ImageUtils.fromNetworkRounded(data.firstImageUrl))),
                 DataCell(SelectableText(data.id)),
                 DataCell(
                   TextButton(
@@ -134,6 +138,7 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
 
   List<DataColumn> getColumns(ProductParamSearch params) {
     return [
+      DataColumn(label: Text(lang.productImage)),
       DataColumn(label: Text(lang.id)),
       DataColumn(
         label: CustomTextInputWidget(
@@ -255,6 +260,29 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Future showImage(ProductDetails data) async {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SelectableText("${lang.id} : ${data.id}"),
+            IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: Icon(FontAwesomeIcons.x),
+            )
+          ],
+        ),
+        content: SizedBox(
+          height: 400,
+          width: 400,
+          child: ImageUtils.fromNetwork(data.firstImageUrl),
+        ),
       ),
     );
   }

@@ -34,6 +34,8 @@ type Query {
   getSkusByProductId(productId: String!): [Sku!]!
   countSkus: Long!
   aggregate: [SkuKey!]!
+  listIndexElements(pageInfo: PageInfo!): [ColorIndex!]!
+  countIndexElements: Long!
 }
 type SkuKey {
   imageUrl: String!
@@ -60,6 +62,8 @@ type Mutation {
   ): Product!
 
   saveCollectionMapping(input: CollectionMappingInput!): CollectionMapping!
+  generateIndex: String
+  updateDistance(id: String!, distance: Float!): ID
 }
 ################################# TYPES #############################
 
@@ -126,6 +130,18 @@ type ResourceAccess {
 
 type Account {
   roles: [String!]!
+}
+
+type ColorIndex implements IndexedEntity & BasicEntity {
+  id: ID!
+  creationDate: Long!
+  lastUpdate: Long!
+  score: Float!
+  color1: String!
+  color2: String!
+  name1: String!
+  name2: String!
+  distance: Float
 }
 
 type Product implements IndexedEntity & BasicEntity {

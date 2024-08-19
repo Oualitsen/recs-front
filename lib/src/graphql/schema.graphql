@@ -145,9 +145,8 @@ type Product implements IndexedEntity & BasicEntity {
   gender: String
   skuCount: Long!
   skuList: [Sku!]!
+  firstImageUrl: String!
 }
-
-
 
 type Sku implements IndexedEntity & BasicEntity {
   id: ID!
@@ -183,7 +182,6 @@ type Inventory {
   seasons: [String!]!
 }
 
-
 type Category implements IndexedEntity & BasicEntity {
   id: ID!
   creationDate: Long!
@@ -197,8 +195,6 @@ type CategoryInfo {
   id: ID!
   name: String!
 }
-
-
 
 type CollectionMapping {
   id: ID

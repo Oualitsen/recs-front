@@ -1,4 +1,3 @@
-
 fragment productFrag on Product {
   id
   creationDate
@@ -18,7 +17,6 @@ fragment productFrag on Product {
   gender
 }
 
-
 fragment productDetailsFrag on Product {
   id
   creationDate
@@ -37,6 +35,7 @@ fragment productDetailsFrag on Product {
   forKids
   gender
   skuCount
+  firstImageUrl
 }
 
 fragment allFieldsProduct on Product {
@@ -57,10 +56,9 @@ fragment allFieldsProduct on Product {
   forKids
   gender
   skuList {
-    ... _all_fields
+    ..._all_fields
   }
 }
-
 
 fragment productIndexFrag on Product {
   id

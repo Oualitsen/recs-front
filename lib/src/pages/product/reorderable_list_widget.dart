@@ -39,12 +39,13 @@ class ReorderableListWidget extends StatelessWidget {
                   width: width,
                   height: 200,
                   child: Image.network(
-                    originalProduct.imageUrl!,
+                    originalProduct.imageUrl,
                     width: width,
                     height: 200,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      return Text("${lang.errors} : ${originalProduct.imageUrl}");
+                      return Text(
+                          "${lang.errors} : ${originalProduct.imageUrl}");
                     },
                   ),
                 ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart'
     as table;
@@ -152,16 +154,11 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
       DataColumn(label: Text(lang.price)),
       DataColumn(label: Text(lang.oldPrice)),
       DataColumn(
-        label: InkWell(
-          child: Row(
-            children: [
-              Text(lang.category),
-              SizedBox(width: 3),
-              Icon(Icons.search),
-            ],
-          ),
-          onTap: selectCategories,
-        ),
+        label: StreamBuilder<Category?>(
+            stream: selectedCategoryStream,
+            builder: (context, snapshot) {
+              return getCategoryColumnWidget(snapshot.data);
+            }),
       ),
       DataColumn(label: Text(lang.skuCount)),
     ];
@@ -214,9 +211,51 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
     );
   }
 
-  @override
-  List<ChangeNotifier> get notifiers => [];
-
-  @override
-  List<Subject> get subjects => [];
+  Widget getCategoryColumnWidget(Category? data) {
+    if (data == null) {
+      return SizedBox(
+        width: 150,
+        child: InkWell(
+          child: Row(
+            children: [
+              Text(lang.category),
+              SizedBox(width: 3),
+              Icon(Icons.search),
+            ],
+          ),
+          onTap: selectCategories,
+        ),
+      );
+    }
+    return Container(
+      width: 150,
+      height: 30,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border.all(width: 1, color: Colors.black38),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Gap(5),
+          SizedBox(
+              width: 90,
+              child: Text(
+                data.name,
+                overflow: TextOverflow.ellipsis,
+              )),
+          Gap(5),
+          IconButton(
+            onPressed: () => selectedCategoryStream.add(null),
+            icon: Icon(
+              FontAwesomeIcons.x,
+              size: 16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

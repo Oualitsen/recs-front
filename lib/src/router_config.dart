@@ -2,7 +2,6 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recs_front/src/data_mapping/data_mapping_page.dart';
-import 'package:recs_front/src/data_mapping/data_mapping_widget.dart';
 import 'package:recs_front/src/pages/home/home_page.dart';
 import 'package:recs_front/src/pages/images/image_search_page.dart';
 import 'package:recs_front/src/pages/product/product_details_page.dart';

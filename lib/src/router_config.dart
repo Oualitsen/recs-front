@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recs_front/src/data_mapping/data_mapping_page.dart';
 import 'package:recs_front/src/pages/category/category_tree.dart';
+import 'package:recs_front/src/pages/color_index/color_adjacency_page.dart';
 import 'package:recs_front/src/pages/home/home_page.dart';
 import 'package:recs_front/src/pages/images/image_search_page.dart';
 import 'package:recs_front/src/pages/product/product_details_page.dart';
@@ -39,6 +40,12 @@ final menuButtonList = <MenuButtonInfo>[
     getTitle: (context) => getLang(context).categoriesTree,
     routeName: "categories",
     destinationRoute: (context, params) => CategoriesTree(),
+  ),
+  MenuButtonInfo(
+    icon: FontAwesomeIcons.gear,
+    getTitle: (context) => getLang(context).colorAdjacency,
+    routeName: "adjacency",
+    destinationRoute: (context, params) => ColorAdjacencyPage(),
   ),
   MenuButtonInfo(
     icon: FontAwesomeIcons.userLarge,

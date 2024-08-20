@@ -71,7 +71,8 @@ mixin WidgetUtilsMixin<T extends StatefulWidget> on BasicState<T> {
         ],
       );
 
-  Widget _getSaveButton(String? label, Function()? onPressed, Widget? saveIcon) {
+  Widget _getSaveButton(
+      String? label, Function()? onPressed, Widget? saveIcon) {
     return FilledButton(
         onPressed: onPressed,
         child: Row(
@@ -127,7 +128,8 @@ mixin WidgetUtilsMixin<T extends StatefulWidget> on BasicState<T> {
         : Text(label);
   }
 
-  Future<SnackBarClosedReason> showSnackBar2(BuildContext context, String content) {
+  Future<SnackBarClosedReason> showSnackBar2(
+      BuildContext context, String content) {
     return ScaffoldMessenger.of(context)
         .showSnackBar(
           SnackBar(
@@ -156,7 +158,11 @@ mixin WidgetUtilsMixin<T extends StatefulWidget> on BasicState<T> {
   }
 
   Stream confirm(String title, String message) {
-    return showAlertDialog(context: context, title: title, message: message, actions: getOkCancel())
+    return showAlertDialog(
+            context: context,
+            title: title,
+            message: message,
+            actions: getOkCancel())
         .asStream()
         .where((event) => event == true);
   }
@@ -168,7 +174,8 @@ mixin WidgetUtilsMixin<T extends StatefulWidget> on BasicState<T> {
     );
   }
 
-  Stream<E> push<E extends Object?>(BuildContext context, Widget widget, {bool dialog = false}) {
+  Stream<E> push<E extends Object?>(BuildContext context, Widget widget,
+      {bool dialog = false}) {
     if (dialog) {
       return showDialog<E>(
         context: context,
@@ -186,7 +193,9 @@ mixin WidgetUtilsMixin<T extends StatefulWidget> on BasicState<T> {
         .map((event) => event!);
   }
 
-  Widget wrapInIgnorePointer({required Widget child, required void Function() onTap}) => InkWell(
+  Widget wrapInIgnorePointer(
+          {required Widget child, required void Function() onTap}) =>
+      InkWell(
         onTap: onTap,
         child: IgnorePointer(
           child: child,
@@ -203,7 +212,8 @@ mixin WidgetUtilsMixin<T extends StatefulWidget> on BasicState<T> {
 
   Future<List<DateTime>?> checkDates(OmniDateTimePickerType dateTime) async {
     List<DateTime>? dateTimeList = await showDateTime(dateTime);
-    if ((dateTimeList![1].isBefore(dateTimeList[0])) || (dateTimeList[1].isAtSameMomentAs(dateTimeList[0]))) {
+    if ((dateTimeList![1].isBefore(dateTimeList[0])) ||
+        (dateTimeList[1].isAtSameMomentAs(dateTimeList[0]))) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(lang.invalidDateRange),

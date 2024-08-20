@@ -5,8 +5,8 @@ mutation adminLogin($username: String!, $password: String!) {
 }
 
 mutation refreshToken($token: String!) {
-   refreshToken(token: $token) {
-        ..._all_fields
+  refreshToken(token: $token) {
+    ..._all_fields
   }
 }
 
@@ -35,7 +35,11 @@ mutation updateProductComplementaries(
 }
 
 mutation saveCollectionMapping($input: CollectionMappingInput!) {
-   saveCollectionMapping(input: $input) {
-        ..._all_fields
+  saveCollectionMapping(input: $input) {
+    ..._all_fields
   }
+}
+
+mutation updateDistance($id: String!, $distance: Float!) {
+  updateDistance(id: $id, distance: $distance)
 }

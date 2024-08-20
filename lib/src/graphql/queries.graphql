@@ -64,3 +64,9 @@ query getCategoryTree {
     ..._all_fields
   }
 }
+query listIndexElements($pageInfo: PageInfo!) {
+  listIndexElements(pageInfo: $pageInfo) {
+    ..._all_fields
+  }
+  total: countIndexElements
+}

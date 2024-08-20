@@ -242,7 +242,7 @@
   "products": "Products",
   "id": "ID",
   "parentCategory": "Parent category",
-  "categories": "Catergories",
+  "categories": "Categories",
   "index": "Index",
   "similarities": "Similarities",
   "complementaries": "Complementaries",
@@ -260,5 +260,7 @@
   "inventory": "Inventory",
   "seasons": "Seasons",
   "search": "Search",
-  "mappings": "Mappings"
+  "mappings": "Mappings",
+  "categoriesTree": "Categories tree",
+  "childCategories": "Child categories"
 }

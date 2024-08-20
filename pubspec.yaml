@@ -43,6 +43,7 @@ dependencies:
   undo: ^1.5.0
   dart_jsonwebtoken: ^2.13.0
   csv: ^5.0.2
+  animated_tree_view: ^2.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -11,8 +11,8 @@ query getCategories($pageInfo: PageInfo!) {
   total: countCategories
 }
 
-query searchProducts($pageInfo: PageInfo!, $params: ProductParamSearch!){
-  searchProducts(pageInfo: $pageInfo, params: $params)  {
+query searchProducts($pageInfo: PageInfo!, $params: ProductParamSearch!) {
+  searchProducts(pageInfo: $pageInfo, params: $params) {
     ...productDetailsFrag
   }
   count: countSearchProduct(params: $params)
@@ -25,7 +25,7 @@ query getProductDetails($productId: String!) {
 }
 
 query getProductById($productId: String!) {
-  getProductById(productId: $productId)@gqTypeName(name: "ProductWithSKU")  {
+  getProductById(productId: $productId) @gqTypeName(name: "ProductWithSKU") {
     ...allFieldsProduct
   }
 }
@@ -36,14 +36,31 @@ query imageSearch($skuId: String!) {
   }
 }
 query imageSearchByText($data: String!) {
-  imageSearchByText(data: $data)  {
+  imageSearchByText(data: $data) {
     ..._all_fields
   }
 }
 
-
-query collectionMappins() {
+query collectionMappins {
   collectionMappings {
+    ..._all_fields
+  }
+}
+
+query getRootCategories($pageInfo: PageInfo!) {
+  getRootCategories(pageInfo: $pageInfo) {
+    ..._all_fields
+  }
+  total: countRootCategories
+}
+query findCategoriesByParentId($parentId: String!, $pageInfo: PageInfo!) {
+  findCategoriesByParentId(parentId: $parentId, pageInfo: $pageInfo) {
+    ..._all_fields
+  }
+  total: countCategoriesByParentId(parentId: $parentId)
+}
+query getCategoryTree {
+  getCategoryTree {
     ..._all_fields
   }
 }

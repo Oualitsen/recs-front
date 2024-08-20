@@ -21,7 +21,11 @@ type Query {
   getProductById(productId: String!): Product!
   getProducts(pageInfo: PageInfo!): [Product!]!
   getCategoryById(categoryId: String!): Category!
+  getRootCategories(pageInfo: PageInfo!): [Category!]!
+  countRootCategories: Long!
   getCategories(pageInfo: PageInfo!): [Category!]!
+  findCategoriesByParentId(parentId: String!, pageInfo: PageInfo!): [Category!]!
+  countCategoriesByParentId(parentId: String!): Long!
   countProducts: Long!
   countCategories: Long!
   searchProducts(pageInfo: PageInfo!, params: ProductParamSearch!): [Product!]!
@@ -34,6 +38,8 @@ type Query {
   getSkusByProductId(productId: String!): [Sku!]!
   countSkus: Long!
   aggregate: [SkuKey!]!
+  listIndexElements(pageInfo: PageInfo!): [ColorIndex!]!
+  getCategoryTree: [CategoryTreeItem!]!
 }
 type SkuKey {
   imageUrl: String!
@@ -60,6 +66,7 @@ type Mutation {
   ): Product!
 
   saveCollectionMapping(input: CollectionMappingInput!): CollectionMapping!
+  generateIndex: String
 }
 ################################# TYPES #############################
 
@@ -127,7 +134,17 @@ type ResourceAccess {
 type Account {
   roles: [String!]!
 }
-
+type ColorIndex implements IndexedEntity & BasicEntity {
+  id: ID!
+  creationDate: Long!
+  lastUpdate: Long!
+  score: Float!
+  color1: String!
+  color2: String!
+  name1: String!
+  name2: String!
+  distance: Float
+}
 type Product implements IndexedEntity & BasicEntity {
   id: ID!
   creationDate: Long!
@@ -189,6 +206,12 @@ type Category implements IndexedEntity & BasicEntity {
   score: Float!
   name: String!
   parent: CategoryInfo
+  childCategoryCount: Long!
+}
+
+type CategoryTreeItem {
+  root: Category!
+  childCatgories: [Category!]!
 }
 
 type CategoryInfo {

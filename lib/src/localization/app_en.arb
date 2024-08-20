@@ -242,7 +242,7 @@
   "products": "Products",
   "id": "ID",
   "parentCategory": "Parent category",
-  "categories": "Catergories",
+  "categories": "Categories",
   "index": "Index",
   "similarities": "Similarities",
   "complementaries": "Complementaries",
@@ -262,5 +262,7 @@
   "search": "Search",
   "mappings": "Mappings",
   "colorAdjacency": "Color adjacency",
-  "distance": "Distance"
+  "distance": "Distance",
+  "categoriesTree": "Categories tree",
+  "childCategories": "Child categories"
 }

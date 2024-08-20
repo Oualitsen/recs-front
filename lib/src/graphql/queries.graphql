@@ -47,6 +47,23 @@ query collectionMappins {
   }
 }
 
+query getRootCategories($pageInfo: PageInfo!) {
+  getRootCategories(pageInfo: $pageInfo) {
+    ..._all_fields
+  }
+  total: countRootCategories
+}
+query findCategoriesByParentId($parentId: String!, $pageInfo: PageInfo!) {
+  findCategoriesByParentId(parentId: $parentId, pageInfo: $pageInfo) {
+    ..._all_fields
+  }
+  total: countCategoriesByParentId(parentId: $parentId)
+}
+query getCategoryTree {
+  getCategoryTree {
+    ..._all_fields
+  }
+}
 query listIndexElements($pageInfo: PageInfo!) {
   listIndexElements(pageInfo: $pageInfo) {
     ..._all_fields

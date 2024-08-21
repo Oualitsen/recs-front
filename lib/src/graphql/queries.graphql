@@ -75,3 +75,12 @@ query getColorIndexByColorHex($color: String!, $pageInfo: PageInfo!) {
     ..._all_fields
   }
 }
+query getAdjecencyEntries($type: AdjacencyType!) {
+  getAdjecencyEntries(type: $type)
+}
+query getAdjacencies($pageInfo: PageInfo!, $type: AdjacencyType!) {
+  getAdjacencies(pageInfo: $pageInfo, type: $type) {
+    ..._all_fields
+  }
+  total: countAdjacenciesByType(type: $type)
+}

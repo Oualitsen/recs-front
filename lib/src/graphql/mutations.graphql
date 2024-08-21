@@ -47,3 +47,8 @@ mutation updateDistance($id: String!, $distance: Float!) {
 mutation generateIndex {
   generateIndex
 }
+mutation addAdjacency($input: AdjacencyInput!) {
+  addAdjacency(input: $input) {
+    id
+  }
+}

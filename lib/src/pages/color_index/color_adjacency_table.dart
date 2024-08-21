@@ -41,12 +41,14 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
 
   @override
   Widget build(BuildContext context) {
-    return table.LazyPaginatedDataTable<ColorIndex>(
-      key: tableKey,
-      getData: getData,
-      getTotal: getTotal,
-      columns: getColumns(),
-      dataToRow: dataToRow,
+    return SingleChildScrollView(
+      child: table.LazyPaginatedDataTable<ColorIndex>(
+        key: tableKey,
+        getData: getData,
+        getTotal: getTotal,
+        columns: getColumns(),
+        dataToRow: dataToRow,
+      ),
     );
   }
 

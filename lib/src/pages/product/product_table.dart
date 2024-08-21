@@ -56,47 +56,50 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ProductParamSearch>(
-        stream: searchStream,
-        initialData: searchStream.value,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return CircularProgressIndicator();
-          }
-          var data = snapshot.data!;
-          return table.LazyPaginatedDataTable<ProductDetails>(
-            key: tableKey,
-            getData: getData,
-            getTotal: getTotal,
-            columns: getColumns(data),
-            dataToRow: (data, indexInCurrentPage) {
-              return DataRow(cells: [
-                DataCell(InkWell(
-                    onTap: () => showImage(data),
-                    child: ImageUtils.fromNetworkRounded(data.firstImageUrl))),
-                DataCell(SelectableText(data.id)),
-                DataCell(
-                  TextButton(
-                    onPressed: () => router.navigateTo(
-                        navKey.currentContext!, "/products/${data.id}"),
-                    child: Text(data.name),
+    return SingleChildScrollView(
+      child: StreamBuilder<ProductParamSearch>(
+          stream: searchStream,
+          initialData: searchStream.value,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return CircularProgressIndicator();
+            }
+            var data = snapshot.data!;
+            return table.LazyPaginatedDataTable<ProductDetails>(
+              key: tableKey,
+              getData: getData,
+              getTotal: getTotal,
+              columns: getColumns(data),
+              dataToRow: (data, indexInCurrentPage) {
+                return DataRow(cells: [
+                  DataCell(InkWell(
+                      onTap: () => showImage(data),
+                      child:
+                          ImageUtils.fromNetworkRounded(data.firstImageUrl))),
+                  DataCell(SelectableText(data.id)),
+                  DataCell(
+                    TextButton(
+                      onPressed: () => router.navigateTo(
+                          navKey.currentContext!, "/products/${data.id}"),
+                      child: Text(data.name),
+                    ),
                   ),
-                ),
-                DataCell(SelectableText(data.brand ?? lang.na)),
-                DataCell(SelectableText(data.price.toString())),
-                DataCell(SelectableText(data.oldPrice.toString())),
-                DataCell(SelectableText(data.category.name)),
-                DataCell(
-                  TextButton(
-                    child: Text("${data.skuCount}"),
-                    onPressed: () => router.navigateTo(
-                        navKey.currentContext!, "/skus/${data.id}"),
+                  DataCell(SelectableText(data.brand ?? lang.na)),
+                  DataCell(SelectableText(data.price.toString())),
+                  DataCell(SelectableText(data.oldPrice.toString())),
+                  DataCell(SelectableText(data.category.name)),
+                  DataCell(
+                    TextButton(
+                      child: Text("${data.skuCount}"),
+                      onPressed: () => router.navigateTo(
+                          navKey.currentContext!, "/skus/${data.id}"),
+                    ),
                   ),
-                ),
-              ]);
-            },
-          );
-        });
+                ]);
+              },
+            );
+          }),
+    );
   }
 
   Future<List<ProductDetails>> getData(table.PageInfo pageInfo) {

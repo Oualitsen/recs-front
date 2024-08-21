@@ -98,7 +98,13 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
     return DataRow(cells: [
       DataCell(
         TextButton(
-          onPressed: () => filterColor(data.name1, data.color1),
+          onPressed: () => filterColor(
+            data.id,
+            ColorInfo(
+              name: data.name1,
+              colorHex: data.color1,
+            ),
+          ),
           child: Text(data.name1),
         ),
       ),
@@ -109,7 +115,13 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
       ),
       DataCell(
         TextButton(
-          onPressed: () => filterColor(data.name2, data.color2),
+          onPressed: () => filterColor(
+            data.id,
+            ColorInfo(
+              name: data.name2,
+              colorHex: data.color2,
+            ),
+          ),
           child: Text(data.name2),
         ),
       ),
@@ -134,9 +146,7 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
                   ),
                   Gap(5),
                   IconButton(
-                      onPressed: () {
-                        editStream.add(data);
-                      },
+                      onPressed: () => editStream.add(data),
                       icon: Icon(Icons.edit))
                 ],
               );
@@ -159,23 +169,14 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
                     return ValidationUtils.doubleValidator(p0, context,
                         required: true, minValue: 0);
                   },
+                  onFieldSubmitted: (_) => saveDistance(data.id),
                 ),
                 Gap(5),
                 IconButton(
-                    onPressed: () async {
-                      var value = distanceInputKey.currentState?.getValue();
-                      if (value != null) {
-                        var newDistance = double.tryParse(value) ?? -1;
-                        if (newDistance >= 0) {
-                          await updateDistance(data, newDistance);
-                        }
-                      }
-                    },
+                    onPressed: () => saveDistance(data.id),
                     icon: Icon(Icons.check)),
                 IconButton(
-                    onPressed: () {
-                      editStream.add(null);
-                    },
+                    onPressed: () => editStream.add(null),
                     icon: Icon(Icons.cancel)),
               ],
             );
@@ -185,11 +186,11 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
     ]);
   }
 
-  Future updateDistance(ColorIndex data, double newDistance) async {
+  Future updateDistance(String colorIndexId, double newDistance) async {
     progressSubject.add(true);
     try {
       await client.mutations
-          .updateDistance(id: data.id, distance: newDistance)
+          .updateDistance(id: colorIndexId, distance: newDistance)
           .asStream()
           .first;
       editStream.add(null);
@@ -202,17 +203,18 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
     }
   }
 
-  filterColor(String name, String hexColor) async {
+  filterColor(String id, ColorInfo colorInfo) async {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(name.toUpperCase()),
+        title: Text(colorInfo.name.toUpperCase()),
         content: SizedBox(
           width: 800,
           height: 600,
           child: ColorAdjacencyFilter(
             key: filterKey,
-            colorHex: hexColor,
+            colorHex: colorInfo.colorHex,
+            onDistanceUpdate: (newDistance) => saveDistance(id),
           ),
         ),
         actions: [
@@ -228,4 +230,22 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
   reload() {
     tableKey.currentState?.refreshPage();
   }
+
+  void saveDistance(String id) async {
+    var value = distanceInputKey.currentState?.getValue();
+    var newDistance = double.tryParse(value ?? "") ?? -1;
+    if (newDistance >= 0) {
+      await updateDistance(id, newDistance);
+    }
+  }
+}
+
+class ColorInfo {
+  final String colorHex;
+  final String name;
+
+  ColorInfo({
+    required this.colorHex,
+    required this.name,
+  });
 }

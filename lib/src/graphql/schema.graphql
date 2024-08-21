@@ -38,9 +38,10 @@ type Query {
   getSkusByProductId(productId: String!): [Sku!]!
   countSkus: Long!
   aggregate: [SkuKey!]!
-  listIndexElements(pageInfo: PageInfo!): [ColorIndex!]!
-  countIndexElements: Long!
+  listIndexElements(pageInfo: PageInfo!, name: String): [ColorIndex!]!
+  countIndexElements(name: String): Long!
   getCategoryTree: [CategoryTreeItem!]!
+  findColorIndexByColorHex(color: String!, pageInfo: PageInfo!): [ColorIndex!]!
 }
 type SkuKey {
   imageUrl: String!

@@ -6,6 +6,7 @@ import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart'
 import 'package:recs_front/generated/client.gq.dart';
 import 'package:recs_front/generated/inputs.gq.dart';
 import 'package:recs_front/generated/types.gq.dart';
+import 'package:recs_front/src/pages/color_index/color_adjacency_filter.dart';
 import 'package:recs_front/src/pages/color_index/color_rectangle_widget.dart';
 import 'package:recs_front/src/utils/validation_utils.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
@@ -17,10 +18,10 @@ class ColorAdjacencyTable extends StatefulWidget {
   const ColorAdjacencyTable({super.key});
 
   @override
-  State<ColorAdjacencyTable> createState() => _ColorAdjacencyTableState();
+  State<ColorAdjacencyTable> createState() => ColorAdjacencyTableState();
 }
 
-class _ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
+class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
     with WidgetUtilsMixin {
   final colorIndexStream = BehaviorSubject.seeded(<ColorIndex>[]);
   final totalStream = BehaviorSubject.seeded(0);
@@ -28,9 +29,13 @@ class _ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
   final editStream = BehaviorSubject<ColorIndex?>();
   final distanceInputKey = GlobalKey<CustomTextInputWidgetState>();
   final tableKey = GlobalKey<table.LazyPaginatedDataTableState>();
-
+  final filterKey = GlobalKey<ColorAdjacencyFilterState>();
+  final searchStream = BehaviorSubject.seeded("");
   @override
   void initState() {
+    searchStream.debounceTime(Duration(milliseconds: 500)).listen((value) {
+      tableKey.currentState?.refreshPage();
+    });
     super.initState();
   }
 
@@ -48,11 +53,11 @@ class _ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
   Future<List<ColorIndex>> getData(table.PageInfo info) {
     return client.queries
         .listIndexElements(
-          pageInfo: PageInfo(
-            page: info.pageIndex,
-            size: info.pageSize,
-          ),
-        )
+            pageInfo: PageInfo(
+              page: info.pageIndex,
+              size: info.pageSize,
+            ),
+            name: searchStream.valueOrNull)
         .asStream()
         .map((event) {
       totalStream.add(event.total);
@@ -66,9 +71,24 @@ class _ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
 
   List<DataColumn> getColumns() {
     return [
-      DataColumn(label: Text("${lang.name} 1")),
-      DataColumn(label: Text("${lang.color} 2")),
-      DataColumn(label: Text("${lang.name} 1")),
+      DataColumn(
+        label: StreamBuilder<String>(
+            stream: searchStream,
+            builder: (context, snapshot) {
+              var currentSearch = snapshot.data ?? "";
+
+              return CustomTextInputWidget(
+                onChange: (value) {
+                  if (currentSearch != value) {
+                    searchStream.add(value);
+                  }
+                },
+                hint: "${lang.name} 1",
+              );
+            }),
+      ),
+      DataColumn(label: Text("${lang.color} 1")),
+      DataColumn(label: Text("${lang.name} 2")),
       DataColumn(label: Text("${lang.color} 2")),
       DataColumn(label: Text(lang.distance)),
     ];
@@ -76,13 +96,23 @@ class _ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
 
   DataRow dataToRow(ColorIndex data, int indexInCurrentPage) {
     return DataRow(cells: [
-      DataCell(Text(data.name1)),
+      DataCell(
+        TextButton(
+          onPressed: () => filterColor(data.name1, data.color1),
+          child: Text(data.name1),
+        ),
+      ),
       DataCell(
         ColorRectangle(
           hexCode: data.color1,
         ),
       ),
-      DataCell(Text(data.name2)),
+      DataCell(
+        TextButton(
+          onPressed: () => filterColor(data.name2, data.color2),
+          child: Text(data.name2),
+        ),
+      ),
       DataCell(
         ColorRectangle(
           hexCode: data.color2,
@@ -90,66 +120,67 @@ class _ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
       ),
       DataCell(
         StreamBuilder<ColorIndex?>(
-            stream: editStream,
-            builder: (context, snapshot) {
-              var currentEdit = snapshot.data;
-              if (currentEdit == null) {
-                return Row(
-                  children: [
-                    SizedBox(
-                      width: 75,
-                      child: Text(data.distance != null
-                          ? data.distance!.toStringAsFixed(4)
-                          : lang.na),
-                    ),
-                    Gap(5),
-                    IconButton(
-                        onPressed: () {
-                          editStream.add(data);
-                        },
-                        icon: Icon(Icons.edit))
-                  ],
-                );
-              }
-              if (currentEdit.id != data.id) {
-                return SizedBox(
-                  width: 75,
-                  child: Text(data.distance != null
-                      ? data.distance!.toStringAsFixed(4)
-                      : lang.na),
-                );
-              }
+          stream: editStream,
+          builder: (context, snapshot) {
+            var currentEdit = snapshot.data;
+            if (currentEdit == null) {
               return Row(
                 children: [
-                  CustomTextInputWidget(
-                    key: distanceInputKey,
-                    showPrefixIcon: false,
-                    initValue: data.distance?.toStringAsFixed(4),
-                    validator: (p0) {
-                      return ValidationUtils.doubleValidator(p0, context,
-                          required: true, minValue: 0);
-                    },
+                  SizedBox(
+                    width: 75,
+                    child: Text(data.distance != null
+                        ? data.distance!.toStringAsFixed(4)
+                        : lang.na),
                   ),
                   Gap(5),
                   IconButton(
-                      onPressed: () async {
-                        var value = distanceInputKey.currentState?.getValue();
-                        if (value != null) {
-                          var newDistance = double.tryParse(value) ?? -1;
-                          if (newDistance >= 0) {
-                            await updateDistance(data, newDistance);
-                          }
-                        }
-                      },
-                      icon: Icon(Icons.check)),
-                  IconButton(
                       onPressed: () {
-                        editStream.add(null);
+                        editStream.add(data);
                       },
-                      icon: Icon(Icons.cancel)),
+                      icon: Icon(Icons.edit))
                 ],
               );
-            }),
+            }
+            if (currentEdit.id != data.id) {
+              return SizedBox(
+                width: 75,
+                child: Text(data.distance != null
+                    ? data.distance!.toStringAsFixed(4)
+                    : lang.na),
+              );
+            }
+            return Row(
+              children: [
+                CustomTextInputWidget(
+                  key: distanceInputKey,
+                  showPrefixIcon: false,
+                  initValue: data.distance?.toStringAsFixed(4),
+                  validator: (p0) {
+                    return ValidationUtils.doubleValidator(p0, context,
+                        required: true, minValue: 0);
+                  },
+                ),
+                Gap(5),
+                IconButton(
+                    onPressed: () async {
+                      var value = distanceInputKey.currentState?.getValue();
+                      if (value != null) {
+                        var newDistance = double.tryParse(value) ?? -1;
+                        if (newDistance >= 0) {
+                          await updateDistance(data, newDistance);
+                        }
+                      }
+                    },
+                    icon: Icon(Icons.check)),
+                IconButton(
+                    onPressed: () {
+                      editStream.add(null);
+                    },
+                    icon: Icon(Icons.cancel)),
+              ],
+            );
+          },
+        ),
       ),
     ]);
   }
@@ -169,5 +200,32 @@ class _ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
     } finally {
       progressSubject.add(false);
     }
+  }
+
+  filterColor(String name, String hexColor) async {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(name.toUpperCase()),
+        content: SizedBox(
+          width: 800,
+          height: 600,
+          child: ColorAdjacencyFilter(
+            key: filterKey,
+            colorHex: hexColor,
+          ),
+        ),
+        actions: [
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(lang.ok.toUpperCase()),
+          )
+        ],
+      ),
+    );
+  }
+
+  reload() {
+    tableKey.currentState?.refreshPage();
   }
 }

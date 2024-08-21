@@ -64,9 +64,14 @@ query getCategoryTree {
     ..._all_fields
   }
 }
-query listIndexElements($pageInfo: PageInfo!) {
-  listIndexElements(pageInfo: $pageInfo) {
+query listIndexElements($pageInfo: PageInfo!, $name: String) {
+  listIndexElements(pageInfo: $pageInfo, name: $name) {
     ..._all_fields
   }
-  total: countIndexElements
+  total: countIndexElements(name: $name)
+}
+query getColorIndexByColorHex($color: String!, $pageInfo: PageInfo!) {
+  findColorIndexByColorHex(color: $color, pageInfo: $pageInfo) {
+    ..._all_fields
+  }
 }

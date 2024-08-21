@@ -43,3 +43,7 @@ mutation saveCollectionMapping($input: CollectionMappingInput!) {
 mutation updateDistance($id: String!, $distance: Float!) {
   updateDistance(id: $id, distance: $distance)
 }
+
+mutation generateIndex {
+  generateIndex
+}

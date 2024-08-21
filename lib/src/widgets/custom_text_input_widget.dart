@@ -12,6 +12,7 @@ class CustomTextInputWidget extends StatefulWidget {
   final TextStyle? hintStyle;
   final Function(String value)? onChange;
   final String? Function(String? value)? validator;
+  final Function(String)? onFieldSubmitted;
   const CustomTextInputWidget({
     super.key,
     this.width,
@@ -25,6 +26,7 @@ class CustomTextInputWidget extends StatefulWidget {
     this.hintStyle,
     this.textColor,
     this.validator,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -62,6 +64,7 @@ class CustomTextInputWidgetState extends State<CustomTextInputWidget> {
           validator: widget.validator,
           style: TextStyle(color: widget.textColor ?? Colors.black),
           controller: textInputCtrl,
+          onFieldSubmitted: widget.onFieldSubmitted,
           decoration: InputDecoration(
             hintStyle: widget.hintStyle,
             filled: widget.color != null,

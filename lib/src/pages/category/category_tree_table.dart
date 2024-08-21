@@ -24,32 +24,34 @@ class _CategoryTreeTableState extends BasicState<CategoryTreeTable>
   final totalCount = BehaviorSubject.seeded(0);
   @override
   Widget build(BuildContext context) {
-    return table.LazyPaginatedDataTable<Category>(
-      getData: getData,
-      getTotal: getTotal,
-      columns: columns,
-      dataToRow: (data, indexInCurrentPage) {
-        return DataRow(cells: [
-          DataCell(Text(data.id)),
-          DataCell(Text(data.name)),
-          DataCell(
-            widget.parentId == null
-                ? TextButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => PageWrapper(
-                            title:
-                                "${lang.childCategories} - ${lang.id} : ${data.id}",
-                            child: CategoryTreeTable(
-                              parentId: data.id,
-                            )),
-                      ));
-                    },
-                    child: Text(data.childCategoryCount.toString()))
-                : Text(lang.na),
-          ),
-        ]);
-      },
+    return SingleChildScrollView(
+      child: table.LazyPaginatedDataTable<Category>(
+        getData: getData,
+        getTotal: getTotal,
+        columns: columns,
+        dataToRow: (data, indexInCurrentPage) {
+          return DataRow(cells: [
+            DataCell(Text(data.id)),
+            DataCell(Text(data.name)),
+            DataCell(
+              widget.parentId == null
+                  ? TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PageWrapper(
+                              title:
+                                  "${lang.childCategories} - ${lang.id} : ${data.id}",
+                              child: CategoryTreeTable(
+                                parentId: data.id,
+                              )),
+                        ));
+                      },
+                      child: Text(data.childCategoryCount.toString()))
+                  : Text(lang.na),
+            ),
+          ]);
+        },
+      ),
     );
   }
 

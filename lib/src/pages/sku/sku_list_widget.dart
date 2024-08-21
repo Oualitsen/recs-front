@@ -18,38 +18,40 @@ class SkuListWidget extends StatefulWidget {
 class _SkuListWidgetState extends BasicState<SkuListWidget> {
   @override
   Widget build(BuildContext context) {
-    return LazyPaginatedDataTable<Sku>(
-        getData: (info) => getData(info),
-        getTotal: getTotal,
-        columns: [
-          DataColumn(label: Text(lang.productImage)),
-          DataColumn(label: Text(lang.id)),
-          DataColumn(label: Text(lang.name)),
-          DataColumn(label: Text(lang.color)),
-          DataColumn(label: Text(lang.inventory)),
-          DataColumn(label: Text(lang.seasons)),
-        ],
-        dataToRow: (sku, index) {
-          return DataRow(cells: [
-            DataCell(ImageUtils.fromNetworkRounded(sku.imageUrl)),
-            DataCell(
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => VisuallySimillarSkus(sku: sku),
-                      ),
-                    );
-                  },
-                  child: Text(sku.gtin)),
-            ),
-            DataCell(Text(sku.product.name)),
-            DataCell(Text(sku.colorLabel)),
-            DataCell(Text("${sku.totalInventory}")),
-            DataCell(Text(
-                "${sku.inventories.expand((e) => e.seasons).toSet().join(", ")}")),
-          ]);
-        });
+    return SingleChildScrollView(
+      child: LazyPaginatedDataTable<Sku>(
+          getData: (info) => getData(info),
+          getTotal: getTotal,
+          columns: [
+            DataColumn(label: Text(lang.productImage)),
+            DataColumn(label: Text(lang.id)),
+            DataColumn(label: Text(lang.name)),
+            DataColumn(label: Text(lang.color)),
+            DataColumn(label: Text(lang.inventory)),
+            DataColumn(label: Text(lang.seasons)),
+          ],
+          dataToRow: (sku, index) {
+            return DataRow(cells: [
+              DataCell(ImageUtils.fromNetworkRounded(sku.imageUrl)),
+              DataCell(
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => VisuallySimillarSkus(sku: sku),
+                        ),
+                      );
+                    },
+                    child: Text(sku.gtin)),
+              ),
+              DataCell(Text(sku.product.name)),
+              DataCell(Text(sku.colorLabel)),
+              DataCell(Text("${sku.totalInventory}")),
+              DataCell(Text(
+                  "${sku.inventories.expand((e) => e.seasons).toSet().join(", ")}")),
+            ]);
+          }),
+    );
   }
 
   Future<int> getTotal() async {

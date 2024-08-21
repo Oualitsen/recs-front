@@ -44,7 +44,7 @@ final menuButtonList = <MenuButtonInfo>[
   MenuButtonInfo(
     icon: FontAwesomeIcons.gear,
     getTitle: (context) => getLang(context).colorAdjacency,
-    routeName: "adjacency",
+    routeName: "color-adjacency",
     destinationRoute: (context, params) => ColorAdjacencyPage(),
   ),
   MenuButtonInfo(

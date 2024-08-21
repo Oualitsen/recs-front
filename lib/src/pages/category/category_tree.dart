@@ -20,11 +20,11 @@ class _CategoriesTreeState extends BasicState<CategoriesTree>
   TreeViewController? treeCtrl;
   final categoriesTreeStream = BehaviorSubject.seeded(<CategoryTreeItem>[]);
   final client = GetIt.instance.get<GQClient>();
-  final TreeNode<Category> sampleTree = TreeNode<Category>(
+  late TreeNode<Category> sampleTree = TreeNode<Category>(
     key: "/",
     data: Category(
       id: "",
-      name: "root",
+      name: lang.categories,
       childCategoryCount: 0,
       creationDate: 0,
       lastUpdate: 0,

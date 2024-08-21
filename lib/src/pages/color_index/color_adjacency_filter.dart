@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:infinite_scroll_list_view_2/infinite_scroll_list_view.dart';
 import 'package:recs_front/generated/inputs.gq.dart';
 import 'package:recs_front/generated/types.gq.dart';
+import 'package:recs_front/src/pages/color_index/color_adjacency_table.dart';
 import 'package:recs_front/src/pages/color_index/color_rectangle_widget.dart';
 import 'package:recs_front/src/utils/validation_utils.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
@@ -14,7 +15,12 @@ import 'package:recs_front/generated/client.gq.dart';
 
 class ColorAdjacencyFilter extends StatefulWidget {
   final String colorHex;
-  const ColorAdjacencyFilter({super.key, required this.colorHex});
+  final Function(String newDistance) onDistanceUpdate;
+  const ColorAdjacencyFilter({
+    super.key,
+    required this.colorHex,
+    required this.onDistanceUpdate,
+  });
 
   @override
   State<ColorAdjacencyFilter> createState() => ColorAdjacencyFilterState();
@@ -102,30 +108,12 @@ class ColorAdjacencyFilterState extends BasicState<ColorAdjacencyFilter>
                             return ValidationUtils.doubleValidator(p0, context,
                                 required: true, minValue: 0);
                           },
-                          onFieldSubmitted: (p0) async {
-                            var newDistance = double.tryParse(p0) ?? -1;
-                            if (newDistance >= 0) {
-                              await updateDistance(element, newDistance);
-                            }
-                          },
+                          onFieldSubmitted: (_) => update(),
                         ),
                         Gap(5),
+                        IconButton(onPressed: update, icon: Icon(Icons.check)),
                         IconButton(
-                            onPressed: () async {
-                              var value =
-                                  distanceInputKey.currentState?.getValue();
-                              if (value != null) {
-                                var newDistance = double.tryParse(value) ?? -1;
-                                if (newDistance >= 0) {
-                                  await updateDistance(element, newDistance);
-                                }
-                              }
-                            },
-                            icon: Icon(Icons.check)),
-                        IconButton(
-                            onPressed: () {
-                              editStream.add(null);
-                            },
+                            onPressed: () => editStream.add(null),
                             icon: Icon(Icons.cancel)),
                       ],
                     );
@@ -147,30 +135,10 @@ class ColorAdjacencyFilterState extends BasicState<ColorAdjacencyFilter>
         .first;
   }
 
-  Future updateDistance(ColorIndex data, double newDistance) async {
-    progressSubject.add(true);
-    try {
-      await client.mutations
-          .updateDistance(id: data.id, distance: newDistance)
-          .asStream()
-          .first;
-      editStream.add(null);
-      listKey.currentState?.reload();
-    } catch (error, stacktrace) {
-      print(stacktrace);
-      showServerError2(context, error: error);
-    } finally {
-      progressSubject.add(false);
+  update() {
+    var value = distanceInputKey.currentState?.getValue();
+    if (value != null) {
+      widget.onDistanceUpdate(value);
     }
   }
-}
-
-class ColorInfo {
-  final String colorHex;
-  final String name;
-
-  ColorInfo({
-    required this.colorHex,
-    required this.name,
-  });
 }

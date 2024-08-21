@@ -264,5 +264,6 @@
   "colorAdjacency": "Color adjacency",
   "distance": "Distance",
   "categoriesTree": "Categories tree",
-  "childCategories": "Child categories"
+  "childCategories": "Child categories",
+  "manualyUpdated": "Manualy updated"
 }

@@ -93,6 +93,7 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
       DataColumn(label: Text("${lang.name} 2")),
       DataColumn(label: Text("${lang.color} 2")),
       DataColumn(label: Text(lang.distance)),
+      DataColumn(label: Text(lang.manualyUpdated)),
     ];
   }
 
@@ -185,6 +186,9 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
           },
         ),
       ),
+      DataCell(
+        Text(data.manual ? lang.yes : lang.no),
+      )
     ]);
   }
 

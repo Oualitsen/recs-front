@@ -148,6 +148,7 @@ type ColorIndex implements IndexedEntity & BasicEntity {
   name1: String!
   name2: String!
   distance: Float
+  manual: Boolean!
 }
 
 type Product implements IndexedEntity & BasicEntity {

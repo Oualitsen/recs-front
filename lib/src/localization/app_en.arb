@@ -265,5 +265,13 @@
   "distance": "Distance",
   "categoriesTree": "Categories tree",
   "childCategories": "Child categories",
-  "manualyUpdated": "Manualy updated"
+  "manualyUpdated": "Manualy updated",
+  "colorAdjacencyInput": "Color adjacency Input",
+  "entry1": "Entry 1",
+  "entry2": "Entry 2",
+  "designer": "Designer",
+  "adjacencies": "Adjacencies",
+  "adjacencyForm": "Adjacency form",
+  "actions": "Actions",
+  "deletedSuccessfully": "Deleted Successfully"
 }

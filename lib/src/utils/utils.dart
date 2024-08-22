@@ -10,7 +10,8 @@ import 'package:recs_front/src/utils/lang.dart';
 import 'package:universal_html/html.dart' as html;
 
 Future<String?> _getImageWeb(context) async {
-  final html.InputElement input = html.document.createElement("input") as html.InputElement;
+  final html.InputElement input =
+      html.document.createElement("input") as html.InputElement;
   input
     ..type = "file"
     ..accept = "image/*";
@@ -67,7 +68,8 @@ Future<T?> safeCall<T>(Future<T> future, [BuildContext? context]) async {
   return null;
 }
 
-Widget errorWidget(BuildContext context, {Function()? callback, Object? error}) {
+Widget errorWidget(BuildContext context,
+    {Function()? callback, Object? error}) {
   var lang = getLang(context);
   return Column(
     mainAxisAlignment: MainAxisAlignment.center,
@@ -120,13 +122,19 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
 }
 
 Future showAlertDialog(
-    {required BuildContext context, String? title, String? message, List<Widget>? actions}) async {
+    {required BuildContext context,
+    String? title,
+    String? message,
+    List<Widget>? actions}) async {
   var lang = getLang(context);
   var result = await showDialog(
     context: context,
     builder: (context) => AlertDialog(
       title: Text(title ?? ""),
-      content: Text(message ?? ""),
+      content: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Text(message ?? ""),
+      ),
       actions: (actions?.isEmpty ?? true)
           ? <Widget>[
               TextButton(
@@ -158,7 +166,8 @@ class DialogButtons {
     });
   }
 
-  static List<Widget> getButtons(BuildContext context, Map<String, dynamic> map) {
+  static List<Widget> getButtons(
+      BuildContext context, Map<String, dynamic> map) {
     return map.keys
         .map((e) => TextButton(
               onPressed: () => Navigator.of(context).pop(map[e]),

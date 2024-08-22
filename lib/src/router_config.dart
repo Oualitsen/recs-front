@@ -1,7 +1,10 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:recs_front/generated/enums.gq.dart';
 import 'package:recs_front/src/data_mapping/data_mapping_page.dart';
+import 'package:recs_front/src/pages/adjacency/adjacency_input_form.dart';
+import 'package:recs_front/src/pages/adjacency/adjacency_table_page.dart';
 import 'package:recs_front/src/pages/category/category_tree.dart';
 import 'package:recs_front/src/pages/color_index/color_adjacency_page.dart';
 import 'package:recs_front/src/pages/home/home_page.dart';
@@ -46,6 +49,12 @@ final menuButtonList = <MenuButtonInfo>[
     getTitle: (context) => getLang(context).colorAdjacency,
     routeName: "color-adjacency",
     destinationRoute: (context, params) => ColorAdjacencyPage(),
+  ),
+  MenuButtonInfo(
+    icon: FontAwesomeIcons.gear,
+    getTitle: (context) => getLang(context).adjacencies,
+    routeName: "adjacencies",
+    destinationRoute: (context, params) => AdjacencyTablePage(),
   ),
   MenuButtonInfo(
     icon: FontAwesomeIcons.userLarge,

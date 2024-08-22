@@ -52,7 +52,7 @@ final menuButtonList = <MenuButtonInfo>[
   ),
   MenuButtonInfo(
     icon: FontAwesomeIcons.gear,
-    getTitle: (context) => getLang(context).colorAdjacency,
+    getTitle: (context) => getLang(context).adjacencies,
     routeName: "adjacencies",
     destinationRoute: (context, params) => AdjacencyTablePage(),
   ),

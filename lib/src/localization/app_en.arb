@@ -271,5 +271,7 @@
   "entry2": "Entry 2",
   "designer": "Designer",
   "adjacencies": "Adjacencies",
-  "adjacencyForm": "Adjacency form"
+  "adjacencyForm": "Adjacency form",
+  "actions": "Actions",
+  "deletedSuccessfully": "Deleted Successfully"
 }

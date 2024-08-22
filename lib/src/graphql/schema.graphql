@@ -83,6 +83,7 @@ type Mutation {
   addAdjacency(input: AdjacencyInput!): Adjacency!
   addCategoryAdjacency(input: AdjacencyInput!): CategoryAdjacency!
   deleteAdjacencyById(adjacencyId: ID!): ID
+  updateAdjacencyDistance(id: String!, distance: Float!): ID
 }
 ################################# TYPES #############################
 

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:recs_front/generated/enums.gq.dart';
 import 'package:recs_front/src/pages/adjacency/adjacency_input_form.dart';
+import 'package:recs_front/src/utils/validation_utils.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
+import 'package:recs_front/src/widgets/custom_text_input_widget.dart';
 import 'package:recs_front/src/widgets/widget_utils_mixin.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:get_it/get_it.dart';
@@ -28,6 +31,9 @@ class _TypedAdjacencyTableState extends BasicState<TypedAdjacencyTable>
   final tableKey = GlobalKey<table.LazyPaginatedDataTableState>();
   final totalStream = BehaviorSubject.seeded(0);
   final inputFormKey = GlobalKey<AdjacencyInputFormState>();
+  final distanceInputKey = GlobalKey<CustomTextInputWidgetState>();
+  final messageStream = BehaviorSubject<String?>();
+  final editStream = BehaviorSubject<Adjacency?>();
 
   @override
   void initState() {
@@ -89,15 +95,109 @@ class _TypedAdjacencyTableState extends BasicState<TypedAdjacencyTable>
       DataColumn(label: Text(lang.entry1)),
       DataColumn(label: Text(lang.entry2)),
       DataColumn(label: Text(lang.distance)),
+      DataColumn(label: Text(lang.actions)),
     ];
   }
 
   DataRow dataToRow(Adjacency data, int indexInCurrentPage) {
-    return DataRow(cells: [
-      DataCell(Text(data.entryId1)),
-      DataCell(Text(data.entryId2)),
-      DataCell(Text(data.distance.toStringAsFixed(4))),
-    ]);
+    return DataRow(
+      cells: [
+        DataCell(Text(data.entryId1)),
+        DataCell(Text(data.entryId2)),
+        DataCell(
+          StreamBuilder<Adjacency?>(
+            stream: editStream,
+            builder: (context, snapshot) {
+              var currentEdit = snapshot.data;
+              if (currentEdit == null) {
+                return Row(
+                  children: [
+                    SizedBox(
+                      width: 75,
+                      child: Text(data.distance.toStringAsFixed(4)),
+                    ),
+                    Gap(5),
+                    IconButton(
+                        onPressed: () => editStream.add(data),
+                        icon: Icon(Icons.edit))
+                  ],
+                );
+              }
+              if (currentEdit.id != data.id) {
+                return SizedBox(
+                  width: 75,
+                  child: Text(data.distance.toStringAsFixed(4)),
+                );
+              }
+              return Row(
+                children: [
+                  StreamBuilder<String?>(
+                      stream: messageStream,
+                      builder: (context, snapshot) {
+                        return Tooltip(
+                          message: snapshot.data ?? "",
+                          child: CustomTextInputWidget(
+                            key: distanceInputKey,
+                            showPrefixIcon: false,
+                            initValue: data.distance.toStringAsFixed(4),
+                            validator: (p0) {
+                              var res = ValidationUtils.doubleValidator(
+                                p0,
+                                context,
+                                required: true,
+                                minValue: 0,
+                                maxValue: 1,
+                              );
+                              messageStream.add(res);
+                              return res;
+                            },
+                            onFieldSubmitted: (_) => saveDistance(data.id),
+                          ),
+                        );
+                      }),
+                  Gap(5),
+                  IconButton(
+                      onPressed: () => saveDistance(data.id),
+                      icon: Icon(Icons.check)),
+                  IconButton(
+                      onPressed: () => editStream.add(null),
+                      icon: Icon(Icons.cancel)),
+                ],
+              );
+            },
+          ),
+        ),
+        DataCell(
+          TextButton(
+            onPressed: () => delete(data),
+            child: Text(
+              "${lang.delete}",
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  delete(Adjacency data) async {
+    return showMyDialog(TextButton(
+        onPressed: () async {
+          try {
+            await client.mutations
+                .deleteAdjacencyById(adjacencyId: data.id)
+                .asStream()
+                .map((event) => event.deleteAdjacencyById)
+                .first;
+            tableKey.currentState?.refreshPage();
+            Navigator.of(context).pop(true);
+            await showSnackBar2(context, lang.deletedSuccessfully);
+          } catch (error, stacktrace) {
+            print(stacktrace);
+            showServerError2(context, error: error);
+          }
+        },
+        child: Text(lang.yes.toUpperCase())));
   }
 
   void addAdjacency() async {
@@ -138,6 +238,31 @@ class _TypedAdjacencyTableState extends BasicState<TypedAdjacencyTable>
       } finally {
         progressSubject.add(false);
       }
+    }
+  }
+
+  void saveDistance(String id) async {
+    var value = distanceInputKey.currentState?.getValue();
+    var newDistance = double.tryParse(value ?? "") ?? -1;
+    if (newDistance >= 0) {
+      await updateDistance(id, newDistance);
+    }
+  }
+
+  Future updateDistance(String adjacencyId, double newDistance) async {
+    progressSubject.add(true);
+    try {
+      await client.mutations
+          .updateAdjacencyDistance(id: adjacencyId, distance: newDistance)
+          .asStream()
+          .first;
+      editStream.add(null);
+      tableKey.currentState?.refreshPage();
+    } catch (error, stacktrace) {
+      print(stacktrace);
+      showServerError2(context, error: error);
+    } finally {
+      progressSubject.add(false);
     }
   }
 }

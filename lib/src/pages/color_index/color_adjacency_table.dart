@@ -31,6 +31,8 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
   final tableKey = GlobalKey<table.LazyPaginatedDataTableState>();
   final filterKey = GlobalKey<ColorAdjacencyFilterState>();
   final searchStream = BehaviorSubject.seeded("");
+  final messageStream = BehaviorSubject<String?>();
+
   @override
   void initState() {
     searchStream.debounceTime(Duration(milliseconds: 500)).listen((value) {
@@ -164,16 +166,29 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
             }
             return Row(
               children: [
-                CustomTextInputWidget(
-                  key: distanceInputKey,
-                  showPrefixIcon: false,
-                  initValue: data.distance?.toStringAsFixed(4),
-                  validator: (p0) {
-                    return ValidationUtils.doubleValidator(p0, context,
-                        required: true, minValue: 0);
-                  },
-                  onFieldSubmitted: (_) => saveDistance(data.id),
-                ),
+                StreamBuilder<String?>(
+                    stream: messageStream,
+                    builder: (context, snapshot) {
+                      return Tooltip(
+                        message: snapshot.data ?? "",
+                        child: CustomTextInputWidget(
+                          key: distanceInputKey,
+                          showPrefixIcon: false,
+                          initValue: data.distance?.toStringAsFixed(4),
+                          validator: (p0) {
+                            var res = ValidationUtils.doubleValidator(
+                              p0,
+                              context,
+                              required: true,
+                              minValue: 0,
+                            );
+                            messageStream.add(res);
+                            return res;
+                          },
+                          onFieldSubmitted: (_) => saveDistance(data.id),
+                        ),
+                      );
+                    }),
                 Gap(5),
                 IconButton(
                     onPressed: () => saveDistance(data.id),

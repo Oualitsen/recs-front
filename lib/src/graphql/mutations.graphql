@@ -43,6 +43,9 @@ mutation saveCollectionMapping($input: CollectionMappingInput!) {
 mutation updateDistance($id: String!, $distance: Float!) {
   updateDistance(id: $id, distance: $distance)
 }
+mutation updateAdjacencyDistance($id: String!, $distance: Float!) {
+  updateAdjacencyDistance(id: $id, distance: $distance)
+}
 
 mutation generateIndex {
   generateIndex
@@ -51,4 +54,7 @@ mutation addAdjacency($input: AdjacencyInput!) {
   addAdjacency(input: $input) {
     id
   }
+}
+mutation deleteAdjacencyById($adjacencyId: ID!) {
+  deleteAdjacencyById(adjacencyId: $adjacencyId)
 }

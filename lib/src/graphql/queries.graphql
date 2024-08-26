@@ -84,3 +84,47 @@ query getAdjacencies($pageInfo: PageInfo!, $type: AdjacencyType!) {
   }
   total: countAdjacenciesByType(type: $type)
 }
+
+query getRules($pageInfo: PageInfo!) {
+  findRules(pageInfo: $pageInfo) {
+    ..._all_fields
+  }
+}
+
+query getRuleFieldConfigList {
+  ruleFieldConfigList {
+    ..._all_fields
+  }
+}
+
+query countRules() {
+  countRules
+}
+
+query getSeasons() {
+  getSeasons {
+    ... _all_fields
+  }
+}
+
+query getAllBrands() {
+  data:getAllBrands
+}
+
+query getAllDesigners() {
+  data:getAllDesigners
+}
+
+query getAllGenders() {
+   data:getAllGenders
+}
+
+query getAllColorLabels() {
+   data:getAllColorLabels
+}
+
+query getRuleById($id: ID!) {
+  getRuleById(id: $id) {
+    ..._all_fields
+  }
+}

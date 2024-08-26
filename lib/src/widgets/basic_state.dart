@@ -6,8 +6,7 @@ import 'package:recs_front/src/utils/lang.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-abstract class BasicState<T extends StatefulWidget> extends State<T>
-    with LangMixin {
+abstract class BasicState<T extends StatefulWidget> extends State<T> with LangMixin {
   @override
   void dispose() {
     for (var element in subjects) {
@@ -35,8 +34,7 @@ extension AppLocalizationsExt on AppLocalizations {
   static final DateFormat _fullDateFormat =
       DateFormat('EEEE, MMMM d, y', settingsController.locale.languageCode);
 
-  static final DateFormat _dateFormat2 =
-      DateFormat("MMMM dd, yyyy", settingsController.locale.languageCode);
+  static final DateFormat _dateFormat2 = DateFormat("MMMM dd, yyyy", settingsController.locale.languageCode);
   String formatFullDate(DateTime dateTime) {
     return _fullDateFormat.format(dateTime);
   }
@@ -62,8 +60,7 @@ extension AppLocalizationsExt on AppLocalizations {
   }
 
   String formatTimeOfDay(TimeOfDay timeOfDay) {
-    return formatTime(DateTime(0, 1, 1, timeOfDay.hour, timeOfDay.minute)
-        .millisecondsSinceEpoch);
+    return formatTime(DateTime(0, 1, 1, timeOfDay.hour, timeOfDay.minute).millisecondsSinceEpoch);
   }
 
   String formatDateTime(int date) {
@@ -71,8 +68,7 @@ extension AppLocalizationsExt on AppLocalizations {
   }
 
   int timeOfDayToInt(TimeOfDay timeOfDay) {
-    return DateTime(0, 1, 1, timeOfDay.hour, timeOfDay.minute)
-        .millisecondsSinceEpoch;
+    return DateTime(0, 1, 1, timeOfDay.hour, timeOfDay.minute).millisecondsSinceEpoch;
   }
 
   String formatDay(int date) {
@@ -81,6 +77,17 @@ extension AppLocalizationsExt on AppLocalizations {
 
   String formatTimeOfTheDay(TimeOfDay timeOfDay) {
     return "${addZero(timeOfDay.hour)}:${addZero(timeOfDay.minute)}";
+  }
+
+  String textRuleMatchTypeName(TextRuleMatchType type) {
+    switch (type) {
+      case TextRuleMatchType.SAME_VALUE:
+        return textRuleMatchTypeSameValue;
+      case TextRuleMatchType.ADJACENT_VALUES:
+        return textRuleMatchTypeAdjacentValues;
+      case TextRuleMatchType.ACCEPTED_VALUES:
+        return textRuleMatchTypeAcceptedValue;
+    }
   }
 
   DateTime findFirstDateOfTheWeek(DateTime dateTime) {
@@ -92,8 +99,7 @@ extension AppLocalizationsExt on AppLocalizations {
   }
 
   DateTime findLastDateOfTheWeek(DateTime dateTime) {
-    return dateTime
-        .add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
+    return dateTime.add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
   }
 
   String addZero(int value) {
@@ -106,6 +112,10 @@ extension AppLocalizationsExt on AppLocalizations {
 
   String getName(String firstName, String lastName) {
     return "${firstName} ${lastName}";
+  }
+
+  String getBoolName(bool value) {
+    return value ? trueLabel : falseLabel;
   }
 
   String adjecencyTypeName(AdjacencyType type) {

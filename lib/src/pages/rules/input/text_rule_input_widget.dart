@@ -59,12 +59,12 @@ class TextRuleInputWidgetState<T> extends BasicState<TextRuleInputWidget<T>> wit
           key: formKey,
           child: Column(
             children: [
-              streamBuilder<TextRuleMatchType>(
+              StreamBuilder<TextRuleMatchType>(
                   stream: matchTypeSubject,
                   initialData: matchTypeSubject.valueOrNull,
-                  onDataChanged: (data) {
+                  builder: (context, snapshot) {
                     return DropdownButtonFormField<TextRuleMatchType>(
-                        value: data,
+                        value: snapshot.data,
                         validator: (value) {
                           if (value == null) {
                             return lang.requiredField;

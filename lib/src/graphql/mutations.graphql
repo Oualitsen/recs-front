@@ -58,3 +58,9 @@ mutation addAdjacency($input: AdjacencyInput!) {
 mutation deleteAdjacencyById($adjacencyId: ID!) {
   deleteAdjacencyById(adjacencyId: $adjacencyId)
 }
+
+mutation createRule($input: RuleInput!) {
+  createRule(input: $input) {
+    ... _all_fields
+  }
+}

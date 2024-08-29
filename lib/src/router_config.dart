@@ -6,11 +6,14 @@ import 'package:recs_front/src/data_mapping/data_mapping_page.dart';
 import 'package:recs_front/src/pages/adjacency/adjacency_input_form.dart';
 import 'package:recs_front/src/pages/adjacency/adjacency_table_page.dart';
 import 'package:recs_front/src/pages/category/category_tree.dart';
+import 'package:recs_front/src/pages/category/select_category_tree_widget.dart';
 import 'package:recs_front/src/pages/color_index/color_adjacency_page.dart';
 import 'package:recs_front/src/pages/home/home_page.dart';
 import 'package:recs_front/src/pages/images/image_search_page.dart';
 import 'package:recs_front/src/pages/product/product_details_page.dart';
 import 'package:recs_front/src/pages/profile_page.dart';
+import 'package:recs_front/src/pages/rules/add_rule_page.dart';
+import 'package:recs_front/src/pages/rules/rules_page.dart';
 import 'package:recs_front/src/pages/sku/sku_list_page.dart';
 import 'package:recs_front/src/utils/lang.dart';
 import 'package:recs_front/src/utils/widget_utils.dart';
@@ -57,6 +60,12 @@ final menuButtonList = <MenuButtonInfo>[
     destinationRoute: (context, params) => AdjacencyTablePage(),
   ),
   MenuButtonInfo(
+    icon: FontAwesomeIcons.gear,
+    getTitle: (context) => getLang(context).rules,
+    routeName: "rules",
+    destinationRoute: (context, params) => RulesPage(),
+  ),
+  MenuButtonInfo(
     icon: FontAwesomeIcons.userLarge,
     getTitle: (context) => getLang(context).profile,
     routeName: "settings",
@@ -67,8 +76,7 @@ final menuButtonList = <MenuButtonInfo>[
 void initRouter(
   BuildContext context,
 ) {
-  router.notFoundHandler = Handler(
-      handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+  router.notFoundHandler = Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     return Scaffold(
       body: Center(
         child: Text("NOT FOUND"),
@@ -88,6 +96,30 @@ void initRouter(
       },
     ),
   );
+  router.define(
+    '/rules/edit-rule/:ruleId',
+    handler: Handler(
+      handlerFunc: (context, parameters) {
+        String ruleId = parameters['ruleId']!.first;
+        return Builder(builder: (context) {
+          return WidgetUtils.wrapRoute(
+            (context, type) => AddRulePage(ruleId: ruleId),
+          );
+        });
+      },
+    ),
+  );
+  router.define(
+    '/rules/add-rule',
+    handler: Handler(
+      handlerFunc: (context, parameters) {
+        return WidgetUtils.wrapRoute(
+          (context, type) => AddRulePage(),
+        );
+      },
+    ),
+  );
+
   router.define(
     '/products/:id',
     handler: Handler(
@@ -116,8 +148,7 @@ void initRouter(
 class MenuButtonInfo {
   final IconData icon;
   final String routeName;
-  final Widget Function(BuildContext? context, Map<String, List<String>> params)
-      destinationRoute;
+  final Widget Function(BuildContext? context, Map<String, List<String>> params) destinationRoute;
   final String Function(BuildContext context) getTitle;
 
   MenuButtonInfo({

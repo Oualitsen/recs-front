@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
-import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart'
-    as table;
+import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart' as table;
 import 'package:recs_front/generated/client.gq.dart';
 import 'package:recs_front/generated/inputs.gq.dart';
 import 'package:recs_front/generated/types.gq.dart';
@@ -25,8 +24,7 @@ class ProductTableWidget extends StatefulWidget {
   State<ProductTableWidget> createState() => _ProductTableWidgetState();
 }
 
-class _ProductTableWidgetState extends BasicState<ProductTableWidget>
-    with WidgetUtilsMixin {
+class _ProductTableWidgetState extends BasicState<ProductTableWidget> with WidgetUtilsMixin {
   final service = GetIt.instance.get<GQClient>();
   final totalCount = BehaviorSubject.seeded(0);
   final selectedProductsStream = BehaviorSubject.seeded(<ProductDetails>[]);
@@ -74,13 +72,11 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
                 return DataRow(cells: [
                   DataCell(InkWell(
                       onTap: () => showImage(data),
-                      child:
-                          ImageUtils.fromNetworkRounded(data.firstImageUrl))),
+                      child: ImageUtils.fromNetworkRounded(data.firstImageUrl))),
                   DataCell(SelectableText(data.id)),
                   DataCell(
                     TextButton(
-                      onPressed: () => router.navigateTo(
-                          navKey.currentContext!, "/products/${data.id}"),
+                      onPressed: () => router.navigateTo(navKey.currentContext!, "/products/${data.id}"),
                       child: Text(data.name),
                     ),
                   ),
@@ -91,8 +87,7 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
                   DataCell(
                     TextButton(
                       child: Text("${data.skuCount}"),
-                      onPressed: () => router.navigateTo(
-                          navKey.currentContext!, "/skus/${data.id}"),
+                      onPressed: () => router.navigateTo(navKey.currentContext!, "/skus/${data.id}"),
                     ),
                   ),
                 ]);
@@ -107,8 +102,7 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
     try {
       return service.queries
           .searchProducts(
-            pageInfo:
-                PageInfo(page: pageInfo.pageIndex, size: pageInfo.pageSize),
+            pageInfo: PageInfo(page: pageInfo.pageIndex, size: pageInfo.pageSize),
             params: params,
           )
           .asStream()
@@ -192,18 +186,14 @@ class _ProductTableWidgetState extends BasicState<ProductTableWidget>
         return AlertDialog(
           title: Text(
             lang.categories,
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(color: Colors.black87),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black87),
           ),
           content: SizedBox(
             height: 400,
             width: 500,
             child: SelectCategoryWidget(
                 selectedCategory: (category) {
-                  if (category.isNotEmpty &&
-                      selectedCategoryStream.valueOrNull != category.first) {
+                  if (category.isNotEmpty && selectedCategoryStream.valueOrNull != category.first) {
                     selectedCategoryStream.add(category.first);
                   } else {
                     if (selectedCategoryStream.valueOrNull != null) {

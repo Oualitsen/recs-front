@@ -23,8 +23,7 @@ class AdjacencyInputForm extends StatefulWidget {
   State<AdjacencyInputForm> createState() => AdjacencyInputFormState();
 }
 
-class AdjacencyInputFormState extends BasicState<AdjacencyInputForm>
-    with WidgetUtilsMixin {
+class AdjacencyInputFormState extends BasicState<AdjacencyInputForm> with WidgetUtilsMixin {
   final client = GetIt.instance.get<GQClient>();
   final formKey = GlobalKey<FormState>();
   final firstEntryStream = BehaviorSubject<String>();
@@ -109,10 +108,7 @@ class AdjacencyInputFormState extends BasicState<AdjacencyInputForm>
           return AlertDialog(
             title: Text(
               lang.dataType,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(color: Colors.black87),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black87),
             ),
             content: SizedBox(
               height: 400,
@@ -153,10 +149,7 @@ class AdjacencyInputFormState extends BasicState<AdjacencyInputForm>
         return AlertDialog(
           title: Text(
             lang.categories,
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(color: Colors.black87),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black87),
           ),
           content: SizedBox(
             height: 400,

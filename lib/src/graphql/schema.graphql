@@ -51,6 +51,19 @@ type Query {
 
   findColorIndexByColorHex(color: String!, pageInfo: PageInfo!): [ColorIndex!]!
   getAdjecencyEntries(type: AdjacencyType!): [String!]!
+
+  getRuleById(id: ID!): Rule!
+
+  findRulesByType(ruleType: RuleType!, pageInfo: PageInfo!): [Rule!]!
+  findRules(pageInfo: PageInfo!): [Rule!]!
+  countRules: Long!
+  ruleFieldConfigList: [RuleFieldConfig!]!
+  getSeasons: [Season!]!
+
+  getAllBrands: [String!]!
+  getAllDesigners: [String!]!
+  getAllGenders: [String!]!
+  getAllColorLabels: [String!]!
 }
 type SkuKey {
   imageUrl: String!
@@ -84,6 +97,8 @@ type Mutation {
   addCategoryAdjacency(input: AdjacencyInput!): CategoryAdjacency!
   deleteAdjacencyById(adjacencyId: ID!): ID
   updateAdjacencyDistance(id: String!, distance: Float!): ID
+  createRule(input: RuleInput!): Rule!
+  deleteRule(id: ID!): String
 }
 ################################# TYPES #############################
 
@@ -150,6 +165,75 @@ type ResourceAccess {
 
 type Account {
   roles: [String!]!
+}
+
+type RuleFieldConfig {
+  label: String!
+  path: String!
+  ruleType: RuleType!
+}
+
+type Rule implements IndexedEntity & BasicEntity {
+  id: ID!
+  creationDate: Long!
+  lastUpdate: Long!
+  score: Float!
+  context: RuleContext!
+  config: RuleFieldConfig!
+  booleanRule: BooleanRule
+  textRule: TextRule
+  textRuleCategory: TextRuleCategory
+  textRuleSeason: TextRuleSeason
+  textRuleProduct: TextRuleProduct
+  textRuleSku: TextRuleSku
+  numberRule: NumberRule
+}
+
+type BooleanRule {
+  acceptedValue: Boolean!
+}
+
+type TextRule {
+  acceptedValues: [String!]!
+  matchType: TextRuleMatchType!
+  entityType: TextRuleEntityType!
+}
+
+type TextRuleCategory {
+  acceptedValues: [Category!]!
+  matchType: TextRuleMatchType!
+}
+
+type TextRuleSeason {
+  acceptedValues: [Season!]!
+  matchType: TextRuleMatchType!
+}
+
+type TextRuleProduct {
+  acceptedValues: [Product!]!
+  matchType: TextRuleMatchType!
+}
+
+type TextRuleSku {
+  acceptedValues: [Sku!]!
+  matchType: TextRuleMatchType!
+}
+
+type NumberRule {
+  percentage: Boolean!
+  lowerBound: Float!
+  upperBound: Float!
+  sameValueOnly: Boolean!
+}
+
+type RuleContext {
+  brands: [String!]!
+  designers: [String!]!
+  categories: [Category!]!
+  colorLabels: [String!]!
+  products: [Product!]!
+  skus: [Sku!]!
+  appliesOnAllProducts: Boolean!
 }
 
 type Adjacency implements IndexedEntity & BasicEntity {
@@ -221,6 +305,14 @@ type Sku implements IndexedEntity & BasicEntity {
   imageUrl: String!
   inventories: [Inventory!]!
   totalInventory: Long!
+
+  brand: String
+  designer: String
+  category: Category!
+  price: Float!
+  oldPrice: Float!
+  forKids: Boolean!
+  gender: String
 }
 
 type ProductInfo {
@@ -241,6 +333,12 @@ type Inventory {
   sizeLabel: String!
   inventory: Long!
   seasons: [String!]!
+}
+
+type Season {
+  startDate: Long!
+  endDate: Long!
+  code: String!
 }
 
 type Category implements IndexedEntity & BasicEntity {
@@ -285,6 +383,51 @@ type FieldMapping {
   csvFieldDefaultValue: String
 }
 ################################# INPUTS #############################
+
+input RuleInput {
+  id: String
+  contextInput: RuleContextInput!
+  ruleType: RuleType!
+  ruleFieldConfigInput: RuleFieldConfigInput!
+  booleanRuleInput: BooleanRuleInput
+  textRuleInput: TextRuleInput
+  numberRuleInput: NumberRuleInput
+}
+
+input RuleFieldConfigInput {
+  label: String!
+  path: String!
+  ruleType: RuleType!
+}
+
+input RuleContextInput {
+  brands: [String!]!
+  designers: [String!]!
+  categoryIds: [String!]!
+  colorLabels: [String!]!
+  productIds: [String!]!
+  skuIds: [String!]!
+  appliesOnAllProducts: Boolean!
+}
+
+input BooleanRuleInput {
+  acceptedValue: Boolean!
+}
+
+input TextRuleInput {
+  acceptedValues: [String!]!
+  matchType: TextRuleMatchType!
+  entityType: TextRuleEntityType!
+}
+
+input NumberRuleInput {
+  percentage: Boolean!
+  lowerBound: Float!
+  upperBound: Float!
+  sameValueOnly: Boolean!
+}
+
+
 
 input AdjacencyInput {
   entryId1: String!
@@ -358,4 +501,16 @@ enum AdjacencyType {
   COLOR_LABEL
   BRAND
   DESIGNER
+}
+
+enum RuleType {
+    NUMBER_RULE TEXT_RULE BOOLEAN_RULE
+}
+
+enum TextRuleMatchType {
+    SAME_VALUE ADJACENT_VALUES ACCEPTED_VALUES
+}
+
+enum TextRuleEntityType {
+    STRING SEASON CATEGORY PRODUCT SKU
 }

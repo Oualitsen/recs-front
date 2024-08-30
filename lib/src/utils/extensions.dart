@@ -7,8 +7,8 @@ extension OnString on String? {
   }
 }
 
-extension SkuSearchParamsExtension on SkuParamSearch {
-  bool isEqualTo(SkuParamSearch other) {
+extension SkuSearchParamsExtension on SkuSearchParam {
+  bool isEqualTo(SkuSearchParam other) {
     return other == this ||
         (other.productId == productId &&
             other.name == name &&

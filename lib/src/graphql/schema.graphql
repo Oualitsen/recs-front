@@ -301,7 +301,8 @@ type Sku implements IndexedEntity & BasicEntity {
   lastUpdate: Long!
   score: Float!
   name: String!
-  description: String
+  shortDescription: String
+  longDescription: String
   gtin: String!
   colorLabel: String!
   imageUrl: String!

@@ -139,5 +139,6 @@ query findSkus($params: SkuParamSearch!, $pageInfo: PageInfo!) {
 query getSkuById($id: String!) {
   getSkuById(id: $id) {
     ... _all_fields
+    
   }
 }

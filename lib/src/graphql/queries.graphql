@@ -128,3 +128,16 @@ query getRuleById($id: ID!) {
     ..._all_fields
   }
 }
+
+query findSkus($params: SkuParamSearch!, $pageInfo: PageInfo!) {
+  findSkus(params: $params, pageInfo: $pageInfo) {
+    ..._all_fields
+  }
+  countSkus(params: $params)
+}
+
+query getSkuById($id: String!) {
+  getSkuById(id: $id) {
+    ... _all_fields
+  }
+}

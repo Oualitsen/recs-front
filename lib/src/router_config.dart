@@ -1,20 +1,17 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:recs_front/generated/enums.gq.dart';
 import 'package:recs_front/src/data_mapping/data_mapping_page.dart';
-import 'package:recs_front/src/pages/adjacency/adjacency_input_form.dart';
 import 'package:recs_front/src/pages/adjacency/adjacency_table_page.dart';
 import 'package:recs_front/src/pages/category/category_tree.dart';
-import 'package:recs_front/src/pages/category/select_category_tree_widget.dart';
 import 'package:recs_front/src/pages/color_index/color_adjacency_page.dart';
 import 'package:recs_front/src/pages/home/home_page.dart';
 import 'package:recs_front/src/pages/images/image_search_page.dart';
-import 'package:recs_front/src/pages/product/product_details_page.dart';
 import 'package:recs_front/src/pages/profile_page.dart';
 import 'package:recs_front/src/pages/rules/add_rule_page.dart';
 import 'package:recs_front/src/pages/rules/rules_page.dart';
 import 'package:recs_front/src/pages/sku/sku_list_page.dart';
+import 'package:recs_front/src/pages/sku/visually_simillar_skus_page.dart';
 import 'package:recs_front/src/utils/lang.dart';
 import 'package:recs_front/src/utils/widget_utils.dart';
 import 'package:rxdart/rxdart.dart';
@@ -97,6 +94,17 @@ void initRouter(
     ),
   );
   router.define(
+    '/similarity/:skuId',
+    handler: Handler(
+      handlerFunc: (context, parameters) {
+        String skuId = parameters['skuId']!.first;
+        return WidgetUtils.wrapRoute(
+          (context, type) => VisuallySimillarSkusPage(skuId: skuId),
+        );
+      },
+    ),
+  );
+  router.define(
     '/rules/edit-rule/:ruleId',
     handler: Handler(
       handlerFunc: (context, parameters) {
@@ -120,19 +128,6 @@ void initRouter(
     ),
   );
 
-  router.define(
-    '/products/:id',
-    handler: Handler(
-      handlerFunc: (context, parameters) {
-        String id = parameters['id']!.first;
-        return WidgetUtils.wrapRoute(
-          (context, type) => ProductDetailsPage(
-            skuId: id,
-          ),
-        );
-      },
-    ),
-  );
   for (var element in menuButtonList) {
     router.define(
       element.routeName,

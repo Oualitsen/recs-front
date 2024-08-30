@@ -15,8 +15,7 @@ class ImageSearchPage extends StatefulWidget {
   State<ImageSearchPage> createState() => _ImageSearchPageState();
 }
 
-class _ImageSearchPageState extends BasicState<ImageSearchPage>
-    with WidgetUtilsMixin {
+class _ImageSearchPageState extends BasicState<ImageSearchPage> with WidgetUtilsMixin {
   final service = GetIt.instance.get<GQClient>();
   final imagesStream = BehaviorSubject.seeded(<Sku>[]);
   final inputStream = BehaviorSubject.seeded("");
@@ -28,8 +27,7 @@ class _ImageSearchPageState extends BasicState<ImageSearchPage>
     inputStream.debounceTime(Duration(milliseconds: 500)).listen((event) {
       if (event.isNotEmpty) {
         _waitingOption.add(true);
-        getImages(data: event, isProductId: _selectedOption.value)
-            .then((value) => _waitingOption.add(false));
+        getImages(data: event, isProductId: _selectedOption.value).then((value) => _waitingOption.add(false));
       } else {
         reset();
       }
@@ -90,13 +88,10 @@ class _ImageSearchPageState extends BasicState<ImageSearchPage>
                             Expanded(
                               child: TextFormField(
                                 decoration: InputDecoration(
-                                  hintText: isProductId
-                                      ? lang.productId
-                                      : lang.textSearch,
+                                  hintText: isProductId ? lang.productId : lang.textSearch,
                                   prefixIcon: Icon(Icons.search),
                                   border: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10.0)),
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
                                   ),
                                 ),
                                 controller: inputCtrl,
@@ -161,22 +156,17 @@ class _ImageSearchPageState extends BasicState<ImageSearchPage>
                                             child: Padding(
                                               padding: const EdgeInsets.all(15),
                                               child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(
-                                                      "${lang.name} : ${e.product.name}"),
+                                                  Text("${lang.name} : ${e.name}"),
                                                   Gap(5),
-                                                  Text(
-                                                      "${lang.score} : ${e.score}"),
+                                                  Text("${lang.score} : ${e.score}"),
                                                   Gap(5),
                                                   SizedBox(
                                                       height: 250,
                                                       width: 200,
                                                       child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(16),
+                                                        borderRadius: BorderRadius.circular(16),
                                                         child: Image.network(
                                                           e.imageUrl,
                                                           fit: BoxFit.fill,
@@ -184,8 +174,7 @@ class _ImageSearchPageState extends BasicState<ImageSearchPage>
                                                       )),
                                                   Gap(16),
                                                   SizedBox(
-                                                    child: SelectableText(
-                                                        "${lang.productId} : ${e.id}"),
+                                                    child: SelectableText("${lang.productId} : ${e.id}"),
                                                     height: 70,
                                                     width: 200,
                                                   ),
@@ -219,11 +208,7 @@ class _ImageSearchPageState extends BasicState<ImageSearchPage>
 
     if (isProductId) {
       print("#########");
-      res = await service.queries
-          .imageSearch(skuId: data)
-          .asStream()
-          .map((event) => event.imageSearch)
-          .first;
+      res = await service.queries.imageSearch(skuId: data).asStream().map((event) => event.imageSearch).first;
     } else {
       res = await service.queries
           .imageSearchByText(data: data)

@@ -17,6 +17,7 @@ class RulesPage extends StatefulWidget {
 
 class _RulesPageState extends BasicState<RulesPage> with WidgetUtilsMixin {
   final client = GetIt.instance.get<GQClient>();
+  final key = GlobalKey<table.LazyPaginatedDataTableState>();
   @override
   Widget build(BuildContext context) {
     return WidgetUtils.wrapRoute(
@@ -26,6 +27,7 @@ class _RulesPageState extends BasicState<RulesPage> with WidgetUtilsMixin {
           actions: [FilledButton(onPressed: () => _addRule(null), child: Text(lang.addRule))],
         ),
         body: table.LazyPaginatedDataTable<Rule>(
+          key: key,
           getData: (table.PageInfo info) {
             return client.queries
                 .getRules(pageInfo: PageInfo(page: info.pageIndex, size: info.pageSize))
@@ -65,6 +67,7 @@ class _RulesPageState extends BasicState<RulesPage> with WidgetUtilsMixin {
     }
     if (result != null) {
       //reload table
+      key.currentState!.refreshPage();
     }
   }
 }

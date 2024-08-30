@@ -61,7 +61,7 @@ class ProductCardsState extends BasicState<ProductCards> with WidgetUtilsMixin {
                       children: [
                         Row(
                           children: [
-                            SelectableText(sku.product.name),
+                            SelectableText(sku.name),
                             Spacer(),
                             Checkbox(
                               onChanged: (value) {

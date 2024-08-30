@@ -34,9 +34,11 @@ type Query {
   imageSearchByText(data: String!): [Sku!]!
   collectionMappings: [CollectionMapping!]!
   getSkuById(id: String!): Sku
-  getSkus(pageInfo: PageInfo!): [Sku!]!
+
+  findSkus(params: SkuParamSearch!  pageInfo: PageInfo!): [Sku!]!
+  countSkus(params: SkuParamSearch!): Int!
+
   getSkusByProductId(productId: String!): [Sku!]!
-  countSkus: Long!
   aggregate: [SkuKey!]!
   listIndexElements(pageInfo: PageInfo!, name: String): [ColorIndex!]!
   countIndexElements(name: String): Long!
@@ -298,14 +300,13 @@ type Sku implements IndexedEntity & BasicEntity {
   creationDate: Long!
   lastUpdate: Long!
   score: Float!
-  product: ProductInfo!
+  name: String!
   description: String
   gtin: String!
   colorLabel: String!
   imageUrl: String!
   inventories: [Inventory!]!
   totalInventory: Long!
-
   brand: String
   designer: String
   category: Category!
@@ -315,19 +316,7 @@ type Sku implements IndexedEntity & BasicEntity {
   gender: String
 }
 
-type ProductInfo {
-  id: ID!
-  brand: String
-  name: String!
-  designer: String
-  category: Category!
-  shortDescription: String
-  longDescription: String
-  price: Float!
-  oldPrice: Float!
-  forKids: Boolean!
-  gender: String
-}
+
 
 type Inventory {
   sizeLabel: String!
@@ -476,6 +465,14 @@ input CategoryInput {
 }
 
 input ProductParamSearch {
+  productId: String
+  name: String
+  brand: String
+  categoryIds: [String!]
+}
+
+input SkuParamSearch {
+  skuId: String
   productId: String
   name: String
   brand: String

@@ -19,51 +19,55 @@ import 'package:recs_front/src/widgets/selection_type.dart';
 import 'package:recs_front/src/widgets/widget_utils_mixin.dart';
 import 'package:rxdart/rxdart.dart';
 
-class ProductTableWidget extends StatefulWidget {
+class SkuTableWidget extends StatefulWidget {
   final SelectionType selectionType;
-  final void Function(ProductDetails product)? onSelect;
-  final List<ProductDetails> preselected;
+  final void Function(Sku product)? onSelect;
+  final List<Sku> preselected;
+  final String? productId;
 
-  const ProductTableWidget(
-      {super.key, required this.selectionType, this.onSelect, this.preselected = const []})
+  const SkuTableWidget(
+      {super.key, required this.selectionType, this.onSelect, this.preselected = const [], this.productId})
       : assert(
           selectionType != SelectionType.SINGLE || onSelect != null,
           "When selection type is 'SINGLE' you must provide 'onSelect' method",
         );
 
   @override
-  State<ProductTableWidget> createState() => ProductTableWidgetState();
+  State<SkuTableWidget> createState() => SkuTableWidgetState();
 }
 
-class ProductTableWidgetState extends BasicState<ProductTableWidget> with WidgetUtilsMixin {
+class SkuTableWidgetState extends BasicState<SkuTableWidget> with WidgetUtilsMixin {
   final service = GetIt.instance.get<GQClient>();
   final totalCount = BehaviorSubject.seeded(0);
-  final selectedProductsStream = BehaviorSubject.seeded(<ProductDetails>[]);
+  final selectedSkusStream = BehaviorSubject.seeded(<Sku>[]);
   final tableKey = GlobalKey<table.LazyPaginatedDataTableState>();
   final multiSelectionKey = GlobalKey<MultiSelectWidgetState>();
   final selectedCategoryStream = BehaviorSubject<Category?>();
   final selectedIds = BehaviorSubject.seeded(<String>[]);
-  final selectedProducts = BehaviorSubject.seeded(<ProductDetails>[]);
-  final searchStream = BehaviorSubject.seeded(ProductParamSearch(
-    productId: null,
-    name: null,
-    brand: null,
-    categoryIds: null,
-  ));
+  final selectedskus = BehaviorSubject.seeded(<Sku>[]);
+  final searchStream = BehaviorSubject<SkuParamSearch>();
   @override
   void initState() {
+    searchStream.add(SkuParamSearch(
+      skuId: null,
+      productId: widget.productId,
+      name: null,
+      brand: null,
+      categoryIds: null,
+    ));
     selectedCategoryStream.listen((value) {
       var searchParams = searchStream.value;
       addToSearchParams(
-        ProductParamSearch(
+        SkuParamSearch(
+            skuId: searchParams.skuId,
             productId: searchParams.productId,
             name: searchParams.name,
             brand: searchParams.brand,
             categoryIds: value != null ? [value.id] : null),
       );
     });
-    selectedProducts.add(widget.preselected);
-    selectedProducts.listen((value) {
+    selectedskus.add(widget.preselected);
+    selectedskus.listen((value) {
       selectedIds.add(value.map((e) => e.id).toList());
     });
     super.initState();
@@ -80,7 +84,7 @@ class ProductTableWidgetState extends BasicState<ProductTableWidget> with Widget
               initialData: selectedIds.valueOrNull,
               onDataChanged: (selectedIds) {
                 return Expanded(
-                  child: table.LazyPaginatedDataTable<ProductDetails>(
+                  child: table.LazyPaginatedDataTable<Sku>(
                     showCheckboxColumn: true,
                     showFirstLastButtons: true,
                     key: tableKey,
@@ -96,7 +100,7 @@ class ProductTableWidgetState extends BasicState<ProductTableWidget> with Widget
                         cells: [
                           DataCell(InkWell(
                               onTap: () => showImage(data),
-                              child: ImageUtils.fromNetworkRounded(data.firstImageUrl))),
+                              child: ImageUtils.fromNetworkRounded(data.imageUrl))),
                           DataCell(
                             TextButton(
                               onPressed: () => onTap(data),
@@ -109,10 +113,12 @@ class ProductTableWidgetState extends BasicState<ProductTableWidget> with Widget
                               child: Text(data.name),
                             ),
                           ),
+                          DataCell(Text(data.colorLabel)),
                           DataCell(SelectableText(data.brand ?? lang.na)),
                           DataCell(SelectableText(data.price.toString())),
                           DataCell(SelectableText(data.oldPrice.toString())),
                           DataCell(SelectableText(data.category.name)),
+                          DataCell(Text("${data.totalInventory}")),
                         ],
                       );
                     },
@@ -142,8 +148,7 @@ class ProductTableWidgetState extends BasicState<ProductTableWidget> with Widget
     return SizedBox.shrink();
   }
 
-  void onTap(ProductDetails data) {
-    print("onTap called on id = ${data.id}");
+  void onTap(Sku data) {
     if (widget.selectionType == SelectionType.SINGLE) {
       widget.onSelect?.call(data);
     } else {
@@ -151,36 +156,36 @@ class ProductTableWidgetState extends BasicState<ProductTableWidget> with Widget
     }
   }
 
-  void onSelectChanged(bool? selected, ProductDetails product) {
+  void onSelectChanged(bool? selected, Sku sku) {
     if (selected == null) {
       return;
     }
-    var selectedValues = [...selectedProducts.value];
+    var selectedValues = [...selectedskus.value];
     if (selected) {
-      selectedValues.add(product);
+      selectedValues.add(sku);
     } else {
-      selectedValues.removeWhere((element) => element.id == product.id);
+      selectedValues.removeWhere((element) => element.id == sku.id);
     }
-    selectedProducts.add(selectedValues);
+    selectedskus.add(selectedValues);
   }
 
-  Future<List<ProductDetails>> getData(table.PageInfo pageInfo) {
+  Future<List<Sku>> getData(table.PageInfo pageInfo) {
     try {
       return service.queries
-          .searchProducts(
+          .findSkus(
             pageInfo: PageInfo(page: pageInfo.pageIndex, size: pageInfo.pageSize),
             params: searchStream.value,
           )
           .asStream()
           .map((event) {
-        updateCount(event.count);
+        updateCount(event.countSkus);
 
-        return event.searchProducts;
+        return event.findSkus;
       }).first;
     } catch (error, stacktrace) {
       print(stacktrace);
       totalCount.add(0);
-      return Future.value(<ProductDetails>[]);
+      return Future.value(<Sku>[]);
     }
   }
 
@@ -206,11 +211,12 @@ class ProductTableWidgetState extends BasicState<ProductTableWidget> with Widget
           onChange: (value) {
             var params = searchStream.value;
             addToSearchParams(
-              ProductParamSearch(
+              SkuParamSearch(
                 brand: params.brand,
                 name: params.name,
                 categoryIds: params.categoryIds,
-                productId: value,
+                productId: params.productId,
+                skuId: value,
               ),
             );
           },
@@ -223,7 +229,8 @@ class ProductTableWidgetState extends BasicState<ProductTableWidget> with Widget
             var params = searchStream.value;
 
             addToSearchParams(
-              ProductParamSearch(
+              SkuParamSearch(
+                skuId: params.skuId,
                 brand: params.brand,
                 name: value,
                 categoryIds: params.categoryIds,
@@ -234,6 +241,7 @@ class ProductTableWidgetState extends BasicState<ProductTableWidget> with Widget
           hint: lang.name,
         ),
       ),
+      DataColumn(label: Text(lang.color)),
       DataColumn(label: Text(lang.brand)),
       DataColumn(label: Text(lang.price)),
       DataColumn(label: Text(lang.oldPrice)),
@@ -244,10 +252,11 @@ class ProductTableWidgetState extends BasicState<ProductTableWidget> with Widget
               return getCategoryColumnWidget(snapshot.data);
             }),
       ),
+      DataColumn(label: Text(lang.inventory)),
     ];
   }
 
-  addToSearchParams(ProductParamSearch value) {
+  addToSearchParams(SkuParamSearch value) {
     var current = searchStream.value;
     if (!current.isEqualTo(value)) {
       searchStream.add(value);
@@ -338,7 +347,7 @@ class ProductTableWidgetState extends BasicState<ProductTableWidget> with Widget
     );
   }
 
-  Future showImage(ProductDetails data) async {
+  Future showImage(Sku data) async {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -355,13 +364,13 @@ class ProductTableWidgetState extends BasicState<ProductTableWidget> with Widget
         content: SizedBox(
           height: 400,
           width: 400,
-          child: ImageUtils.fromNetwork(data.firstImageUrl),
+          child: ImageUtils.fromNetwork(data.imageUrl),
         ),
       ),
     );
   }
 
-  List<ProductDetails> getSelectedItems() {
-    return selectedProducts.value;
+  List<Sku> getSelectedItems() {
+    return selectedskus.value;
   }
 }

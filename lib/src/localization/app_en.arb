@@ -302,6 +302,9 @@
   "macthingType": "Macthing Type",
   "textRuleMatchTypeSameValue": "Same value",
   "textRuleMatchTypeAdjacentValues": "Adjacent values",
-  "textRuleMatchTypeAcceptedValue": "Accepted values"
+  "textRuleMatchTypeAcceptedValue": "Accepted values",
+  "searchById": "Search by id",
+  "selectedProducts": "Selected Products",
+  "selectAtLeastOneProduct": "Select at least one product"
 
 }

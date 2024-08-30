@@ -34,7 +34,7 @@ class ReorderableListWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.min,
               children: [
-                SelectableText(originalProduct.product.name),
+                SelectableText(originalProduct.name),
                 SizedBox(
                   width: width,
                   height: 200,
@@ -44,8 +44,7 @@ class ReorderableListWidget extends StatelessWidget {
                     height: 200,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      return Text(
-                          "${lang.errors} : ${originalProduct.imageUrl}");
+                      return Text("${lang.errors} : ${originalProduct.imageUrl}");
                     },
                   ),
                 ),
@@ -75,7 +74,7 @@ class ReorderableListWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          SelectableText(e.product.name),
+                          SelectableText(e.name),
                           Image.network(
                             e.imageUrl,
                             width: width,
@@ -85,7 +84,7 @@ class ReorderableListWidget extends StatelessWidget {
                               return Text("${lang.errors} : ${e.imageUrl}");
                             },
                           ),
-                          SelectableText("${lang.id} : ${e.product.id}"),
+                          SelectableText("${lang.id} : ${e.id}"),
                         ],
                       ),
                     ),

@@ -12,6 +12,7 @@ import 'package:recs_front/src/pages/rules/input/rule_context_input.dart';
 import 'package:recs_front/src/pages/rules/input/rule_field_config_input_widget.dart';
 import 'package:recs_front/src/pages/rules/input/text_rule_input_widget.dart';
 import 'package:recs_front/src/utils/alert_vertical_widget.dart';
+import 'package:recs_front/src/utils/image_utils.dart';
 import 'package:recs_front/src/utils/ui_utils.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
 import 'package:recs_front/src/widgets/widget_utils.dart';
@@ -290,9 +291,43 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
                     }
 
                   case "productId":
-                    break;
+                    {
+                      return TextRuleInputWidget<Product>(
+                        entityType: TextRuleEntityType.PRODUCT,
+                        key: textKey,
+                        initialMatchType: rule?.textRule?.matchType,
+                        initialSelcetedValue: rule?.textRuleProduct?.acceptedValues,
+                        selectValues: (preselected) async {
+                          var result = await openSelectMultiProducts(context, preselected);
+                          return result;
+                        },
+                        displayItem: (s) => ListTile(
+                          leading: ImageUtils.fromNetwork(s.firstImageUrl),
+                          title: Text(s.name),
+                          subtitle: Text(s.id),
+                        ),
+                        getItemId: (e) => e.id,
+                      );
+                    }
                   case "gtin":
-                    break;
+                    {
+                      return TextRuleInputWidget<Sku>(
+                        entityType: TextRuleEntityType.SKU,
+                        key: textKey,
+                        initialMatchType: rule?.textRule?.matchType,
+                        initialSelcetedValue: rule?.textRuleSku?.acceptedValues,
+                        selectValues: (preselected) async {
+                          var result = await openSelectMultiSkus(context, preselected);
+                          return result;
+                        },
+                        displayItem: (s) => ListTile(
+                          leading: ImageUtils.fromNetwork(s.imageUrl),
+                          title: Text(s.name),
+                          subtitle: Text(s.id),
+                        ),
+                        getItemId: (e) => e.id,
+                      );
+                    }
                   default:
                     throw Exception("${ruleConfig.path} is not supported yet");
                 }
@@ -349,6 +384,7 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
         await showSnackBar2(context, lang.ruleCreated);
         Navigator.of(context).pop(rule);
       } catch (err, ex) {
+        print(ex);
         showServerError2(context, error: err);
       } finally {
         progressSubject.add(false);

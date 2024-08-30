@@ -1,1 +1,1 @@
-enum SelectionType { MULTIPLE, SINGLE }
+enum SelectionType { MULTIPLE, SINGLE, NONE }

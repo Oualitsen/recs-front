@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:recs_front/generated/enums.gq.dart';
 import 'package:recs_front/generated/inputs.gq.dart';
-import 'package:recs_front/generated/types.gq.dart';
 import 'package:recs_front/src/utils/alert_vertical_widget.dart';
-import 'package:recs_front/src/utils/ui_utils.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
 import 'package:recs_front/src/widgets/widget_utils_mixin.dart';
 import 'package:rxdart/rxdart.dart';
@@ -39,7 +37,6 @@ class TextRuleInputWidgetState<T> extends BasicState<TextRuleInputWidget<T>> wit
   void initState() {
     var init = widget.initialMatchType;
     var initSelected = widget.initialSelcetedValue;
-    print("initSelected = ${initSelected}");
     if (init != null) {
       matchTypeSubject.add(init);
     }

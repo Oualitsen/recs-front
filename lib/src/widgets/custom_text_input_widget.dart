@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recs_front/src/utils/ui_utils.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CustomTextInputWidget extends StatefulWidget {
@@ -11,7 +12,7 @@ class CustomTextInputWidget extends StatefulWidget {
   final String? initValue;
   final bool showPrefixIcon;
   final TextStyle? hintStyle;
-  final Function(String value)? onChange;
+  final void Function(String value)? onChange;
   final String? Function(String? value)? validator;
   final Function(String)? onFieldSubmitted;
   const CustomTextInputWidget({
@@ -38,36 +39,42 @@ class CustomTextInputWidgetState extends State<CustomTextInputWidget> {
   final textInputCtrl = TextEditingController();
   final key = GlobalKey<FormState>();
   final heightStream = BehaviorSubject.seeded(32.0);
+  final filterSubject = BehaviorSubject.seeded("");
   @override
   void initState() {
     if (widget.initValue != null) {
       textInputCtrl.text = widget.initValue!;
     }
     heightStream.add(widget.height ?? 32.0);
+    textInputCtrl.addListener(() {
+      filterSubject.add(textInputCtrl.text.trim());
+    });
+    if (widget.onChange != null) {
+      var onChange = widget.onChange!;
+      filterSubject.debounceTime(Duration(milliseconds: 500)).listen((event) {
+        onChange(event);
+      });
+    }
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<double>(
+    return streamBuilder<double>(
         stream: heightStream,
-        builder: (context, snapshot) {
-          var height = snapshot.data ?? 32.0;
+        onDataChanged: (height) {
           return Container(
             decoration: BoxDecoration(
               border: Border.all(width: 1, color: Colors.transparent),
-              borderRadius: widget.borderRadius != null
-                  ? BorderRadius.circular(widget.borderRadius!)
-                  : null,
+              borderRadius: widget.borderRadius != null ? BorderRadius.circular(widget.borderRadius!) : null,
             ),
             width: widget.width ?? 150,
             height: height,
             child: Form(
               key: key,
               child: TextFormField(
-                onChanged: (value) {
-                  widget.onChange?.call(value);
-                },
+                onChanged: filterSubject.add,
                 validator: widget.validator,
                 style: TextStyle(color: widget.textColor ?? Colors.black),
                 controller: textInputCtrl,
@@ -89,9 +96,20 @@ class CustomTextInputWidgetState extends State<CustomTextInputWidget> {
                           color: Colors.black38,
                         )
                       : null,
+                  suffixIcon: InkWell(
+                    child: Icon(
+                      Icons.clear,
+                      size: 12,
+                    ),
+                    onTap: () {
+                      var text = textInputCtrl.text;
+                      if (text.isNotEmpty) {
+                        textInputCtrl.text = "";
+                      }
+                    },
+                  ),
                   hintText: widget.hint,
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 1, horizontal: 5.0),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 1, horizontal: 5.0),
                   border: OutlineInputBorder(
                     gapPadding: 0,
                     borderSide: BorderSide(width: 1, color: Colors.black45),

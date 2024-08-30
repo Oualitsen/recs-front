@@ -3,8 +3,9 @@ import 'package:get_it/get_it.dart';
 import 'package:recs_front/generated/client.gq.dart';
 import 'package:recs_front/generated/types.gq.dart';
 import 'package:recs_front/src/pages/full_page_progress.dart';
-import 'package:recs_front/src/pages/sku/sku_list_widget.dart';
+import 'package:recs_front/src/pages/product/sku_table.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
+import 'package:recs_front/src/widgets/selection_type.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SkuListPage extends StatefulWidget {
@@ -42,7 +43,14 @@ class _SkuListPageState extends BasicState<SkuListPage> {
             appBar: AppBar(
               title: Text("${product.name} ${product.skuList.length}"),
             ),
-            body: SkuListWidget(skus: product.skuList),
+            body: SkuTableWidget(
+              selectionType: SelectionType.SINGLE,
+              productId: product.id,
+              onSelect: (sku) {
+                print("SKU selected ${sku}");
+                Navigator.of(context).pushNamed("/similarity/${sku.id}");
+              },
+            ),
           );
         });
   }

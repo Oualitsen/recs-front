@@ -3,6 +3,7 @@ import 'package:recs_front/src/pages/category/category_table.dart';
 import 'package:recs_front/src/pages/product/product_table.dart';
 import 'package:recs_front/src/utils/widget_utils.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
+import 'package:recs_front/src/widgets/selection_type.dart';
 import 'package:recs_front/src/widgets/widget_utils_mixin.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -53,7 +54,7 @@ class HomePageState extends BasicState<HomePage> with TickerProviderStateMixin, 
               ),
               Expanded(
                 child: TabBarView(children: [
-                  ProductTableWidget(),
+                  ProductTableWidget(selectionType: SelectionType.NONE),
                   CategoryTable(),
                 ]),
               )

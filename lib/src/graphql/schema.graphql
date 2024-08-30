@@ -35,8 +35,8 @@ type Query {
   collectionMappings: [CollectionMapping!]!
   getSkuById(id: String!): Sku
 
-  findSkus(params: SkuParamSearch!  pageInfo: PageInfo!): [Sku!]!
-  countSkus(params: SkuParamSearch!): Int!
+  findSkus(params: SkuSearchParam!  pageInfo: PageInfo!): [Sku!]!
+  countSkus(params: SkuSearchParam!): Int!
 
   getSkusByProductId(productId: String!): [Sku!]!
   aggregate: [SkuKey!]!
@@ -472,7 +472,7 @@ input ProductParamSearch {
   categoryIds: [String!]
 }
 
-input SkuParamSearch {
+input SkuSearchParam {
   skuId: String
   productId: String
   name: String

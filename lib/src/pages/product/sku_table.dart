@@ -45,10 +45,10 @@ class SkuTableWidgetState extends BasicState<SkuTableWidget> with WidgetUtilsMix
   final selectedCategoryStream = BehaviorSubject<Category?>();
   final selectedIds = BehaviorSubject.seeded(<String>[]);
   final selectedskus = BehaviorSubject.seeded(<Sku>[]);
-  final searchStream = BehaviorSubject<SkuParamSearch>();
+  final searchStream = BehaviorSubject<SkuSearchParam>();
   @override
   void initState() {
-    searchStream.add(SkuParamSearch(
+    searchStream.add(SkuSearchParam(
       skuId: null,
       productId: widget.productId,
       name: null,
@@ -58,7 +58,7 @@ class SkuTableWidgetState extends BasicState<SkuTableWidget> with WidgetUtilsMix
     selectedCategoryStream.listen((value) {
       var searchParams = searchStream.value;
       addToSearchParams(
-        SkuParamSearch(
+        SkuSearchParam(
             skuId: searchParams.skuId,
             productId: searchParams.productId,
             name: searchParams.name,
@@ -211,7 +211,7 @@ class SkuTableWidgetState extends BasicState<SkuTableWidget> with WidgetUtilsMix
           onChange: (value) {
             var params = searchStream.value;
             addToSearchParams(
-              SkuParamSearch(
+              SkuSearchParam(
                 brand: params.brand,
                 name: params.name,
                 categoryIds: params.categoryIds,
@@ -229,7 +229,7 @@ class SkuTableWidgetState extends BasicState<SkuTableWidget> with WidgetUtilsMix
             var params = searchStream.value;
 
             addToSearchParams(
-              SkuParamSearch(
+              SkuSearchParam(
                 skuId: params.skuId,
                 brand: params.brand,
                 name: value,
@@ -256,7 +256,7 @@ class SkuTableWidgetState extends BasicState<SkuTableWidget> with WidgetUtilsMix
     ];
   }
 
-  addToSearchParams(SkuParamSearch value) {
+  addToSearchParams(SkuSearchParam value) {
     var current = searchStream.value;
     if (!current.isEqualTo(value)) {
       searchStream.add(value);

@@ -129,7 +129,7 @@ query getRuleById($id: ID!) {
   }
 }
 
-query findSkus($params: SkuParamSearch!, $pageInfo: PageInfo!) {
+query findSkus($params: SkuSearchParam!, $pageInfo: PageInfo!) {
   findSkus(params: $params, pageInfo: $pageInfo) {
     ..._all_fields
   }

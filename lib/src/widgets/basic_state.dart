@@ -118,6 +118,17 @@ extension AppLocalizationsExt on AppLocalizations {
     return value ? trueLabel : falseLabel;
   }
 
+  String getOperatorName(NumberRuleOperator value) {
+    switch (value) {
+      case NumberRuleOperator.BETWEEN:
+        return between;
+      case NumberRuleOperator.GTE:
+        return gte;
+      case NumberRuleOperator.LTE:
+        return lte;
+    }
+  }
+
   String adjecencyTypeName(AdjacencyType type) {
     switch (type) {
       case AdjacencyType.CATEGORY:

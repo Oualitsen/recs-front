@@ -305,6 +305,11 @@
   "textRuleMatchTypeAcceptedValue": "Accepted values",
   "searchById": "Search by id",
   "selectedProducts": "Selected Products",
-  "selectAtLeastOneProduct": "Select at least one product"
+  "selectAtLeastOneProduct": "Select at least one product",
+  "between": "Between",
+  "gte": "Greater than or equals",
+  "lte": "Lower than or equals",
+  "operator": "Operator",
+  "numberRuleValue": "Value"
 
 }

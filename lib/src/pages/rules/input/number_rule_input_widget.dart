@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:recs_front/generated/enums.gq.dart';
 import 'package:recs_front/generated/inputs.gq.dart';
 import 'package:recs_front/generated/types.gq.dart';
 import 'package:recs_front/src/utils/ui_utils.dart';
@@ -24,6 +25,7 @@ class NumberRuleInputWidgetState extends BasicState<NumberRuleInputWidget> with 
   final formKey = GlobalKey<FormState>();
   final sameValueSubject = BehaviorSubject.seeded(false);
   final percentageSubject = BehaviorSubject.seeded(false);
+  final operatorSubject = BehaviorSubject<NumberRuleOperator>();
 
   final upper = TextEditingController();
   final lower = TextEditingController();
@@ -41,6 +43,7 @@ class NumberRuleInputWidgetState extends BasicState<NumberRuleInputWidget> with 
         upper.text = "${init.upperBound}";
         lower.text = "${init.upperBound}";
       }
+      operatorSubject.add(init.operator);
     }
     super.initState();
   }
@@ -67,31 +70,74 @@ class NumberRuleInputWidgetState extends BasicState<NumberRuleInputWidget> with 
                             }
                           });
                     }),
-                StreamBuilder<List<bool>>(
-                    stream:
-                        Rx.combineLatest2(percentageSubject, sameValueSubject, (val1, val2) => [val1, val2]),
+                StreamBuilder<_ValuesRecord>(
+                    stream: Rx.combineLatest2(
+                        percentageSubject,
+                        sameValueSubject,
+                        (val1, val2) => _ValuesRecord(
+                            percentage: val1, sameValue: val2, operator: NumberRuleOperator.BETWEEN)),
                     builder: (context, snapshot) {
-                      var array = snapshot.data;
-                      if (array == null || array[1]) {
+                      var value = snapshot.data;
+                      if (value == null || value.sameValue) {
                         return SizedBox.shrink();
                       }
 
                       return CheckboxListTile(
                           title: Text(lang.percenatge),
-                          value: array.first,
+                          value: value.percentage,
                           onChanged: (newValue) {
                             if (newValue != null) {
                               percentageSubject.add(newValue);
                             }
                           });
                     }),
-                StreamBuilder<List<bool>>(
-                    stream: Rx.combineLatest2(sameValueSubject, percentageSubject, (a, b) => [a, b]),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData || snapshot.data!.first) {
+                Gap(10),
+                streamBuilder(
+                    stream: sameValueSubject,
+                    onDataChanged: (sameValue) {
+                      if (sameValue) {
                         return SizedBox.shrink();
                       }
-                      var isPercentage = snapshot.data!.last;
+                      return StreamBuilder<NumberRuleOperator>(
+                          stream: operatorSubject,
+                          builder: (context, snapshot) {
+                            var value = snapshot.data;
+                            return DropdownButtonFormField<NumberRuleOperator>(
+                              decoration: getDecoration(lang.operator, true),
+                              value: value,
+                              validator: (val) {
+                                if (val == null) {
+                                  return lang.requiredField;
+                                }
+                                return null;
+                              },
+                              items: NumberRuleOperator.values
+                                  .map((e) => DropdownMenuItem<NumberRuleOperator>(
+                                        child: Text(lang.getOperatorName(e)),
+                                        value: e,
+                                      ))
+                                  .toList(),
+                              onChanged: (newValue) {
+                                if (newValue != null) {
+                                  operatorSubject.add(newValue);
+                                }
+                              },
+                            );
+                          });
+                    }),
+                Gap(10),
+                StreamBuilder<_ValuesRecord>(
+                    stream: Rx.combineLatest3(sameValueSubject, percentageSubject, operatorSubject,
+                        (a, b, c) => _ValuesRecord(sameValue: a, percentage: b, operator: c)),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData || snapshot.data!.sameValue) {
+                        return SizedBox.shrink();
+                      }
+                      var isPercentage = snapshot.data!.percentage;
+                      var operator = snapshot.data!.operator;
+                      var lowerBoundLabel = operator == NumberRuleOperator.BETWEEN
+                          ? lang.lowerBoundMaxValue
+                          : lang.numberRuleValue;
                       return Row(
                         children: [
                           Expanded(
@@ -106,40 +152,42 @@ class NumberRuleInputWidgetState extends BasicState<NumberRuleInputWidget> with 
                                 }
                               },
                               controller: lower,
-                              decoration: getDecoration(lang.lowerBoundMaxValue, true,
+                              decoration: getDecoration(lowerBoundLabel, true,
                                   suffixIcon: isPercentage ? Icon(Icons.percent) : null),
                             ),
                           ),
-                          Gap(16),
-                          Expanded(
-                            child: TextFormField(
-                              validator: (text) {
-                                String? validationError;
-                                if (isPercentage) {
-                                  validationError = ValidationUtils.doubleValidator(text, context,
-                                      minValue: 0, maxValue: 100, required: true);
-                                } else {
-                                  validationError = ValidationUtils.doubleValidator(text, context,
-                                      minValue: 0, required: true);
-                                }
-                                if (validationError != null) {
-                                  return validationError;
-                                }
-
-                                var lowerValue = double.tryParse(lower.text);
-                                if (lowerValue != null) {
-                                  var upperValue = double.parse(text!);
-                                  if (lowerValue > upperValue) {
-                                    return lang.lowUpError;
+                          if (operator == NumberRuleOperator.BETWEEN) ...[
+                            Gap(16),
+                            Expanded(
+                              child: TextFormField(
+                                validator: (text) {
+                                  String? validationError;
+                                  if (isPercentage) {
+                                    validationError = ValidationUtils.doubleValidator(text, context,
+                                        minValue: 0, maxValue: 100, required: true);
+                                  } else {
+                                    validationError = ValidationUtils.doubleValidator(text, context,
+                                        minValue: 0, required: true);
                                   }
-                                }
-                                return null;
-                              },
-                              controller: upper,
-                              decoration: getDecoration(lang.upperBoundMaxValue, true,
-                                  suffixIcon: isPercentage ? Icon(Icons.percent) : null),
+                                  if (validationError != null) {
+                                    return validationError;
+                                  }
+
+                                  var lowerValue = double.tryParse(lower.text);
+                                  if (lowerValue != null) {
+                                    var upperValue = double.parse(text!);
+                                    if (lowerValue > upperValue) {
+                                      return lang.lowUpError;
+                                    }
+                                  }
+                                  return null;
+                                },
+                                controller: upper,
+                                decoration: getDecoration(lang.upperBoundMaxValue, true,
+                                    suffixIcon: isPercentage ? Icon(Icons.percent) : null),
+                              ),
                             ),
-                          ),
+                          ]
                         ],
                       );
                     })
@@ -154,19 +202,29 @@ class NumberRuleInputWidgetState extends BasicState<NumberRuleInputWidget> with 
       if (percentageSubject.value) {
         return NumberRuleInput(
           percentage: percentageSubject.value,
-          lowerBound: double.parse(lower.text) / 100,
-          upperBound: double.parse(upper.text) / 100,
+          lowerBound: (double.tryParse(lower.text) ?? 0) / 100,
+          upperBound: (double.tryParse(upper.text) ?? 0) / 100,
           sameValueOnly: sameValueSubject.value,
+          operator: operatorSubject.valueOrNull ?? NumberRuleOperator.BETWEEN,
         );
       } else {
         return NumberRuleInput(
           percentage: percentageSubject.value,
-          lowerBound: double.parse(lower.text),
-          upperBound: double.parse(upper.text),
+          lowerBound: double.tryParse(lower.text) ?? 0,
+          upperBound: double.tryParse(upper.text) ?? 0,
           sameValueOnly: sameValueSubject.value,
+          operator: operatorSubject.valueOrNull ?? NumberRuleOperator.BETWEEN,
         );
       }
     }
     return null;
   }
+}
+
+class _ValuesRecord {
+  final bool sameValue;
+  final bool percentage;
+  final NumberRuleOperator operator;
+
+  _ValuesRecord({required this.sameValue, required this.percentage, required this.operator});
 }

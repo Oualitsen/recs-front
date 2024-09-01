@@ -366,6 +366,9 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
             booleanRuleInput = boolKey.currentState!.read();
           }
       }
+      if (numberRuleInput == null && textRuleInput == null && booleanRuleInput == null) {
+        return;
+      }
       var ruleInput = RuleInput(
           id: widget.ruleId,
           contextInput: ruleContextInput,

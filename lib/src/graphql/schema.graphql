@@ -226,6 +226,7 @@ type NumberRule {
   lowerBound: Float!
   upperBound: Float!
   sameValueOnly: Boolean!
+  operator: NumberRuleOperator!
 }
 
 type RuleContext {
@@ -414,6 +415,7 @@ input NumberRuleInput {
   percentage: Boolean!
   lowerBound: Float!
   upperBound: Float!
+  operator: NumberRuleOperator!
   sameValueOnly: Boolean!
 }
 
@@ -511,4 +513,8 @@ enum TextRuleMatchType {
 
 enum TextRuleEntityType {
     STRING SEASON CATEGORY PRODUCT SKU
+}
+
+enum NumberRuleOperator {
+    BETWEEN GTE LTE
 }

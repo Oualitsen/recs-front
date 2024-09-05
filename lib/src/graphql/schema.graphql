@@ -193,6 +193,7 @@ type Rule implements IndexedEntity & BasicEntity {
 
 type BooleanRule {
   acceptedValue: Boolean!
+  sameValue: Boolean!
 }
 
 type TextRule {
@@ -403,6 +404,7 @@ input RuleContextInput {
 
 input BooleanRuleInput {
   acceptedValue: Boolean!
+  sameValue: Boolean!
 }
 
 input TextRuleInput {

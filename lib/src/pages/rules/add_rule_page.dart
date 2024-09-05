@@ -336,6 +336,8 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
             case RuleType.BOOLEAN_RULE:
               return BooleanRuleInputWidget(
                 key: boolKey,
+                initialValue: rule?.booleanRule?.acceptedValue,
+                initialSameValue: rule?.booleanRule?.sameValue,
               );
           }
         });

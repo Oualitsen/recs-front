@@ -229,6 +229,7 @@ type NumberRule {
   upperBound: Float!
   sameValueOnly: Boolean!
   operator: NumberRuleOperator!
+  relative: Boolean!
 }
 
 type RuleContext {
@@ -421,6 +422,7 @@ input NumberRuleInput {
   upperBound: Float!
   operator: NumberRuleOperator!
   sameValueOnly: Boolean!
+  relative: Boolean!
 }
 
 

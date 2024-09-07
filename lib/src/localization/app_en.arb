@@ -306,10 +306,11 @@
   "searchById": "Search by id",
   "selectedProducts": "Selected Products",
   "selectAtLeastOneProduct": "Select at least one product",
-  "between": "Between",
-  "gte": "Greater than or equals",
-  "lte": "Lower than or equals",
+  "between": "Between ( min <= product value <= max )",
+  "gte": "Greater than or equals (product value >= value)",
+  "lte": "Lower than or equals (product value <= value)",
   "operator": "Operator",
-  "numberRuleValue": "Value"
+  "numberRuleValue": "Value",
+  "numberRuleRelative": "Relative"
 
 }

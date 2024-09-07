@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:recs_front/generated/client.gq.dart';
 import 'package:recs_front/generated/types.gq.dart';
 import 'package:recs_front/src/pages/full_page_progress.dart';
+import 'package:recs_front/src/pages/sku/sku_similarity_widget.dart';
 import 'package:recs_front/src/utils/widget_utils.dart';
 import 'package:recs_front/src/widgets/basic_state.dart';
 import 'package:recs_front/src/widgets/widget_utils_mixin.dart';
@@ -46,62 +47,13 @@ class _VisuallySimillarSkusPageState extends BasicState<VisuallySimillarSkusPage
               ),
               body: Row(
                 children: [
-                  SizedBox(
-                    height: 450,
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(16),
-                        ),
-                        border: Border.all(
-                          color: Colors.blueGrey,
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            child: Text(
-                              sku.name,
-                              softWrap: true,
-                            ),
-                            width: 180,
-                            height: 70,
-                          ),
-                          Gap(5),
-                          SizedBox(
-                              height: 250,
-                              width: 200,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: Image.network(
-                                  sku.imageUrl,
-                                  fit: BoxFit.fill,
-                                ),
-                              )),
-                          SizedBox(
-                            width: 200,
-                            height: 40,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Gap(16),
-                                SelectableText("${lang.productId} : ${sku.id}"),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  SkuSimilarityWidget(sku: sku, showScore: false),
                   Gap(5),
                   SizedBox(
                     height: 500,
                     child: VerticalDivider(
-                      thickness: 2,
-                      color: Colors.black,
+                      thickness: 1,
+                      color: Colors.grey.shade600,
                     ),
                   ),
                   Gap(5),
@@ -129,55 +81,10 @@ class _VisuallySimillarSkusPageState extends BasicState<VisuallySimillarSkusPage
                             children: data
                                 .map(
                                   (e) => Padding(
-                                    padding: const EdgeInsets.all(15),
-                                    child: Container(
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(16),
-                                        ),
-                                        border: Border.all(
-                                          color: Colors.blueGrey[300] ?? Colors.blueGrey,
-                                          width: 1.5,
-                                        ),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            child: Text(
-                                              e.name,
-                                              softWrap: true,
-                                            ),
-                                            width: 180,
-                                            height: 70,
-                                          ),
-                                          Gap(5),
-                                          SizedBox(
-                                              height: 250,
-                                              width: 200,
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(16),
-                                                child: Image.network(
-                                                  e.imageUrl,
-                                                  fit: BoxFit.fill,
-                                                ),
-                                              )),
-                                          SizedBox(
-                                            width: 200,
-                                            height: 80,
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Gap(16),
-                                                SelectableText("${lang.productId} : ${e.id}"),
-                                                Gap(5),
-                                                Text("${lang.score} : ${e.score}"),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    padding: const EdgeInsets.only(top: 16, left: 8),
+                                    child: SkuSimilarityWidget(
+                                      sku: e,
+                                      showScore: true,
                                     ),
                                   ),
                                 )

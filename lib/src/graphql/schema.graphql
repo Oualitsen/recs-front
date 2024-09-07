@@ -173,6 +173,7 @@ type RuleFieldConfig {
   label: String!
   path: String!
   ruleType: RuleType!
+  adjacencyType: AdjacencyType
 }
 
 type Rule implements IndexedEntity & BasicEntity {
@@ -390,6 +391,7 @@ input RuleFieldConfigInput {
   label: String!
   path: String!
   ruleType: RuleType!
+  adjacencyType: AdjacencyType
 }
 
 input RuleContextInput {

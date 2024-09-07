@@ -14,6 +14,7 @@ class TextRuleInputWidget<T> extends StatefulWidget {
   final TextRuleMatchType? initialMatchType;
   final List<T>? initialSelcetedValue;
   final TextRuleEntityType entityType;
+  final AdjacencyType? adjacencyType;
   const TextRuleInputWidget({
     super.key,
     required this.selectValues,
@@ -22,6 +23,7 @@ class TextRuleInputWidget<T> extends StatefulWidget {
     required this.initialMatchType,
     required this.initialSelcetedValue,
     required this.entityType,
+    required this.adjacencyType,
   });
 
   @override
@@ -70,6 +72,9 @@ class TextRuleInputWidgetState<T> extends BasicState<TextRuleInputWidget<T>> wit
                         },
                         decoration: getDecoration(lang.textRuleMatchType, true),
                         items: TextRuleMatchType.values
+                            .where((element) =>
+                                (widget.adjacencyType != null) ||
+                                (element != TextRuleMatchType.ADJACENT_VALUES))
                             .map(
                               (e) => DropdownMenuItem(
                                 child: Text(lang.textRuleMatchTypeName(e)),
@@ -159,9 +164,10 @@ class TextRuleInputWidgetState<T> extends BasicState<TextRuleInputWidget<T>> wit
       acceptedValuesError.add(false);
       //create input here
       return TextRuleInput(
-          acceptedValues: (selectedValues.valueOrNull ?? []).map((e) => widget.getItemId(e)).toList(),
-          matchType: matchTypeSubject.value,
-          entityType: widget.entityType);
+        acceptedValues: (selectedValues.valueOrNull ?? []).map((e) => widget.getItemId(e)).toList(),
+        matchType: matchTypeSubject.value,
+        entityType: widget.entityType,
+      );
     }
   }
 }

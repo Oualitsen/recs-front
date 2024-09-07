@@ -149,7 +149,9 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
                 title: Text(lang.macthingType),
                 content: Column(
                   children: [
-                    _createRuleInputWidget(rule),
+                    streamBuilder(
+                        stream: selectedRuleConfigSubject,
+                        onDataChanged: (config) => _createRuleInputWidget(rule, config)),
                     Gap(10),
                     getButtons(
                       onSave: saveRule,
@@ -178,7 +180,7 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
     }
   }
 
-  Widget _createRuleInputWidget(Rule? rule) {
+  Widget _createRuleInputWidget(Rule? rule, RuleFieldConfig config) {
     return streamBuilder<RuleFieldConfig>(
         stream: selectedRuleConfigSubject,
         initialData: selectedRuleConfigSubject.valueOrNull,
@@ -207,6 +209,7 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
                         },
                         displayItem: (s) => Text(s.code),
                         getItemId: (s) => s.code,
+                        adjacencyType: config.adjacencyType,
                       );
                     }
                   case "colorLabel":
@@ -222,11 +225,13 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
                         },
                         displayItem: (s) => Text(s),
                         getItemId: (e) => e,
+                        adjacencyType: config.adjacencyType,
                       );
                     }
                   case "categoryId":
                     {
                       return TextRuleInputWidget<Category>(
+                        adjacencyType: config.adjacencyType,
                         entityType: TextRuleEntityType.CATEGORY,
                         key: textKey,
                         initialMatchType: rule?.textRule?.matchType,
@@ -243,6 +248,7 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
                   case "brand":
                     {
                       return TextRuleInputWidget<String>(
+                        adjacencyType: config.adjacencyType,
                         entityType: TextRuleEntityType.STRING,
                         key: textKey,
                         initialMatchType: rule?.textRule?.matchType,
@@ -260,6 +266,7 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
                     {
                       {
                         return TextRuleInputWidget<String>(
+                          adjacencyType: config.adjacencyType,
                           entityType: TextRuleEntityType.STRING,
                           key: textKey,
                           initialMatchType: rule?.textRule?.matchType,
@@ -277,6 +284,7 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
                   case "gender":
                     {
                       return TextRuleInputWidget<String>(
+                        adjacencyType: config.adjacencyType,
                         entityType: TextRuleEntityType.STRING,
                         key: textKey,
                         initialMatchType: rule?.textRule?.matchType,
@@ -293,6 +301,7 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
                   case "productId":
                     {
                       return TextRuleInputWidget<Product>(
+                        adjacencyType: config.adjacencyType,
                         entityType: TextRuleEntityType.PRODUCT,
                         key: textKey,
                         initialMatchType: rule?.textRule?.matchType,
@@ -312,6 +321,7 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
                   case "gtin":
                     {
                       return TextRuleInputWidget<Sku>(
+                        adjacencyType: config.adjacencyType,
                         entityType: TextRuleEntityType.SKU,
                         key: textKey,
                         initialMatchType: rule?.textRule?.matchType,
@@ -372,17 +382,19 @@ class _AddRulePageState extends BasicState<AddRulePage> with WidgetUtilsMixin {
         return;
       }
       var ruleInput = RuleInput(
-          id: widget.ruleId,
-          contextInput: ruleContextInput,
+        id: widget.ruleId,
+        contextInput: ruleContextInput,
+        ruleType: ruleConfig.ruleType,
+        booleanRuleInput: booleanRuleInput,
+        textRuleInput: textRuleInput,
+        numberRuleInput: numberRuleInput,
+        ruleFieldConfigInput: RuleFieldConfigInput(
+          label: ruleConfig.label,
+          path: ruleConfig.path,
           ruleType: ruleConfig.ruleType,
-          booleanRuleInput: booleanRuleInput,
-          textRuleInput: textRuleInput,
-          numberRuleInput: numberRuleInput,
-          ruleFieldConfigInput: RuleFieldConfigInput(
-            label: ruleConfig.label,
-            path: ruleConfig.path,
-            ruleType: ruleConfig.ruleType,
-          ));
+          adjacencyType: ruleConfig.adjacencyType,
+        ),
+      );
       try {
         progressSubject.add(true);
         var rule = await client.mutations.createRule(input: ruleInput);

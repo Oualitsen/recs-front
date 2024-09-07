@@ -26,7 +26,7 @@ class NumberRuleInputWidgetState extends BasicState<NumberRuleInputWidget> with 
   final sameValueSubject = BehaviorSubject.seeded(false);
   final percentageSubject = BehaviorSubject.seeded(false);
   final operatorSubject = BehaviorSubject<NumberRuleOperator>();
-
+  final relativeSubject = BehaviorSubject.seeded(false);
   final upper = TextEditingController();
   final lower = TextEditingController();
 
@@ -44,6 +44,7 @@ class NumberRuleInputWidgetState extends BasicState<NumberRuleInputWidget> with 
         lower.text = "${init.upperBound}";
       }
       operatorSubject.add(init.operator);
+      relativeSubject.add(init.relative);
     }
     super.initState();
   }
@@ -71,25 +72,46 @@ class NumberRuleInputWidgetState extends BasicState<NumberRuleInputWidget> with 
                           });
                     }),
                 StreamBuilder<_ValuesRecord>(
-                    stream: Rx.combineLatest2(
-                        percentageSubject,
-                        sameValueSubject,
-                        (val1, val2) => _ValuesRecord(
-                            percentage: val1, sameValue: val2, operator: NumberRuleOperator.BETWEEN)),
+                    stream: Rx.combineLatest3(
+                      percentageSubject,
+                      sameValueSubject,
+                      relativeSubject,
+                      (val1, val2, val3) => _ValuesRecord(
+                        percentage: val1,
+                        sameValue: val2,
+                        operator: NumberRuleOperator.BETWEEN, // not used
+                        relative: val3,
+                      ),
+                    ),
                     builder: (context, snapshot) {
                       var value = snapshot.data;
                       if (value == null || value.sameValue) {
                         return SizedBox.shrink();
                       }
 
-                      return CheckboxListTile(
-                          title: Text(lang.percenatge),
-                          value: value.percentage,
-                          onChanged: (newValue) {
-                            if (newValue != null) {
-                              percentageSubject.add(newValue);
-                            }
-                          });
+                      return Column(
+                        children: [
+                          CheckboxListTile(
+                              title: Text(lang.percenatge),
+                              value: value.percentage,
+                              onChanged: (newValue) {
+                                if (newValue != null) {
+                                  percentageSubject.add(newValue);
+                                }
+                              }),
+                          if (!value.percentage) ...[
+                            Gap(10),
+                            CheckboxListTile(
+                                title: Text(lang.numberRuleRelative),
+                                value: value.relative,
+                                onChanged: (newValue) {
+                                  if (newValue != null) {
+                                    relativeSubject.add(newValue);
+                                  }
+                                }),
+                          ]
+                        ],
+                      );
                     }),
                 Gap(10),
                 streamBuilder(
@@ -127,8 +149,16 @@ class NumberRuleInputWidgetState extends BasicState<NumberRuleInputWidget> with 
                     }),
                 Gap(10),
                 StreamBuilder<_ValuesRecord>(
-                    stream: Rx.combineLatest3(sameValueSubject, percentageSubject, operatorSubject,
-                        (a, b, c) => _ValuesRecord(sameValue: a, percentage: b, operator: c)),
+                    stream: Rx.combineLatest3(
+                        sameValueSubject,
+                        percentageSubject,
+                        operatorSubject,
+                        (a, b, c) => _ValuesRecord(
+                              sameValue: a,
+                              percentage: b,
+                              operator: c,
+                              relative: false, //not used here
+                            )),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData || snapshot.data!.sameValue) {
                         return SizedBox.shrink();
@@ -147,8 +177,7 @@ class NumberRuleInputWidgetState extends BasicState<NumberRuleInputWidget> with 
                                   return ValidationUtils.doubleValidator(text, context,
                                       minValue: 0, maxValue: 100, required: true);
                                 } else {
-                                  return ValidationUtils.doubleValidator(text, context,
-                                      minValue: 0, required: true);
+                                  return ValidationUtils.doubleValidator(text, context, required: true);
                                 }
                               },
                               controller: lower,
@@ -206,6 +235,7 @@ class NumberRuleInputWidgetState extends BasicState<NumberRuleInputWidget> with 
           upperBound: (double.tryParse(upper.text) ?? 0) / 100,
           sameValueOnly: sameValueSubject.value,
           operator: operatorSubject.valueOrNull ?? NumberRuleOperator.BETWEEN,
+          relative: relativeSubject.value,
         );
       } else {
         return NumberRuleInput(
@@ -214,6 +244,7 @@ class NumberRuleInputWidgetState extends BasicState<NumberRuleInputWidget> with 
           upperBound: double.tryParse(upper.text) ?? 0,
           sameValueOnly: sameValueSubject.value,
           operator: operatorSubject.valueOrNull ?? NumberRuleOperator.BETWEEN,
+          relative: relativeSubject.value,
         );
       }
     }
@@ -224,7 +255,13 @@ class NumberRuleInputWidgetState extends BasicState<NumberRuleInputWidget> with 
 class _ValuesRecord {
   final bool sameValue;
   final bool percentage;
+  final bool relative;
   final NumberRuleOperator operator;
 
-  _ValuesRecord({required this.sameValue, required this.percentage, required this.operator});
+  _ValuesRecord({
+    required this.sameValue,
+    required this.percentage,
+    required this.relative,
+    required this.operator,
+  });
 }

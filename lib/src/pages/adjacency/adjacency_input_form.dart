@@ -28,6 +28,9 @@ class AdjacencyInputFormState extends BasicState<AdjacencyInputForm> with Widget
   final formKey = GlobalKey<FormState>();
   final firstEntryStream = BehaviorSubject<String>();
   final secondEntryStream = BehaviorSubject<String>();
+
+  final firstEntryStreamCat = BehaviorSubject<Category>();
+  final secondEntryStreamCat = BehaviorSubject<Category>();
   final allEntriesStream = BehaviorSubject.seeded(<String>[]);
   final entry1Ctrl = TextEditingController();
   final entry2Ctrl = TextEditingController();
@@ -40,6 +43,12 @@ class AdjacencyInputFormState extends BasicState<AdjacencyInputForm> with Widget
     });
     secondEntryStream.listen((value) {
       entry2Ctrl.text = value;
+    });
+    firstEntryStreamCat.listen((value) {
+      firstEntryStream.add("${value.name} (${value.id})");
+    });
+    secondEntryStreamCat.listen((value) {
+      secondEntryStream.add("${value.name} (${value.id})");
     });
     super.initState();
   }
@@ -96,9 +105,9 @@ class AdjacencyInputFormState extends BasicState<AdjacencyInputForm> with Widget
       var category = await selectCategories();
       if (category != null) {
         if (isFirst) {
-          firstEntryStream.add(category.name);
+          firstEntryStreamCat.add(category);
         } else {
-          secondEntryStream.add(category.name);
+          secondEntryStreamCat.add(category);
         }
       }
     } else {
@@ -192,13 +201,23 @@ class AdjacencyInputFormState extends BasicState<AdjacencyInputForm> with Widget
     if ((formKey.currentState?.validate() ?? false) &&
         firstEntryStream.valueOrNull != null &&
         secondEntryStream.valueOrNull != null) {
-      return AdjacencyInput(
-        entryId1: firstEntryStream.value,
-        entryId2: secondEntryStream.value,
-        distance: double.tryParse(distanceCtrl.text) ?? -1,
-        type: widget.adjacencyType,
-        manual: true,
-      );
+      if (widget.adjacencyType == AdjacencyType.CATEGORY) {
+        return AdjacencyInput(
+          entryId1: firstEntryStreamCat.value.id,
+          entryId2: secondEntryStreamCat.value.id,
+          distance: double.tryParse(distanceCtrl.text) ?? -1,
+          type: widget.adjacencyType,
+          manual: true,
+        );
+      } else {
+        return AdjacencyInput(
+          entryId1: firstEntryStream.value,
+          entryId2: secondEntryStream.value,
+          distance: double.tryParse(distanceCtrl.text) ?? -1,
+          type: widget.adjacencyType,
+          manual: true,
+        );
+      }
     }
     return null;
   }

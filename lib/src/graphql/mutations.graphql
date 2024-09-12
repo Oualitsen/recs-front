@@ -10,29 +10,7 @@ mutation refreshToken($token: String!) {
   }
 }
 
-mutation updateProductSimilarities(
-  $productId: String!
-  $similarities: [QueueItem!]!
-) {
-  updateProductSimilarities(
-    productId: $productId
-    similarities: $similarities
-  ) {
-    ...productDetailsFrag
-  }
-}
 
-mutation updateProductComplementaries(
-  $productId: String!
-  $complementaries: [QueueItem!]!
-) {
-  updateProductComplementaries(
-    productId: $productId
-    complementaries: $complementaries
-  ) {
-    ...productDetailsFrag
-  }
-}
 
 mutation saveCollectionMapping($input: CollectionMappingInput!) {
   saveCollectionMapping(input: $input) {

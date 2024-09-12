@@ -38,7 +38,6 @@ type Query {
   findSkus(params: SkuSearchParam!  pageInfo: PageInfo!): [Sku!]!
   countSkus(params: SkuSearchParam!): Int!
 
-  getSkusByProductId(productId: String!): [Sku!]!
   aggregate: [SkuKey!]!
   listIndexElements(pageInfo: PageInfo!, name: String): [ColorIndex!]!
   countIndexElements(name: String): Long!
@@ -61,11 +60,7 @@ type Query {
   countRules: Long!
   ruleFieldConfigList: [RuleFieldConfig!]!
   getSeasons: [Season!]!
-
-  getAllBrands: [String!]!
-  getAllDesigners: [String!]!
-  getAllGenders: [String!]!
-  getAllColorLabels: [String!]!
+  findUniqueValuesByType(uniqueValueType: UniqueValueType!, search: String, pageInfo: PageInfo): [String!]!
 }
 type SkuKey {
   imageUrl: String!
@@ -77,20 +72,8 @@ type SkuKey {
 type Mutation {
   login(username: String!, password: String!): TokenUser!
   refreshToken(token: String!): TokenUser!
-  addUser(name: String!): User!
-  deleteProductById(productId: String!): ID
   deleteCategoryById(categoryId: String!): ID
   addCategory(input: CategoryInput!): Category!
-  updateProductSimilarities(
-    productId: String!
-    similarities: [QueueItem!]!
-  ): Product!
-
-  updateProductComplementaries(
-    productId: String!
-    complementaries: [QueueItem!]!
-  ): Product!
-
   saveCollectionMapping(input: CollectionMappingInput!): CollectionMapping!
   generateIndex: String
   updateDistance(id: String!, distance: Float!): ID
@@ -101,6 +84,7 @@ type Mutation {
   updateAdjacencyDistance(id: String!, distance: Float!): ID
   createRule(input: RuleInput!): Rule!
   deleteRule(id: ID!): String
+  initUniqueValues: String
 }
 ################################# TYPES #############################
 
@@ -523,4 +507,8 @@ enum TextRuleEntityType {
 
 enum NumberRuleOperator {
     BETWEEN GTE LTE
+}
+
+enum UniqueValueType {
+    BRAND, DESIGNER, COLOR_LABEL, GENDER
 }

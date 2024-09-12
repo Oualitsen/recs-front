@@ -311,6 +311,7 @@
   "lte": "Lower than or equals (product value <= value)",
   "operator": "Operator",
   "numberRuleValue": "Value",
-  "numberRuleRelative": "Relative"
+  "numberRuleRelative": "Relative",
+  "genders": "Genders"
 
 }

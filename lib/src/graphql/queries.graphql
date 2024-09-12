@@ -107,20 +107,8 @@ query getSeasons() {
   }
 }
 
-query getAllBrands() {
-  data:getAllBrands
-}
-
-query getAllDesigners() {
-  data:getAllDesigners
-}
-
-query getAllGenders() {
-   data:getAllGenders
-}
-
-query getAllColorLabels() {
-   data:getAllColorLabels
+query findUniqueValuesByType($search: String, $pageInfo: PageInfo, $type: UniqueValueType!) {
+  data:findUniqueValuesByType(search: $search, pageInfo: $pageInfo, uniqueValueType: $type)
 }
 
 query getRuleById($id: ID!) {

@@ -303,9 +303,13 @@ type Sku implements IndexedEntity & BasicEntity {
   oldPrice: Float!
   forKids: Boolean!
   gender: String
+  colorPercentages: [ColorPercentage!]!
 }
 
-
+type ColorPercentage {
+  name: String!
+  percentage: Float!
+}
 
 type Inventory {
   sizeLabel: String!

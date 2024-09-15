@@ -126,26 +126,28 @@ class MyProduct extends Product {
 }
 
 class MySku extends Sku {
-  MySku(
-      {required super.brand,
-      required super.category,
-      required super.colorLabel,
-      required super.creationDate,
-      required super.shortDescription,
-      required super.longDescription,
-      required super.designer,
-      required super.forKids,
-      required super.gender,
-      required super.gtin,
-      required super.id,
-      required super.imageUrl,
-      required super.inventories,
-      required super.lastUpdate,
-      required super.oldPrice,
-      required super.price,
-      required super.score,
-      required super.totalInventory,
-      required super.name});
+  MySku({
+    required super.brand,
+    required super.category,
+    required super.colorLabel,
+    required super.creationDate,
+    required super.shortDescription,
+    required super.longDescription,
+    required super.designer,
+    required super.forKids,
+    required super.gender,
+    required super.gtin,
+    required super.id,
+    required super.imageUrl,
+    required super.inventories,
+    required super.lastUpdate,
+    required super.oldPrice,
+    required super.price,
+    required super.score,
+    required super.totalInventory,
+    required super.name,
+    required super.colorPercentages,
+  });
   @override
   bool operator ==(other) {
     if (other is Sku) {
@@ -173,7 +175,8 @@ class MySku extends Sku {
       price: s.price,
       score: s.score,
       totalInventory: s.totalInventory,
-      name: s.name);
+      name: s.name,
+      colorPercentages: s.colorPercentages);
 }
 
 Future<List<Season>?> openSelectMultiSeason(BuildContext context, List<Season> preselected) async {

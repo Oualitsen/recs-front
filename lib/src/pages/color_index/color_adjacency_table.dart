@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
-import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart'
-    as table;
+import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart' as table;
 import 'package:recs_front/generated/client.gq.dart';
 import 'package:recs_front/generated/inputs.gq.dart';
 import 'package:recs_front/generated/types.gq.dart';
@@ -21,10 +20,8 @@ class ColorAdjacencyTable extends StatefulWidget {
   State<ColorAdjacencyTable> createState() => ColorAdjacencyTableState();
 }
 
-class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
-    with WidgetUtilsMixin {
+class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable> with WidgetUtilsMixin {
   final colorIndexStream = BehaviorSubject.seeded(<ColorIndex>[]);
-  final totalStream = BehaviorSubject.seeded(0);
   final client = GetIt.instance.get<GQClient>();
   final editStream = BehaviorSubject<ColorIndex?>();
   final distanceInputKey = GlobalKey<CustomTextInputWidgetState>();
@@ -63,14 +60,16 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
             ),
             name: searchStream.valueOrNull)
         .asStream()
-        .map((event) {
-      totalStream.add(event.total);
-      return event.listIndexElements;
-    }).first;
+        .map((event) => event.listIndexElements)
+        .first;
   }
 
   Future<int> getTotal() async {
-    return Future.value(totalStream.value);
+    return client.queries
+        .countIndexElements(name: searchStream.valueOrNull)
+        .asStream()
+        .map((event) => event.total)
+        .first;
   }
 
   List<DataColumn> getColumns() {
@@ -145,23 +144,17 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
                 children: [
                   SizedBox(
                     width: 75,
-                    child: Text(data.distance != null
-                        ? data.distance!.toStringAsFixed(4)
-                        : lang.na),
+                    child: Text(data.distance != null ? data.distance!.toStringAsFixed(4) : lang.na),
                   ),
                   Gap(5),
-                  IconButton(
-                      onPressed: () => editStream.add(data),
-                      icon: Icon(Icons.edit))
+                  IconButton(onPressed: () => editStream.add(data), icon: Icon(Icons.edit))
                 ],
               );
             }
             if (currentEdit.id != data.id) {
               return SizedBox(
                 width: 75,
-                child: Text(data.distance != null
-                    ? data.distance!.toStringAsFixed(4)
-                    : lang.na),
+                child: Text(data.distance != null ? data.distance!.toStringAsFixed(4) : lang.na),
               );
             }
             return Row(
@@ -190,12 +183,8 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
                       );
                     }),
                 Gap(5),
-                IconButton(
-                    onPressed: () => saveDistance(data.id),
-                    icon: Icon(Icons.check)),
-                IconButton(
-                    onPressed: () => editStream.add(null),
-                    icon: Icon(Icons.cancel)),
+                IconButton(onPressed: () => saveDistance(data.id), icon: Icon(Icons.check)),
+                IconButton(onPressed: () => editStream.add(null), icon: Icon(Icons.cancel)),
               ],
             );
           },
@@ -210,10 +199,7 @@ class ColorAdjacencyTableState extends BasicState<ColorAdjacencyTable>
   Future updateDistance(String colorIndexId, double newDistance) async {
     progressSubject.add(true);
     try {
-      await client.mutations
-          .updateDistance(id: colorIndexId, distance: newDistance)
-          .asStream()
-          .first;
+      await client.mutations.updateDistance(id: colorIndexId, distance: newDistance).asStream().first;
       editStream.add(null);
       tableKey.currentState?.refreshPage();
     } catch (error, stacktrace) {

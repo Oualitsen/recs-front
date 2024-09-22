@@ -11,8 +11,7 @@ import 'package:get_it/get_it.dart';
 import 'package:recs_front/generated/client.gq.dart';
 import 'package:recs_front/generated/inputs.gq.dart';
 import 'package:recs_front/generated/types.gq.dart';
-import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart'
-    as table;
+import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart' as table;
 
 class TypedAdjacencyTable extends StatefulWidget {
   final AdjacencyType type;
@@ -25,11 +24,9 @@ class TypedAdjacencyTable extends StatefulWidget {
   State<TypedAdjacencyTable> createState() => _TypedAdjacencyTableState();
 }
 
-class _TypedAdjacencyTableState extends BasicState<TypedAdjacencyTable>
-    with WidgetUtilsMixin {
+class _TypedAdjacencyTableState extends BasicState<TypedAdjacencyTable> with WidgetUtilsMixin {
   final client = GetIt.instance.get<GQClient>();
   final tableKey = GlobalKey<table.LazyPaginatedDataTableState>();
-  final totalStream = BehaviorSubject.seeded(0);
   final inputFormKey = GlobalKey<AdjacencyInputFormState>();
   final distanceInputKey = GlobalKey<CustomTextInputWidgetState>();
   final messageStream = BehaviorSubject<String?>();
@@ -52,8 +49,7 @@ class _TypedAdjacencyTableState extends BasicState<TypedAdjacencyTable>
               children: [
                 FilledButton(
                   onPressed: addAdjacency,
-                  child: Text(
-                      "${lang.add} ${lang.adjecencyTypeName(widget.type)}"),
+                  child: Text("${lang.add} ${lang.adjecencyTypeName(widget.type)}"),
                 ),
               ],
             ),
@@ -80,14 +76,12 @@ class _TypedAdjacencyTableState extends BasicState<TypedAdjacencyTable>
           type: widget.type,
         )
         .asStream()
-        .map((event) {
-      totalStream.add(event.total);
-      return event.getAdjacencies;
-    }).first;
+        .map((event) => event.getAdjacencies)
+        .first;
   }
 
   Future<int> getTotal() async {
-    return Future.value(totalStream.value);
+    return client.queries.coutAdjacencies(type: widget.type).asStream().map((event) => event.total).first;
   }
 
   List<DataColumn> getColumns() {
@@ -117,9 +111,7 @@ class _TypedAdjacencyTableState extends BasicState<TypedAdjacencyTable>
                       child: Text(data.distance.toStringAsFixed(4)),
                     ),
                     Gap(5),
-                    IconButton(
-                        onPressed: () => editStream.add(data),
-                        icon: Icon(Icons.edit))
+                    IconButton(onPressed: () => editStream.add(data), icon: Icon(Icons.edit))
                   ],
                 );
               }
@@ -156,12 +148,8 @@ class _TypedAdjacencyTableState extends BasicState<TypedAdjacencyTable>
                         );
                       }),
                   Gap(5),
-                  IconButton(
-                      onPressed: () => saveDistance(data.id),
-                      icon: Icon(Icons.check)),
-                  IconButton(
-                      onPressed: () => editStream.add(null),
-                      icon: Icon(Icons.cancel)),
+                  IconButton(onPressed: () => saveDistance(data.id), icon: Icon(Icons.check)),
+                  IconButton(onPressed: () => editStream.add(null), icon: Icon(Icons.cancel)),
                 ],
               );
             },
@@ -225,11 +213,7 @@ class _TypedAdjacencyTableState extends BasicState<TypedAdjacencyTable>
     if (input != null) {
       progressSubject.add(true);
       try {
-        await client.mutations
-            .addAdjacency(input: input)
-            .asStream()
-            .map((event) => event.addAdjacency)
-            .first;
+        await client.mutations.addAdjacency(input: input).asStream().map((event) => event.addAdjacency).first;
         tableKey.currentState?.refreshPage();
         Navigator.of(context).pop();
       } catch (error, stacktrace) {
@@ -252,10 +236,7 @@ class _TypedAdjacencyTableState extends BasicState<TypedAdjacencyTable>
   Future updateDistance(String adjacencyId, double newDistance) async {
     progressSubject.add(true);
     try {
-      await client.mutations
-          .updateAdjacencyDistance(id: adjacencyId, distance: newDistance)
-          .asStream()
-          .first;
+      await client.mutations.updateAdjacencyDistance(id: adjacencyId, distance: newDistance).asStream().first;
       editStream.add(null);
       tableKey.currentState?.refreshPage();
     } catch (error, stacktrace) {

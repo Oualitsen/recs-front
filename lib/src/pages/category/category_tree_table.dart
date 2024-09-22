@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart'
-    as table;
+import 'package:lazy_paginated_data_table/lazy_paginated_data_table.dart' as table;
 import 'package:recs_front/generated/client.gq.dart';
 import 'package:recs_front/generated/inputs.gq.dart';
 import 'package:recs_front/generated/types.gq.dart';
@@ -18,10 +17,8 @@ class CategoryTreeTable extends StatefulWidget {
   State<CategoryTreeTable> createState() => _CategoryTreeTableState();
 }
 
-class _CategoryTreeTableState extends BasicState<CategoryTreeTable>
-    with WidgetUtilsMixin {
+class _CategoryTreeTableState extends BasicState<CategoryTreeTable> with WidgetUtilsMixin {
   final service = GetIt.instance.get<GQClient>();
-  final totalCount = BehaviorSubject.seeded(0);
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -39,8 +36,7 @@ class _CategoryTreeTableState extends BasicState<CategoryTreeTable>
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => PageWrapper(
-                              title:
-                                  "${lang.childCategories} - ${lang.id} : ${data.id}",
+                              title: "${lang.childCategories} - ${lang.id} : ${data.id}",
                               child: CategoryTreeTable(
                                 parentId: data.id,
                               )),
@@ -59,35 +55,37 @@ class _CategoryTreeTableState extends BasicState<CategoryTreeTable>
     try {
       if (widget.parentId == null) {
         return service.queries
-            .getRootCategories(
-                pageInfo:
-                    PageInfo(page: pageInfo.pageIndex, size: pageInfo.pageSize))
+            .getRootCategories(pageInfo: PageInfo(page: pageInfo.pageIndex, size: pageInfo.pageSize))
             .asStream()
             .map((event) {
-          totalCount.add(event.total);
           return event.getRootCategories;
         }).first;
       } else {
         return service.queries
             .findCategoriesByParentId(
                 parentId: widget.parentId!,
-                pageInfo:
-                    PageInfo(page: pageInfo.pageIndex, size: pageInfo.pageSize))
+                pageInfo: PageInfo(page: pageInfo.pageIndex, size: pageInfo.pageSize))
             .asStream()
             .map((event) {
-          totalCount.add(event.total);
           return event.findCategoriesByParentId;
         }).first;
       }
     } catch (error, stacktrace) {
       print(stacktrace);
-      totalCount.add(0);
       return Future.value(<Category>[]);
     }
   }
 
   Future<int> getTotal() {
-    return Future.value(totalCount.value);
+    if (widget.parentId == null) {
+      return service.queries.countRootCategories().asStream().map((event) {
+        return event.total;
+      }).first;
+    } else {
+      return service.queries.coutCategoriesByParentId(parentId: widget.parentId!).asStream().map((event) {
+        return event.total;
+      }).first;
+    }
   }
 
   List<DataColumn> get columns => [

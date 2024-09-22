@@ -172,11 +172,8 @@ class ProductTableWidgetState extends BasicState<ProductTableWidget> with Widget
             params: searchStream.value,
           )
           .asStream()
-          .map((event) {
-        updateCount(event.count);
-
-        return event.searchProducts;
-      }).first;
+          .map((event) => event.searchProducts)
+          .first;
     } catch (error, stacktrace) {
       print(stacktrace);
       totalCount.add(0);
@@ -184,14 +181,12 @@ class ProductTableWidgetState extends BasicState<ProductTableWidget> with Widget
     }
   }
 
-  void updateCount(int count) {
-    if (count != totalCount.value) {
-      totalCount.add(count);
-    }
-  }
-
   Future<int> getTotal() {
-    return Future.value(totalCount.value);
+    return service.queries
+        .countProducts(params: searchStream.value)
+        .asStream()
+        .map((event) => event.count)
+        .first;
   }
 
   void reload() {

@@ -8,6 +8,10 @@ query getCategories($pageInfo: PageInfo!) {
   getCategories(pageInfo: $pageInfo) {
     ..._all_fields
   }
+}
+
+query getCategoriesCount {
+  
   total: countCategories
 }
 
@@ -15,6 +19,9 @@ query searchProducts($pageInfo: PageInfo!, $params: ProductParamSearch!) {
   searchProducts(pageInfo: $pageInfo, params: $params) {
     ...productDetailsFrag
   }
+}
+
+query countProducts($params: ProductParamSearch!) {
   count: countSearchProduct(params: $params)
 }
 
@@ -51,14 +58,24 @@ query getRootCategories($pageInfo: PageInfo!) {
   getRootCategories(pageInfo: $pageInfo) {
     ..._all_fields
   }
+}
+
+query countRootCategories {
+  
   total: countRootCategories
 }
+
 query findCategoriesByParentId($parentId: String!, $pageInfo: PageInfo!) {
   findCategoriesByParentId(parentId: $parentId, pageInfo: $pageInfo) {
     ..._all_fields
   }
+}
+
+query coutCategoriesByParentId($parentId: String!) {
   total: countCategoriesByParentId(parentId: $parentId)
 }
+
+
 query getCategoryTree {
   getCategoryTree {
     ..._all_fields
@@ -68,8 +85,13 @@ query listIndexElements($pageInfo: PageInfo!, $name: String) {
   listIndexElements(pageInfo: $pageInfo, name: $name) {
     ..._all_fields
   }
+}
+
+
+query countIndexElements($name: String) {
   total: countIndexElements(name: $name)
 }
+
 query getColorIndexByColorHex($color: String!, $pageInfo: PageInfo!) {
   findColorIndexByColorHex(color: $color, pageInfo: $pageInfo) {
     ..._all_fields
@@ -82,6 +104,9 @@ query getAdjacencies($pageInfo: PageInfo!, $type: AdjacencyType!) {
   getAdjacencies(pageInfo: $pageInfo, type: $type) {
     ..._all_fields
   }
+}
+
+query coutAdjacencies($type: AdjacencyType!) {
   total: countAdjacenciesByType(type: $type)
 }
 
